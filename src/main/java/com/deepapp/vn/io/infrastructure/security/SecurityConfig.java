@@ -18,6 +18,15 @@ public class SecurityConfig {
                 .requestMatchers("/", "/login**", "/error**", "/actuator/**").permitAll()
                 .requestMatchers("/api/**").permitAll()  // All API endpoints public for testing
                 .requestMatchers("/AA/**").permitAll()   // OAuth test endpoints also public
+                // Swagger/OpenAPI endpoints
+                .requestMatchers(
+                    "/swagger-ui/**", 
+                    "/swagger-ui.html",
+                    "/v3/api-docs/**",
+                    "/api-docs/**",
+                    "/swagger-resources/**",
+                    "/webjars/**"
+                ).permitAll()
                 .anyRequest().authenticated()
             )
             .oauth2Login(oauth2 -> oauth2

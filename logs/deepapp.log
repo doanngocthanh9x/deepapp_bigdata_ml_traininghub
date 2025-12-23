@@ -5051,3 +5051,839 @@ io.grpc.StatusRuntimeException: UNAVAILABLE: Network closed for unknown reason
 2025-12-23T08:36:21.771Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
 2025-12-23T08:36:21.772Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
 2025-12-23T08:36:21.776Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2025-12-23T09:01:58.919Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Starting DeepappMainApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 7 (/app/app.jar started by root in /app)
+2025-12-23T09:01:58.921Z DEBUG 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Running with Spring Boot v4.0.1, Spring v7.0.2
+2025-12-23T09:01:58.922Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : The following 1 profile is active: "docker"
+2025-12-23T09:02:00.202Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2025-12-23T09:02:00.230Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-23T09:02:00.231Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2025-12-23T09:02:00.294Z  INFO 7 --- [deepapp_main] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1333 ms
+2025-12-23T09:02:00.551Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : CppWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T09:02:00.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-cpp-client' to 72.60.111.138:50051
+2025-12-23T09:02:00.795Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-cpp-client'
+2025-12-23T09:02:00.796Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-cpp-client' initialized successfully
+2025-12-23T09:02:00.796Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker Client initialized - target: cpp-worker
+2025-12-23T09:02:00.802Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T09:02:00.803Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager - Initialization
+2025-12-23T09:02:00.803Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T09:02:00.803Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : Starting C++ worker process...
+2025-12-23T09:02:00.803Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   gRPC Server: 72.60.111.138:50051
+2025-12-23T09:02:00.803Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   Client ID: cpp-worker
+2025-12-23T09:02:00.857Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Initialized
+2025-12-23T09:02:00.857Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0100_W -> AAA0_0100_Worker
+2025-12-23T09:02:00.858Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0200_Worker] Initialized
+2025-12-23T09:02:00.858Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0200_W -> AAA0_0200_Worker
+2025-12-23T09:02:00.859Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T09:02:00.859Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] DeepApp C++ Worker Application
+2025-12-23T09:02:00.859Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T09:02:00.859Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Configuration:
+2025-12-23T09:02:00.859Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Server: 72.60.111.138:50051
+2025-12-23T09:02:00.859Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Client ID: cpp-worker
+2025-12-23T09:02:00.860Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:00.860Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Worker Registry Status:
+2025-12-23T09:02:00.860Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Total workers: 2
+2025-12-23T09:02:00.860Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   ✓ Registered workers:
+2025-12-23T09:02:00.861Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0100_W (AAA0_0100_Worker)
+2025-12-23T09:02:00.861Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0200_W (AAA0_0200_Worker)
+2025-12-23T09:02:00.861Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:00.861Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Starting gRPC worker client...
+2025-12-23T09:02:00.862Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T09:02:00.862Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:00.862Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connecting to 72.60.111.138:50051 with client_id: cpp-worker
+2025-12-23T09:02:00.904Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connected! Waiting for tasks...
+2025-12-23T09:02:00.905Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Registered 2 workers:
+2025-12-23T09:02:00.905Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0100_W
+2025-12-23T09:02:00.905Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0200_W
+2025-12-23T09:02:00.945Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:00.946Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:02:00.946Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: server
+2025-12-23T09:02:00.946Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:02:00.946Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: connected
+2025-12-23T09:02:00.946Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: cpp-worker
+2025-12-23T09:02:00.946Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from targetId): cpp-worker
+2025-12-23T09:02:00.947Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"error":"Worker not found: cpp-worker"}
+2025-12-23T09:02:00.947Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:02:01.127Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-cpp-client'
+2025-12-23T09:02:01.127Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-cpp-client' received event 'connected' from 'server'
+2025-12-23T09:02:01.127Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker event: connected - java-cpp-client
+2025-12-23T09:02:02.857Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ worker process started successfully (PID: 57)
+2025-12-23T09:02:02.857Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager initialized successfully
+2025-12-23T09:02:02.857Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T09:02:02.866Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OcrWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T09:02:02.867Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ocr-client' to 72.60.111.138:50051
+2025-12-23T09:02:02.868Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ocr-client'
+2025-12-23T09:02:02.868Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ocr-client' initialized successfully
+2025-12-23T09:02:02.868Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker Client initialized - target: cpp-ocr-worker
+2025-12-23T09:02:02.872Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NerWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T09:02:02.873Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ner-client' to 72.60.111.138:50051
+2025-12-23T09:02:02.874Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ner-client'
+2025-12-23T09:02:02.875Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ner-client' initialized successfully
+2025-12-23T09:02:02.876Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker Client initialized - target: cpp-ner-worker
+2025-12-23T09:02:02.960Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ocr-client'
+2025-12-23T09:02:02.961Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ocr-client' received event 'connected' from 'server'
+2025-12-23T09:02:02.961Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker event: connected - java-ocr-client
+2025-12-23T09:02:02.962Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ner-client'
+2025-12-23T09:02:02.963Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ner-client' received event 'connected' from 'server'
+2025-12-23T09:02:02.963Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker event: connected - java-ner-client
+2025-12-23T09:02:03.598Z  INFO 7 --- [deepapp_main] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-12-23T09:02:03.645Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2025-12-23T09:02:03.653Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Started DeepappMainApplication in 5.266 seconds (process running for 5.678)
+2025-12-23T09:02:04.217Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-23T09:02:04.217Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-23T09:02:04.219Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-12-23T09:02:04.322Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:02:04.328Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_1
+2025-12-23T09:02:04.369Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:04.369Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:02:04.370Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:02:04.370Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:02:04.370Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:02:04.370Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:02:04.370Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:02:04.370Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:02:04.371Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:02:04.371Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:02:04.371Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766480524}
+2025-12-23T09:02:04.371Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:02:04.410Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:02:05.016Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:02:05.017Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_2
+2025-12-23T09:02:05.057Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:05.057Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:02:05.057Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766480525}
+2025-12-23T09:02:05.058Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:02:05.096Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:02:05.992Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:02:05.994Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_3
+2025-12-23T09:02:06.034Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:02:06.035Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:02:06.035Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:02:06.035Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:02:06.036Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:02:06.036Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:02:06.036Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:02:06.036Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:02:06.036Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:02:06.036Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:02:06.037Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766480526}
+2025-12-23T09:02:06.037Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:02:06.073Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:10:41.414Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-2] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:10:41.417Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_4
+2025-12-23T09:10:41.457Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:10:41.458Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:10:41.458Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:10:41.458Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:10:41.458Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:10:41.458Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:41.459Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:10:41.459Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:10:41.459Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:10:41.459Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:41.459Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766481041}
+2025-12-23T09:10:41.459Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:10:41.496Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:10:42.342Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:10:42.345Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_5
+2025-12-23T09:10:42.384Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:10:42.384Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766481042}
+2025-12-23T09:10:42.385Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:10:42.423Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:10:43.139Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-5] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:10:43.142Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-5] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_6
+2025-12-23T09:10:43.181Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766481043}
+2025-12-23T09:10:43.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:10:43.220Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:10:43.922Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-6] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:10:43.924Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-6] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_7
+2025-12-23T09:10:43.963Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766481043}
+2025-12-23T09:10:43.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:10:44.002Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:14:38.375Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:14:38.376Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_8
+2025-12-23T09:14:38.416Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:14:38.417Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:14:38.417Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:14:38.417Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:14:38.417Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:14:38.417Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:14:38.418Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:14:38.418Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:14:38.418Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:14:38.418Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java!!!!!!!
+2025-12-23T09:14:38.418Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java!!!!!!!","timestamp":1766481278}
+2025-12-23T09:14:38.419Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:14:38.456Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-4] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:14:44.128Z  WARN 7 --- [deepapp_main] [http-nio-8080-exec-4] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Illegal unquoted character ((CTRL-CHAR, code 13)): has to be escaped using backslash to be included in string value]
+2025-12-23T09:14:46.922Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-8] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:14:46.924Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-8] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_9
+2025-12-23T09:14:46.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:14:46.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:14:46.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:14:46.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:14:46.964Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java Ông già!!
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java Ông già!!
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java Ông già!!","timestamp":1766481286}
+2025-12-23T09:14:46.965Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:14:47.003Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-4] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:17:03.109Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-9] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:17:03.111Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-9] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_10
+2025-12-23T09:17:03.150Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java Ông già!!
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java Ông già!!
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java Ông già!!","timestamp":1766481423}
+2025-12-23T09:17:03.151Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:17:03.189Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-5] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:26:12.445Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-5] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:26:12.446Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-5] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_11
+2025-12-23T09:26:12.486Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:26:12.487Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:26:12.487Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:26:12.487Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:26:12.488Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:26:12.488Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java Ông già!!
+2025-12-23T09:26:12.489Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:26:12.489Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:26:12.489Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:26:12.490Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: Hello from Java Ông già!!
+2025-12-23T09:26:12.490Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"Hello from Java Ông già!!","timestamp":1766481972}
+2025-12-23T09:26:12.490Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:26:12.524Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-6] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:37:10.216Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-9] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T09:37:10.217Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-9] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_12
+2025-12-23T09:37:10.259Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T09:37:10.260Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T09:37:10.261Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T09:37:10.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T09:37:10.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T09:37:10.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T09:37:10.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T09:37:10.263Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T09:37:10.263Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T09:37:10.264Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T09:37:10.264Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766482630}
+2025-12-23T09:37:10.264Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T09:37:10.299Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-7] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T09:50:23.129Z ERROR 7 --- [deepapp_main] [grpc-default-executor-8] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC stream error for client 'java-ocr-client': UNAVAILABLE: Network closed for unknown reason
+
+io.grpc.StatusRuntimeException: UNAVAILABLE: Network closed for unknown reason
+	at io.grpc.Status.asRuntimeException(Status.java:537) ~[grpc-api-1.60.0.jar!/:1.60.0]
+	at io.grpc.stub.ClientCalls$StreamObserverToCallListenerAdapter.onClose(ClientCalls.java:481) ~[grpc-stub-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener$3.run(DelayedClientCall.java:489) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener.delayOrExecute(DelayedClientCall.java:453) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener.onClose(DelayedClientCall.java:486) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl.closeObserver(ClientCallImpl.java:574) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl.access$300(ClientCallImpl.java:72) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl$ClientStreamListenerImpl$1StreamClosed.runInternal(ClientCallImpl.java:742) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl$ClientStreamListenerImpl$1StreamClosed.runInContext(ClientCallImpl.java:723) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:133) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source) ~[na:na]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+
+2025-12-23T09:55:33.089Z ERROR 7 --- [deepapp_main] [cpp-worker-error] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker ERROR] [GrpcWorkerClient] Stream error: Socket closed
+2025-12-23T09:55:33.089Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Client stopped.
+2025-12-23T09:58:18.912Z ERROR 7 --- [deepapp_main] [grpc-default-executor-10] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC stream error for client 'java-cpp-client': UNAVAILABLE: Network closed for unknown reason
+
+io.grpc.StatusRuntimeException: UNAVAILABLE: Network closed for unknown reason
+	at io.grpc.Status.asRuntimeException(Status.java:537) ~[grpc-api-1.60.0.jar!/:1.60.0]
+	at io.grpc.stub.ClientCalls$StreamObserverToCallListenerAdapter.onClose(ClientCalls.java:481) ~[grpc-stub-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener$3.run(DelayedClientCall.java:489) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener.delayOrExecute(DelayedClientCall.java:453) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener.onClose(DelayedClientCall.java:486) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl.closeObserver(ClientCallImpl.java:574) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl.access$300(ClientCallImpl.java:72) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl$ClientStreamListenerImpl$1StreamClosed.runInternal(ClientCallImpl.java:742) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl$ClientStreamListenerImpl$1StreamClosed.runInContext(ClientCallImpl.java:723) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:133) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source) ~[na:na]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+
+2025-12-23T10:13:22.698Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-10] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:22.704Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-10] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_13
+2025-12-23T10:13:40.672Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Starting DeepappMainApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 7 (/app/app.jar started by root in /app)
+2025-12-23T10:13:40.674Z DEBUG 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Running with Spring Boot v4.0.1, Spring v7.0.2
+2025-12-23T10:13:40.675Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : The following 1 profile is active: "docker"
+2025-12-23T10:13:42.047Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2025-12-23T10:13:42.060Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-23T10:13:42.060Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2025-12-23T10:13:42.086Z  INFO 7 --- [deepapp_main] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1363 ms
+2025-12-23T10:13:42.288Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : CppWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:13:42.290Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-cpp-client' to 72.60.111.138:50051
+2025-12-23T10:13:42.550Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-cpp-client'
+2025-12-23T10:13:42.550Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-cpp-client' initialized successfully
+2025-12-23T10:13:42.550Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker Client initialized - target: cpp-worker
+2025-12-23T10:13:42.556Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:13:42.556Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager - Initialization
+2025-12-23T10:13:42.556Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:13:42.556Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : Starting C++ worker process...
+2025-12-23T10:13:42.556Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   gRPC Server: 72.60.111.138:50051
+2025-12-23T10:13:42.556Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   Client ID: cpp-worker
+2025-12-23T10:13:42.608Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Initialized
+2025-12-23T10:13:42.608Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0100_W -> AAA0_0100_Worker
+2025-12-23T10:13:42.608Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0200_Worker] Initialized
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0200_W -> AAA0_0200_Worker
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] DeepApp C++ Worker Application
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Configuration:
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Server: 72.60.111.138:50051
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Client ID: cpp-worker
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:42.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Worker Registry Status:
+2025-12-23T10:13:42.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Total workers: 2
+2025-12-23T10:13:42.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   ✓ Registered workers:
+2025-12-23T10:13:42.611Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0100_W (AAA0_0100_Worker)
+2025-12-23T10:13:42.615Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0200_W (AAA0_0200_Worker)
+2025-12-23T10:13:42.615Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:42.616Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Starting gRPC worker client...
+2025-12-23T10:13:42.616Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:13:42.616Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:42.616Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connecting to 72.60.111.138:50051 with client_id: cpp-worker
+2025-12-23T10:13:42.660Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connected! Waiting for tasks...
+2025-12-23T10:13:42.661Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Registered 2 workers:
+2025-12-23T10:13:42.661Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0100_W
+2025-12-23T10:13:42.661Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0200_W
+2025-12-23T10:13:42.699Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: server
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: connected
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: cpp-worker
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from targetId): cpp-worker
+2025-12-23T10:13:42.700Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"error":"Worker not found: cpp-worker"}
+2025-12-23T10:13:42.701Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:42.920Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-cpp-client'
+2025-12-23T10:13:42.920Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-cpp-client' received event 'connected' from 'server'
+2025-12-23T10:13:42.920Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker event: connected - java-cpp-client
+2025-12-23T10:13:44.590Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ worker process started successfully (PID: 56)
+2025-12-23T10:13:44.590Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager initialized successfully
+2025-12-23T10:13:44.590Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:13:44.596Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OcrWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:13:44.597Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ocr-client' to 72.60.111.138:50051
+2025-12-23T10:13:44.598Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ocr-client'
+2025-12-23T10:13:44.599Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ocr-client' initialized successfully
+2025-12-23T10:13:44.599Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker Client initialized - target: cpp-ocr-worker
+2025-12-23T10:13:44.604Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NerWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:13:44.605Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ner-client' to 72.60.111.138:50051
+2025-12-23T10:13:44.607Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ner-client'
+2025-12-23T10:13:44.607Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ner-client' initialized successfully
+2025-12-23T10:13:44.607Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker Client initialized - target: cpp-ner-worker
+2025-12-23T10:13:44.686Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ocr-client'
+2025-12-23T10:13:44.686Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ocr-client' received event 'connected' from 'server'
+2025-12-23T10:13:44.686Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker event: connected - java-ocr-client
+2025-12-23T10:13:44.693Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ner-client'
+2025-12-23T10:13:44.694Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ner-client' received event 'connected' from 'server'
+2025-12-23T10:13:44.694Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker event: connected - java-ner-client
+2025-12-23T10:13:45.491Z  INFO 7 --- [deepapp_main] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-12-23T10:13:45.545Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2025-12-23T10:13:45.552Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Started DeepappMainApplication in 5.546 seconds (process running for 6.14)
+2025-12-23T10:13:47.051Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-23T10:13:47.052Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-23T10:13:47.053Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-12-23T10:13:47.139Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:47.144Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_1
+2025-12-23T10:13:47.182Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:13:47.183Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:13:47.184Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:13:47.184Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:47.184Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766484827}
+2025-12-23T10:13:47.184Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:47.222Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:13:47.612Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:47.615Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_2
+2025-12-23T10:13:47.653Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:47.654Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:47.654Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:13:47.654Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:47.654Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:13:47.655Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:47.655Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:13:47.655Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:13:47.656Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:13:47.656Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:47.656Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766484827}
+2025-12-23T10:13:47.656Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:47.691Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:13:49.255Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:49.256Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_3
+2025-12-23T10:13:49.294Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:49.294Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:49.294Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:13:49.294Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:49.294Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766484829}
+2025-12-23T10:13:49.295Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:49.331Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:13:49.783Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-7] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:49.786Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-7] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_4
+2025-12-23T10:13:49.824Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766484829}
+2025-12-23T10:13:49.825Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:49.862Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:13:50.567Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-8] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:50.570Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-8] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_5
+2025-12-23T10:13:50.608Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:50.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:50.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:13:50.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:50.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:13:50.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:50.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:13:50.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:13:50.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:13:50.611Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:50.611Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766484830}
+2025-12-23T10:13:50.611Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:50.647Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:13:51.217Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-9] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:13:51.219Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-9] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_6
+2025-12-23T10:13:51.257Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:13:51.257Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:13:51.258Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:13:51.259Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: xsdadasd
+2025-12-23T10:13:51.259Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"xsdadasd","timestamp":1766484831}
+2025-12-23T10:13:51.259Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:13:51.295Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:19:47.509Z ERROR 7 --- [deepapp_main] [grpc-default-executor-3] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC stream error for client 'java-ocr-client': UNAVAILABLE: Network closed for unknown reason
+
+io.grpc.StatusRuntimeException: UNAVAILABLE: Network closed for unknown reason
+	at io.grpc.Status.asRuntimeException(Status.java:537) ~[grpc-api-1.60.0.jar!/:1.60.0]
+	at io.grpc.stub.ClientCalls$StreamObserverToCallListenerAdapter.onClose(ClientCalls.java:481) ~[grpc-stub-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener$3.run(DelayedClientCall.java:489) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener.delayOrExecute(DelayedClientCall.java:453) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.DelayedClientCall$DelayedListener.onClose(DelayedClientCall.java:486) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl.closeObserver(ClientCallImpl.java:574) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl.access$300(ClientCallImpl.java:72) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl$ClientStreamListenerImpl$1StreamClosed.runInternal(ClientCallImpl.java:742) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ClientCallImpl$ClientStreamListenerImpl$1StreamClosed.runInContext(ClientCallImpl.java:723) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.ContextRunnable.run(ContextRunnable.java:37) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at io.grpc.internal.SerializingExecutor.run(SerializingExecutor.java:133) ~[grpc-core-1.60.0.jar!/:1.60.0]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source) ~[na:na]
+	at java.base/java.lang.Thread.run(Unknown Source) ~[na:na]
+
+2025-12-23T10:23:55.714Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Starting DeepappMainApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 7 (/app/app.jar started by root in /app)
+2025-12-23T10:23:55.717Z DEBUG 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Running with Spring Boot v4.0.1, Spring v7.0.2
+2025-12-23T10:23:55.717Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : The following 1 profile is active: "docker"
+2025-12-23T10:23:57.124Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2025-12-23T10:23:57.136Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-23T10:23:57.137Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2025-12-23T10:23:57.164Z  INFO 7 --- [deepapp_main] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1381 ms
+2025-12-23T10:23:57.317Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : CppWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:23:57.319Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-cpp-client' to 72.60.111.138:50051
+2025-12-23T10:23:57.547Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-cpp-client'
+2025-12-23T10:23:57.548Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-cpp-client' initialized successfully
+2025-12-23T10:23:57.548Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker Client initialized - target: cpp-worker
+2025-12-23T10:23:57.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:23:57.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager - Initialization
+2025-12-23T10:23:57.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:23:57.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : Starting C++ worker process...
+2025-12-23T10:23:57.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   gRPC Server: 72.60.111.138:50051
+2025-12-23T10:23:57.554Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   Client ID: cpp-worker
+2025-12-23T10:23:57.609Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Initialized
+2025-12-23T10:23:57.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0100_W -> AAA0_0100_Worker
+2025-12-23T10:23:57.610Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0200_Worker] Initialized
+2025-12-23T10:23:57.611Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0200_W -> AAA0_0200_Worker
+2025-12-23T10:23:57.612Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:23:57.612Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] DeepApp C++ Worker Application
+2025-12-23T10:23:57.612Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:23:57.613Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Configuration:
+2025-12-23T10:23:57.613Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Server: 72.60.111.138:50051
+2025-12-23T10:23:57.613Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Client ID: cpp-worker
+2025-12-23T10:23:57.613Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:23:57.614Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Worker Registry Status:
+2025-12-23T10:23:57.614Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Total workers: 2
+2025-12-23T10:23:57.615Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   ✓ Registered workers:
+2025-12-23T10:23:57.616Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0100_W (AAA0_0100_Worker)
+2025-12-23T10:23:57.616Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0200_W (AAA0_0200_Worker)
+2025-12-23T10:23:57.617Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:23:57.617Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Starting gRPC worker client...
+2025-12-23T10:23:57.618Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:23:57.618Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:23:57.618Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connecting to 72.60.111.138:50051 with client_id: cpp-worker
+2025-12-23T10:23:57.649Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connected! Waiting for tasks...
+2025-12-23T10:23:57.650Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Registered 2 workers:
+2025-12-23T10:23:57.651Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0100_W
+2025-12-23T10:23:57.651Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0200_W
+2025-12-23T10:23:57.688Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: server
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: connected
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: cpp-worker
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from targetId): cpp-worker
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"error":"Worker not found: cpp-worker"}
+2025-12-23T10:23:57.689Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:23:57.876Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-cpp-client'
+2025-12-23T10:23:57.876Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-cpp-client' received event 'connected' from 'server'
+2025-12-23T10:23:57.876Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker event: connected - java-cpp-client
+2025-12-23T10:23:59.610Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ worker process started successfully (PID: 58)
+2025-12-23T10:23:59.611Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager initialized successfully
+2025-12-23T10:23:59.611Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:23:59.617Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OcrWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:23:59.618Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ocr-client' to 72.60.111.138:50051
+2025-12-23T10:23:59.620Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ocr-client'
+2025-12-23T10:23:59.621Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ocr-client' initialized successfully
+2025-12-23T10:23:59.621Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker Client initialized - target: cpp-ocr-worker
+2025-12-23T10:23:59.626Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NerWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:23:59.627Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ner-client' to 72.60.111.138:50051
+2025-12-23T10:23:59.629Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ner-client'
+2025-12-23T10:23:59.629Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ner-client' initialized successfully
+2025-12-23T10:23:59.630Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker Client initialized - target: cpp-ner-worker
+2025-12-23T10:23:59.707Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ocr-client'
+2025-12-23T10:23:59.707Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ocr-client' received event 'connected' from 'server'
+2025-12-23T10:23:59.708Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker event: connected - java-ocr-client
+2025-12-23T10:23:59.711Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ner-client'
+2025-12-23T10:23:59.712Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ner-client' received event 'connected' from 'server'
+2025-12-23T10:23:59.712Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker event: connected - java-ner-client
+2025-12-23T10:24:00.430Z  INFO 7 --- [deepapp_main] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-12-23T10:24:00.474Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2025-12-23T10:24:00.483Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Started DeepappMainApplication in 5.282 seconds (process running for 5.722)
+2025-12-23T10:24:01.056Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-23T10:24:01.056Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-23T10:24:01.058Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-12-23T10:25:50.671Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Starting DeepappMainApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 7 (/app/app.jar started by root in /app)
+2025-12-23T10:25:50.674Z DEBUG 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Running with Spring Boot v4.0.1, Spring v7.0.2
+2025-12-23T10:25:50.675Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : The following 1 profile is active: "docker"
+2025-12-23T10:25:51.850Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2025-12-23T10:25:51.862Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-23T10:25:51.863Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2025-12-23T10:25:51.892Z  INFO 7 --- [deepapp_main] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1171 ms
+2025-12-23T10:25:52.075Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : CppWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:25:52.078Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-cpp-client' to 72.60.111.138:50051
+2025-12-23T10:25:52.310Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-cpp-client'
+2025-12-23T10:25:52.310Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-cpp-client' initialized successfully
+2025-12-23T10:25:52.310Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker Client initialized - target: cpp-worker
+2025-12-23T10:25:52.315Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:25:52.315Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager - Initialization
+2025-12-23T10:25:52.315Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:25:52.315Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : Starting C++ worker process...
+2025-12-23T10:25:52.315Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   gRPC Server: 72.60.111.138:50051
+2025-12-23T10:25:52.315Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   Client ID: cpp-worker
+2025-12-23T10:25:52.358Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Initialized
+2025-12-23T10:25:52.358Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0100_W -> AAA0_0100_Worker
+2025-12-23T10:25:52.358Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0200_Worker] Initialized
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0200_W -> AAA0_0200_Worker
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] DeepApp C++ Worker Application
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Configuration:
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Server: 72.60.111.138:50051
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Client ID: cpp-worker
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Worker Registry Status:
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Total workers: 2
+2025-12-23T10:25:52.359Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   ✓ Registered workers:
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0100_W (AAA0_0100_Worker)
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0200_W (AAA0_0200_Worker)
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Starting gRPC worker client...
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:25:52.360Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connecting to 72.60.111.138:50051 with client_id: cpp-worker
+2025-12-23T10:25:52.394Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connected! Waiting for tasks...
+2025-12-23T10:25:52.395Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Registered 2 workers:
+2025-12-23T10:25:52.396Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0100_W
+2025-12-23T10:25:52.396Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0200_W
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: server
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: connected
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: cpp-worker
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from targetId): cpp-worker
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"error":"Worker not found: cpp-worker"}
+2025-12-23T10:25:52.433Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:25:52.599Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-cpp-client'
+2025-12-23T10:25:52.600Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-cpp-client' received event 'connected' from 'server'
+2025-12-23T10:25:52.600Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker event: connected - java-cpp-client
+2025-12-23T10:25:54.358Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ worker process started successfully (PID: 56)
+2025-12-23T10:25:54.360Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager initialized successfully
+2025-12-23T10:25:54.361Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:25:54.370Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OcrWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:25:54.371Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ocr-client' to 72.60.111.138:50051
+2025-12-23T10:25:54.372Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ocr-client'
+2025-12-23T10:25:54.372Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ocr-client' initialized successfully
+2025-12-23T10:25:54.372Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker Client initialized - target: cpp-ocr-worker
+2025-12-23T10:25:54.379Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NerWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:25:54.380Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ner-client' to 72.60.111.138:50051
+2025-12-23T10:25:54.382Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ner-client'
+2025-12-23T10:25:54.383Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ner-client' initialized successfully
+2025-12-23T10:25:54.383Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker Client initialized - target: cpp-ner-worker
+2025-12-23T10:25:54.461Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ocr-client'
+2025-12-23T10:25:54.461Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ocr-client' received event 'connected' from 'server'
+2025-12-23T10:25:54.461Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker event: connected - java-ocr-client
+2025-12-23T10:25:54.469Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-1] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ner-client'
+2025-12-23T10:25:54.470Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ner-client' received event 'connected' from 'server'
+2025-12-23T10:25:54.470Z  INFO 7 --- [deepapp_main] [grpc-default-executor-1] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker event: connected - java-ner-client
+2025-12-23T10:25:55.080Z  INFO 7 --- [deepapp_main] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-12-23T10:25:55.133Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2025-12-23T10:25:55.142Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Started DeepappMainApplication in 5.024 seconds (process running for 5.465)
+2025-12-23T10:25:55.176Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-23T10:25:55.177Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-23T10:25:55.178Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-12-23T10:29:42.497Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Starting DeepappMainApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 7 (/app/app.jar started by root in /app)
+2025-12-23T10:29:42.499Z DEBUG 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Running with Spring Boot v4.0.1, Spring v7.0.2
+2025-12-23T10:29:42.500Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : The following 1 profile is active: "docker"
+2025-12-23T10:29:43.636Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2025-12-23T10:29:43.653Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-12-23T10:29:43.654Z  INFO 7 --- [deepapp_main] [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2025-12-23T10:29:43.684Z  INFO 7 --- [deepapp_main] [main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 1143 ms
+2025-12-23T10:29:43.910Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : CppWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:29:43.912Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-cpp-client' to 72.60.111.138:50051
+2025-12-23T10:29:44.120Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-cpp-client'
+2025-12-23T10:29:44.120Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-cpp-client' initialized successfully
+2025-12-23T10:29:44.120Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker Client initialized - target: cpp-worker
+2025-12-23T10:29:44.125Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:29:44.126Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager - Initialization
+2025-12-23T10:29:44.127Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:29:44.127Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : Starting C++ worker process...
+2025-12-23T10:29:44.127Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   gRPC Server: 72.60.111.138:50051
+2025-12-23T10:29:44.127Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           :   Client ID: cpp-worker
+2025-12-23T10:29:44.172Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Initialized
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0100_W -> AAA0_0100_Worker
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0200_Worker] Initialized
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [WorkerRegistry] Registered worker: AAA0_0200_W -> AAA0_0200_Worker
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] DeepApp C++ Worker Application
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Configuration:
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Server: 72.60.111.138:50051
+2025-12-23T10:29:44.173Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Client ID: cpp-worker
+2025-12-23T10:29:44.174Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:29:44.174Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Worker Registry Status:
+2025-12-23T10:29:44.174Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Total workers: 2
+2025-12-23T10:29:44.174Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   ✓ Registered workers:
+2025-12-23T10:29:44.175Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0100_W (AAA0_0100_Worker)
+2025-12-23T10:29:44.175Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]     - AAA0_0200_W (AAA0_0200_Worker)
+2025-12-23T10:29:44.175Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:29:44.176Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [Main] Starting gRPC worker client...
+2025-12-23T10:29:44.176Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] ========================================
+2025-12-23T10:29:44.176Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:29:44.176Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connecting to 72.60.111.138:50051 with client_id: cpp-worker
+2025-12-23T10:29:44.221Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Connected! Waiting for tasks...
+2025-12-23T10:29:44.221Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Registered 2 workers:
+2025-12-23T10:29:44.222Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0100_W
+2025-12-23T10:29:44.222Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   - AAA0_0200_W
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: server
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: connected
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: cpp-worker
+2025-12-23T10:29:44.262Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from targetId): cpp-worker
+2025-12-23T10:29:44.263Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"error":"Worker not found: cpp-worker"}
+2025-12-23T10:29:44.263Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:29:44.423Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-cpp-client'
+2025-12-23T10:29:44.424Z  INFO 7 --- [deepapp_main] [grpc-default-executor-2] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-cpp-client' received event 'connected' from 'server'
+2025-12-23T10:29:44.424Z  INFO 7 --- [deepapp_main] [grpc-default-executor-2] c.deepapp.vn.io.workers.CppWorkerClient  : C++ Worker event: connected - java-cpp-client
+2025-12-23T10:29:46.167Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ worker process started successfully (PID: 55)
+2025-12-23T10:29:46.167Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : C++ Worker Manager initialized successfully
+2025-12-23T10:29:46.167Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.cpp.CppWorkerManager           : ========================================
+2025-12-23T10:29:46.173Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OcrWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:29:46.187Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ocr-client' to 72.60.111.138:50051
+2025-12-23T10:29:46.188Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ocr-client'
+2025-12-23T10:29:46.188Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ocr-client' initialized successfully
+2025-12-23T10:29:46.188Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker Client initialized - target: cpp-ocr-worker
+2025-12-23T10:29:46.193Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NerWorkerClient created with host=72.60.111.138, port=50051
+2025-12-23T10:29:46.195Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Initializing gRPC client 'java-ner-client' to 72.60.111.138:50051
+2025-12-23T10:29:46.196Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent connection message for client 'java-ner-client'
+2025-12-23T10:29:46.196Z  INFO 7 --- [deepapp_main] [main] c.d.v.i.i.grpc.BaseGrpcClientService     : gRPC client 'java-ner-client' initialized successfully
+2025-12-23T10:29:46.197Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker Client initialized - target: cpp-ner-worker
+2025-12-23T10:29:46.298Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ner-client'
+2025-12-23T10:29:46.298Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-0] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'connected' from 'server' to 'java-ocr-client'
+2025-12-23T10:29:46.299Z  INFO 7 --- [deepapp_main] [grpc-default-executor-2] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ner-client' received event 'connected' from 'server'
+2025-12-23T10:29:46.299Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.d.vn.io.workers.BaseWorkerClient       : Worker 'java-ocr-client' received event 'connected' from 'server'
+2025-12-23T10:29:46.300Z  INFO 7 --- [deepapp_main] [grpc-default-executor-2] c.deepapp.vn.io.workers.NerWorkerClient  : NER Worker event: connected - java-ner-client
+2025-12-23T10:29:46.300Z  INFO 7 --- [deepapp_main] [grpc-default-executor-0] c.deepapp.vn.io.workers.OcrWorkerClient  : OCR Worker event: connected - java-ocr-client
+2025-12-23T10:29:46.912Z  INFO 7 --- [deepapp_main] [main] o.s.v.b.OptionalValidatorFactoryBean     : Failed to set up a Bean Validation provider: jakarta.validation.NoProviderFoundException: Unable to create a Configuration, because no Jakarta Validation provider could be found. Add a provider like Hibernate Validator (RI) to your classpath.
+2025-12-23T10:29:47.269Z  INFO 7 --- [deepapp_main] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoints beneath base path '/actuator'
+2025-12-23T10:29:47.322Z  INFO 7 --- [deepapp_main] [main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2025-12-23T10:29:47.331Z  INFO 7 --- [deepapp_main] [main] c.deepapp.vn.io.DeepappMainApplication   : Started DeepappMainApplication in 5.302 seconds (process running for 5.733)
+2025-12-23T10:29:49.822Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-12-23T10:29:49.822Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-12-23T10:29:49.824Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2025-12-23T10:29:50.195Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-1] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 314 ms
+2025-12-23T10:30:35.963Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-8] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=process
+2025-12-23T10:30:35.968Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-8] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'process' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_1
+2025-12-23T10:30:36.008Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:30:36.008Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:30:36.008Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:30:36.008Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:30:36.008Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: process
+2025-12-23T10:30:36.009Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:30:36.009Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:30:36.009Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:30:36.010Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: process
+2025-12-23T10:30:36.010Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:30:36.010Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"processed","data":"{"USER":"ANONYMOUS","EMAIL":"DEMO@DEEPAPP.IO","DATA":""}","timestamp":1766485836}
+2025-12-23T10:30:36.011Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:30:36.050Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:30:39.451Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-2] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=process
+2025-12-23T10:30:39.452Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'process' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_2
+2025-12-23T10:30:39.491Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: process
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: process
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"processed","data":"{"USER":"ANONYMOUS","EMAIL":"DEMO@DEEPAPP.IO","DATA":""}","timestamp":1766485839}
+2025-12-23T10:30:39.492Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:30:39.531Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:30:53.116Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=process
+2025-12-23T10:30:53.118Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'process' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_3
+2025-12-23T10:30:53.158Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:30:53.158Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:30:53.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:30:53.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:30:53.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: process
+2025-12-23T10:30:53.160Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:30:53.161Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:30:53.161Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:30:53.162Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: process
+2025-12-23T10:30:53.162Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:30:53.163Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"processed","data":"{"USER":"ANONYMOUS","EMAIL":"DEMO@DEEPAPP.IO","DATA":""}","timestamp":1766485853}
+2025-12-23T10:30:53.164Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:30:53.201Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:31:12.079Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-6] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=process
+2025-12-23T10:31:12.081Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-6] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'process' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_4
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: process
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: process
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: {"user":"Anonymous","email":"demo@deepapp.io","data":""}
+2025-12-23T10:31:12.121Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"processed","data":"{"USER":"ANONYMOUS","EMAIL":"DEMO@DEEPAPP.IO","DATA":""}","timestamp":1766485872}
+2025-12-23T10:31:12.122Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:31:12.159Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:31:36.119Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=string
+2025-12-23T10:31:36.120Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-3] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'string' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_5
+2025-12-23T10:31:36.158Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: string
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: hehee
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: string
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: hehee
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"unknown_event","data":"Event type 'string' not supported","timestamp":1766485896}
+2025-12-23T10:31:36.159Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:31:36.199Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:31:43.485Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=call
+2025-12-23T10:31:43.487Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-4] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'call' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_6
+2025-12-23T10:31:43.525Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:31:43.525Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: call
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: hehee
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: call
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: hehee
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"unknown_event","data":"Event type 'call' not supported","timestamp":1766485903}
+2025-12-23T10:31:43.526Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:31:43.565Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'
+2025-12-23T10:32:02.252Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-10] c.deepapp.vn.io.workers.CppWorkerClient  : Calling C++ worker: taskId=AAA0_0100_W, eventType=echo
+2025-12-23T10:32:02.253Z  INFO 7 --- [deepapp_main] [http-nio-8080-exec-10] c.d.v.i.i.grpc.BaseGrpcClientService     : Sent event 'echo' from 'java-cpp-client' to 'cpp-worker' with requestId=java-cpp-client_req_7
+2025-12-23T10:32:02.292Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] 
+2025-12-23T10:32:02.292Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Received event:
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   From: java-cpp-client
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   To: cpp-worker
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Type: echo
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: hehee
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   TaskId (from metadata): AAA0_0100_W
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [AAA0_0100_Worker] Processing task:
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Event Type: echo
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Payload: hehee
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker]   Result: {"worker":"AAA0_0100_W","status":"success","data":"hehee","timestamp":1766485922}
+2025-12-23T10:32:02.293Z  INFO 7 --- [deepapp_main] [cpp-worker-output] c.d.v.i.i.cpp.CppWorkerManager           : [C++ Worker] [GrpcWorkerClient] Response sent!
+2025-12-23T10:32:02.332Z DEBUG 7 --- [deepapp_main] [grpc-default-executor-2] c.d.v.i.i.grpc.BaseGrpcClientService     : Received event 'response' from 'cpp-worker' to 'java-cpp-client'

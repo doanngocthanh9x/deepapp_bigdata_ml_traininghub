@@ -1,6 +1,10 @@
 package com.deepapp.vn.io.modules.demo;
 
 import com.deepapp.vn.io.workers.CppWorkerClient;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/demo")
+@Tag(name = "Demo", description = "Demo endpoints for testing Java ↔ C++ communication")
 public class DemoController {
 
     private static final Logger logger = LoggerFactory.getLogger(DemoController.class);
@@ -22,6 +27,8 @@ public class DemoController {
     @Autowired
     private CppWorkerClient cppWorkerClient;
 
+    @Operation(summary = "Health check", description = "Check if demo module is running")
+    @ApiResponse(responseCode = "200", description = "Module is healthy")
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
         Map<String, String> response = new HashMap<>();
@@ -34,8 +41,15 @@ public class DemoController {
      * Demo: Java calls C++ worker, processes result, and returns to client
      * Flow: Client -> Java -> C++ -> Java -> Client
      */
+    @Operation(
+        summary = "Calculate with C++ worker",
+        description = "Performs calculation using C++ worker via gRPC"
+    )
+    @ApiResponse(responseCode = "200", description = "Calculation successful")
     @PostMapping("/calculate")
-    public ResponseEntity<Map<String, Object>> calculate(@RequestBody CalculateRequest request) {
+    public ResponseEntity<Map<String, Object>> calculate(
+        @Parameter(description = "Calculation request with operation and values")
+        @RequestBody CalculateRequest request) {
         try {
             logger.info("=== Starting Java + C++ Integration Demo ===");
             logger.info("Input from client: {}", request.getValue());
