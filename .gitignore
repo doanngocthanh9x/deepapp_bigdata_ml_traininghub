@@ -1,13 +1,67 @@
-HELP.md
+# Build artifacts
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+build/
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+*.war
+*.ear
+*.class
 
-### STS ###
-.apt_generated
+# C++ build files
+*.o
+*.so
+*.dylib
+*.exe
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+.project
 .classpath
+.settings/
 .factorypath
+.apt_generated
+*.swp
+*.swo
+*~
+
+# Logs
+logs/
+*.log
+log/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary files
+*.tmp
+*.bak
+*.cache
+*.pid
+
+# Environment variables
+.env
+
+# Protobuf generated (regenerated on build)
+target/generated-sources/
+target/generated-test-sources/
+
+# Maven wrapper jar
+.mvn/wrapper/maven-wrapper.jar
+
+# Help markdown
+HELP.md
 .project
 .settings
 .springBeans
