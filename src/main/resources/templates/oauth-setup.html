@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OAuth2 Setup Required</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #333; margin-bottom: 1rem; }
+        h2 { color: #555; margin: 2rem 0 1rem; font-size: 1.3rem; }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 2px solid #0dcaf0;
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        .step {
+            background: #f8f9fa;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+        }
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .button {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+            font-weight: 600;
+        }
+        .button:hover { background: #5568d3; }
+        .success { background: #d4edda; border-color: #28a745; }
+        ul { margin-left: 2rem; line-height: 1.8; }
+        a { color: #667eea; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 OAuth2 Setup Required</h1>
+        
+        <div class="warning">
+            <strong>⚠️ OAuth2 Not Configured</strong><br>
+            You're seeing this because Google/GitHub OAuth credentials are not set up yet.
+        </div>
+        
+        <div class="info">
+            <strong>✅ Good News:</strong> All API endpoints work WITHOUT OAuth2!<br>
+            You can test the system directly using the API.
+        </div>
+
+        <h2>📋 Quick Test (No OAuth Required)</h2>
+        <pre>curl http://localhost:8080/AA/A0/AAA0_0100</pre>
+        <pre>curl -X POST http://localhost:8080/AA/A0/AAA0_0100 \
+  -H "Content-Type: application/json" \
+  -d '{"eventType":"process","data":"test data"}'</pre>
+
+        <h2>🚀 Setup Google OAuth (Optional)</h2>
+        
+        <div class="step">
+            <strong>Step 1:</strong> Go to <a href="https://console.cloud.google.com/apis/credentials" target="_blank">Google Cloud Console</a>
+        </div>
+        
+        <div class="step">
+            <strong>Step 2:</strong> Create OAuth Client ID
+            <ul>
+                <li>Application type: <strong>Web application</strong></li>
+                <li>Authorized redirect URI: <code>http://localhost:8080/login/oauth2/code/google</code></li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <strong>Step 3:</strong> Copy credentials and restart Docker:
+            <pre>docker-compose down
+docker-compose up -d \
+  -e GOOGLE_CLIENT_ID="your-real-client-id" \
+  -e GOOGLE_CLIENT_SECRET="your-real-secret"</pre>
+        </div>
+
+        <h2>🐙 Setup GitHub OAuth (Optional)</h2>
+        
+        <div class="step">
+            <strong>Step 1:</strong> Go to <a href="https://github.com/settings/developers" target="_blank">GitHub Developer Settings</a>
+        </div>
+        
+        <div class="step">
+            <strong>Step 2:</strong> New OAuth App
+            <ul>
+                <li>Homepage URL: <code>http://localhost:8080</code></li>
+                <li>Authorization callback URL: <code>http://localhost:8080/login/oauth2/code/github</code></li>
+            </ul>
+        </div>
+        
+        <div class="step">
+            <strong>Step 3:</strong> Set environment variables:
+            <pre>export GITHUB_CLIENT_ID="your-client-id"
+export GITHUB_CLIENT_SECRET="your-secret"
+docker-compose restart</pre>
+        </div>
+
+        <h2>🎯 Alternative: Update docker-compose.yml</h2>
+        <pre>environment:
+  - GOOGLE_CLIENT_ID=your-real-client-id
+  - GOOGLE_CLIENT_SECRET=your-real-secret
+  - GITHUB_CLIENT_ID=your-github-client-id
+  - GITHUB_CLIENT_SECRET=your-github-secret</pre>
+
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="/AA/A0/AAA0_0100" class="button">Skip OAuth - Test API Now</a>
+            <a href="/actuator/health" class="button">System Health Check</a>
+        </div>
+        
+        <div class="success" style="margin-top: 2rem;">
+            <strong>💡 Pro Tip:</strong> The system works perfectly without OAuth2!<br>
+            OAuth is only needed if you want user authentication via Google/GitHub.
+        </div>
+    </div>
+</body>
+</html>

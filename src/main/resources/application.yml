@@ -1,0 +1,74 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: deepapp-main
+  # Spring Security OAuth2
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:your-google-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:your-google-client-secret}
+            scope:
+              - email
+              - profile
+          github:
+            client-id: ${GITHUB_CLIENT_ID:your-github-client-id}
+            client-secret: ${GITHUB_CLIENT_SECRET:your-github-client-secret}
+            scope:
+              - user:email
+              - read:user
+  thymeleaf:
+    enabled: true
+    cache: false
+
+# C++ Worker Lifecycle Management
+cpp:
+  worker:
+    autoStart: true        # Auto-start C++ worker on Spring Boot startup
+    autoBuild: true        # Auto-compile C++ before starting
+    buildDir: build        # C++ build directory
+    executable: deepapp_worker_main  # C++ worker executable name
+
+# Worker configurations - easily scalable
+workers:
+  # C++ Workers (Local)
+  cpp:
+    host: 72.60.111.138
+    port: 50051
+    targetId: cpp-worker
+    enabled: true
+
+  # OCR Worker Configuration
+  ocr:
+    host: 72.60.111.138
+    port: 50051
+    targetId: cpp-ocr-worker
+    enabled: true
+  
+  # NER Worker Configuration
+  ner:
+    host: 72.60.111.138
+    port: 50051
+    targetId: cpp-ner-worker
+    enabled: true
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    com.deepapp.vn.io: DEBUG
+    com.deepapp.vn.io.infrastructure.grpc: DEBUG
+    com.deepapp.vn.io.workers: DEBUG
+    com.deepapp.vn.io.modules: DEBUG
+
+# To add a new worker, simply add a new section here:
+# workers:
+#   yolo:
+#     host: localhost
+#     port: 50054
+#     targetId: cpp-yolo-worker
+#     enabled: true

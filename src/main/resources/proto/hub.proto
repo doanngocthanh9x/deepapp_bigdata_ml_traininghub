@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package hub;
+
+option java_package = "com.deepapp.hub";
+option java_outer_classname = "HubProtos";
+option java_multiple_files = true;
+option go_package = "github.com/k23doanngocthanh/go_grpc_hub/proto/hub";
+
+// EventChunk represents a message chunk that can be routed between clients
+message EventChunk {
+  // Sender's client ID
+  string sender_id = 1;
+  
+  // Target client ID (if empty, may be broadcast or ignored)
+  string target_id = 2;
+  
+  // Event type (e.g., "message", "notification", "command")
+  string event_type = 3;
+  
+  // Actual payload data
+  bytes payload = 4;
+  
+  // Timestamp of the event (Unix epoch milliseconds)
+  int64 timestamp = 5;
+  
+  // Optional metadata (for extensibility)
+  map<string, string> metadata = 6;
+}
+
+// DataStream service handles bidirectional event streaming
+service DataStream {
+  // Bidirectional streaming for real-time event routing
+  // Clients connect and send/receive EventChunks
+  rpc StreamEvents(stream EventChunk) returns (stream EventChunk);
+}
+
+// FileChunk represents a chunk of file data for streaming
+message FileChunk {
+  // Original filename provided by client
+  string filename = 1;
+  
+  // Chunk data (binary content)
+  bytes data = 2;
+  
+  // Total file size (sent in first chunk)
+  int64 total_size = 3;
+  
+  // Chunk sequence number (for ordering)
+  int32 chunk_number = 4;
+  
+  // Optional metadata
+  map<string, string> metadata = 5;
+}
+
+// UploadResponse sent after successful upload
+message UploadResponse {
+  // Server-generated unique file ID (UUID)
+  string file_id = 1;
+  
+  // Original filename
+  string original_filename = 2;
+  
+  // Total bytes received
+  int64 size = 3;
+  
+  // Upload timestamp
+  int64 timestamp = 4;
+  
+  // Success status
+  bool success = 5;
+  
+  // Optional message
+  string message = 6;
+}
+
+// DownloadRequest to retrieve a file
+message DownloadRequest {
+  // Server-generated file ID
+  string file_id = 1;
+}
+
+// DeleteRequest to remove a file
+message DeleteRequest {
+  // Server-generated file ID
+  string file_id = 1;
+}
+
+// DeleteResponse confirms deletion
+message DeleteResponse {
+  // Success status
+  bool success = 1;
+  
+  // Optional message
+  string message = 2;
+}
+
+// FileService handles file upload, download, and deletion
+service FileService {
+  // Upload a file via streaming (client -> server)
+  rpc Upload(stream FileChunk) returns (UploadResponse);
+  
+  // Download a file via streaming (server -> client)
+  rpc Download(DownloadRequest) returns (stream FileChunk);
+  
+  // Delete a file (unary call)
+  rpc Delete(DeleteRequest) returns (DeleteResponse);
+}

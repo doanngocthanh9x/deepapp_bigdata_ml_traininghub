@@ -1,0 +1,37 @@
+services:
+  deepapp-main:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: deepapp-main
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx2g
+      - SPRING_PROFILES_ACTIVE=docker
+      # gRPC server address (external hub)
+      - GRPC_SERVER=72.60.111.138:50051
+      - CPP_CLIENT_ID=cpp-worker
+    volumes:
+      # Mount logs directory
+      - ./logs:/app/logs
+      # Optional: mount config for easy updates
+      - ./src/main/resources/application-docker.yml:/app/config/application-docker.yml:ro
+    restart: unless-stopped
+    networks:
+      - deepapp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  deepapp-network:
+    driver: bridge

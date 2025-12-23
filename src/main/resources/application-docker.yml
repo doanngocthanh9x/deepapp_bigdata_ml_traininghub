@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: deepapp_main
+
+server:
+  port: 8080
+  shutdown: graceful
+
+# C++ Worker Configuration
+cpp:
+  worker:
+    autoStart: true
+    autoBuild: false  # Already built in Docker image
+    buildDir: build
+    executable: deepapp_worker_main
+
+# gRPC Workers Configuration
+workers:
+  cpp:
+    host: ${GRPC_HOST:72.60.111.138}
+    port: ${GRPC_PORT:50051}
+    targetId: cpp-worker
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.deepapp: DEBUG
+    io.grpc: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+  file:
+    name: /app/logs/deepapp.log
+    max-size: 10MB
+    max-history: 7
+
+# Spring Boot Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

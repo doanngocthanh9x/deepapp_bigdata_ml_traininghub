@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/grpc_test_client.dir/main.cpp.o CMakeFiles/grpc_test_client.dir/hub.pb.cc.o CMakeFiles/grpc_test_client.dir/hub.grpc.pb.cc.o -o grpc_test_client  -lgrpc++ -lgrpc -lgpr -lprotobuf 
