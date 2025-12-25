@@ -506,15 +506,39 @@
             progressSection.style.display = 'block';
             processBtn.disabled = true;
 
-            const formData = new FormData();
-            formData.append('file', selectedFile);
-            formData.append('startPage', document.getElementById('startPage').value);
-            formData.append('maxPages', document.getElementById('maxPages').value);
-
             try {
-                const response = await fetch('/ZZ/A0/ZZA0_0100/stream', {
+                // First, upload the file and get file path
+                addStatus('📤 Uploading file...', 'metadata');
+                
+                const uploadFormData = new FormData();
+                uploadFormData.append('file', selectedFile);
+                
+                const uploadResponse = await fetch('/ZZ/A0/ZZA0_0100/upload', {
                     method: 'POST',
-                    body: formData
+                    body: uploadFormData
+                });
+                
+                if (!uploadResponse.ok) {
+                    throw new Error(`Upload failed: ${uploadResponse.status} ${uploadResponse.statusText}`);
+                }
+                
+                const uploadResult = await uploadResponse.json();
+                if (!uploadResult.success) {
+                    throw new Error(`Upload failed: ${uploadResult.error}`);
+                }
+                
+                const filePath = uploadResult.filePath;
+                addStatus(`✅ File uploaded: ${uploadResult.filename}`, 'metadata');
+                
+                // Now stream with file path instead of file data
+                const streamFormData = new FormData();
+                streamFormData.append('filePath', filePath);
+                streamFormData.append('startPage', document.getElementById('startPage').value);
+                streamFormData.append('maxPages', document.getElementById('maxPages').value);
+
+                const response = await fetch('/ZZ/A0/ZZA0_0100/stream-path', {
+                    method: 'POST',
+                    body: streamFormData
                 });
 
                 const reader = response.body.getReader();

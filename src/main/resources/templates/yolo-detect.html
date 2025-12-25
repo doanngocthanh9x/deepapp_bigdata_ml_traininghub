@@ -18,9 +18,6 @@
         .confidence-medium { color: #ffc107; }
         .confidence-low { color: #dc3545; }
         .worker-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             padding: 5px 10px;
             border-radius: 15px;
             font-size: 0.8em;
@@ -41,8 +38,10 @@
         }
         .bounding-box {
             position: absolute;
-            border: 2px solid #ff0000;
-            background-color: rgba(255, 0, 0, 0.1);
+            border: 3px solid #ff0000;
+            background-color: rgba(255, 0, 0, 0.15);
+            box-sizing: border-box;
+            pointer-events: none;
         }
         .model-info {
             background-color: #e9ecef;
@@ -291,7 +290,7 @@
     </div>
 
     <!-- Processing Modal -->
-    <div class="modal fade" id="processingModal" tabindex="-1">
+    <div class="modal fade" id="processingModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body text-center">
@@ -300,7 +299,6 @@
                     </div>
                     <h5 class="mt-3">Processing Image</h5>
                     <p class="text-muted">Running YOLO detection...</p>
-                    <div id="processingStatus"></div>
                 </div>
             </div>
         </div>
@@ -320,6 +318,7 @@
                     augment: false,
                     halfPrecision: false
                 };
+                this.modalInstance = null;
                 this.setupEventListeners();
                 this.updateModelInfo();
             }
@@ -431,7 +430,11 @@
                 if (file && file.type.startsWith('image/')) {
                     const reader = new FileReader();
                     reader.onload = (e) => {
-                        document.getElementById('previewImg').src = e.target.result;
+                        const img = document.getElementById('previewImg');
+                        img.onload = () => {
+                            console.log('Image loaded:', img.naturalWidth, 'x', img.naturalHeight);
+                        };
+                        img.src = e.target.result;
                         document.getElementById('imagePreview').style.display = 'block';
                         this.clearBoundingBoxes();
                     };
@@ -446,8 +449,10 @@
                     return;
                 }
 
-                const modal = new bootstrap.Modal(document.getElementById('processingModal'));
-                modal.show();
+                // Show modal
+                const modalElement = document.getElementById('processingModal');
+                this.modalInstance = new bootstrap.Modal(modalElement);
+                this.modalInstance.show();
 
                 try {
                     const formData = new FormData();
@@ -463,23 +468,57 @@
                     formData.append('augment', this.params.augment);
                     formData.append('half_precision', this.params.halfPrecision);
 
+                    console.log('Sending request to /api/yolo/detect...');
+
                     const response = await fetch('/api/yolo/detect', {
                         method: 'POST',
                         body: formData
                     });
+
+                    console.log('Response status:', response.status);
 
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
 
                     const result = await response.json();
-                    this.displayResults(result);
+                    console.log('Detection result:', result);
+                    
+                    // FIXED: Hide modal properly with backdrop cleanup
+                    this.hideModal();
+                    
+                    // Wait for modal to hide, then display results
+                    setTimeout(() => {
+                        this.displayResults(result);
+                    }, 500);
 
                 } catch (error) {
                     console.error('Detection error:', error);
-                    this.showError('Detection failed: ' + error.message);
-                } finally {
-                    modal.hide();
+                    
+                    // Hide modal on error too
+                    this.hideModal();
+                    
+                    setTimeout(() => {
+                        this.showError('Detection failed: ' + error.message);
+                    }, 500);
+                }
+            }
+
+            // FIXED: New method to properly hide modal
+            hideModal() {
+                if (this.modalInstance) {
+                    this.modalInstance.hide();
+                    
+                    // Force cleanup after hide animation
+                    setTimeout(() => {
+                        // Remove all backdrops
+                        document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                        
+                        // Reset body styles
+                        document.body.classList.remove('modal-open');
+                        document.body.style.removeProperty('overflow');
+                        document.body.style.removeProperty('padding-right');
+                    }, 150);
                 }
             }
 
@@ -491,63 +530,164 @@
                     return;
                 }
 
+                // Handle both snake_case and camelCase
+                const processingTime = result.processingTime || result.processing_time || 'N/A';
+                const detectionCount = result.count || (result.detections ? result.detections.length : 0);
+
                 let html = `
                     <div class="detection-result">
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <h6 class="mb-0">Detection Results</h6>
+                            <h6 class="mb-0">
+                                <i class="fas fa-check-circle text-success"></i> 
+                                ${detectionCount} Object${detectionCount !== 1 ? 's' : ''}
+                            </h6>
                             <span class="worker-badge worker-${result.worker || 'java'}">
-                                ${result.worker || 'java'}
+                                ${(result.worker || 'java').toUpperCase()}
                             </span>
                         </div>
-                        <div class="processing-time mb-2">
-                            Processing Time: ${result.processing_time || 'N/A'}s
+                        <div class="processing-time mb-3">
+                            <i class="fas fa-clock"></i> ${processingTime}
                         </div>
                 `;
 
                 if (result.detections && result.detections.length > 0) {
                     html += '<div class="detections-list">';
                     result.detections.forEach((detection, index) => {
-                        const confidenceClass = this.getConfidenceClass(detection.confidence);
+                        const confidence = detection.confidence || detection.score || 0;
+                        const confidenceClass = this.getConfidenceClass(confidence);
+                        const className = detection.class || detection.label || detection.class_name || 'Object';
+                        
+                        // Get bbox - handle object format from API
+                        let bboxArr = [];
+                        if (detection.bbox) {
+                            if (Array.isArray(detection.bbox)) {
+                                bboxArr = detection.bbox;
+                            } else if (typeof detection.bbox === 'object') {
+                                // API returns {x, y, width, height}
+                                const {x, y, width, height} = detection.bbox;
+                                bboxArr = [x, y, width, height];
+                            }
+                        }
+                        const bboxStr = bboxArr.length > 0 ? bboxArr.map(v => Math.round(v)).join(', ') : 'N/A';
+                        
                         html += `
-                            <div class="detection-item mb-2 p-2 border rounded">
-                                <div class="d-flex justify-content-between">
-                                    <strong>${detection.class || detection.label || 'Object'}</strong>
-                                    <span class="confidence-${confidenceClass}">
-                                        ${(detection.confidence * 100).toFixed(1)}%
+                            <div class="detection-item mb-2 p-2 border rounded bg-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong><i class="fas fa-tag"></i> ${className}</strong>
+                                    <span class="badge bg-${confidenceClass === 'high' ? 'success' : confidenceClass === 'medium' ? 'warning' : 'danger'}">
+                                        ${(confidence * 100).toFixed(1)}%
                                     </span>
                                 </div>
-                                ${detection.bbox ? `<small class="text-muted">Box: [${detection.bbox.join(', ')}]</small>` : ''}
+                                ${bboxArr.length > 0 ? `<small class="text-muted"><i class="fas fa-square"></i> [${bboxStr}]</small>` : ''}
                             </div>
                         `;
                     });
                     html += '</div>';
 
-                    this.drawBoundingBoxes(result.detections);
+                    // Draw bounding boxes on image
+                    setTimeout(() => {
+                        this.drawBoundingBoxes(result.detections);
+                    }, 100);
                 } else {
-                    html += '<p class="text-muted">No objects detected.</p>';
+                    html += '<div class="alert alert-info mb-0"><i class="fas fa-info-circle"></i> No objects detected.</div>';
                 }
 
                 html += '</div>';
                 container.innerHTML = html;
             }
 
+            // FIXED: Corrected bounding box drawing
             drawBoundingBoxes(detections) {
                 const container = document.getElementById('boundingBoxes');
+                const img = document.getElementById('previewImg');
                 container.innerHTML = '';
 
-                detections.forEach(detection => {
-                    if (detection.bbox && detection.bbox.length >= 4) {
-                        const [x, y, width, height] = detection.bbox;
+                if (!img.complete || img.naturalWidth === 0) {
+                    console.warn('Image not loaded yet, retrying...');
+                    setTimeout(() => this.drawBoundingBoxes(detections), 200);
+                    return;
+                }
+
+                // Get the actual displayed dimensions and position of the image
+                const imgRect = img.getBoundingClientRect();
+                const containerRect = img.parentElement.getBoundingClientRect();
+                
+                // Calculate offset from container
+                const offsetX = imgRect.left - containerRect.left;
+                const offsetY = imgRect.top - containerRect.top;
+
+                // Calculate scale factors
+                const scaleX = img.width / img.naturalWidth;
+                const scaleY = img.height / img.naturalHeight;
+
+                console.log('Drawing bounding boxes:', {
+                    display: `${img.width}x${img.height}`,
+                    natural: `${img.naturalWidth}x${img.naturalHeight}`,
+                    scale: `${scaleX.toFixed(3)}x${scaleY.toFixed(3)}`,
+                    offset: `${offsetX.toFixed(1)}, ${offsetY.toFixed(1)}`,
+                    detections: detections.length
+                });
+
+                const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+                
+                detections.forEach((detection, index) => {
+                    // Handle bbox format from API: {x, y, width, height}
+                    let x, y, width, height;
+                    
+                    if (detection.bbox) {
+                        if (Array.isArray(detection.bbox) && detection.bbox.length >= 4) {
+                            [x, y, width, height] = detection.bbox;
+                        } else if (typeof detection.bbox === 'object') {
+                            ({x, y, width, height} = detection.bbox);
+                        }
+                    }
+
+                    if (x !== undefined && y !== undefined && width !== undefined && height !== undefined) {
+                        // Scale coordinates to displayed image size
+                        const displayX = x * scaleX + offsetX;
+                        const displayY = y * scaleY + offsetY;
+                        const displayW = width * scaleX;
+                        const displayH = height * scaleY;
+                        
+                        console.log(`Box ${index} [${detection.class}]:`, {
+                            original: `x=${x}, y=${y}, w=${width}, h=${height}`,
+                            scaled: `x=${displayX.toFixed(1)}, y=${displayY.toFixed(1)}, w=${displayW.toFixed(1)}, h=${displayH.toFixed(1)}`
+                        });
+                        
                         const box = document.createElement('div');
                         box.className = 'bounding-box';
-                        box.style.left = x + 'px';
-                        box.style.top = y + 'px';
-                        box.style.width = width + 'px';
-                        box.style.height = height + 'px';
-                        box.title = `${detection.class || detection.label} (${(detection.confidence * 100).toFixed(1)}%)`;
+                        box.style.left = displayX + 'px';
+                        box.style.top = displayY + 'px';
+                        box.style.width = displayW + 'px';
+                        box.style.height = displayH + 'px';
+                        box.style.borderColor = colors[index % colors.length];
+                        box.style.backgroundColor = colors[index % colors.length] + '20';
+                        
+                        const confidence = detection.confidence || detection.score || 0;
+                        const className = detection.class || detection.label || detection.class_name || 'Object';
+                        box.title = `${className} (${(confidence * 100).toFixed(1)}%)`;
+                        
+                        // Add label
+                        const label = document.createElement('div');
+                        label.style.position = 'absolute';
+                        label.style.top = '-22px';
+                        label.style.left = '0';
+                        label.style.backgroundColor = colors[index % colors.length];
+                        label.style.color = 'white';
+                        label.style.padding = '2px 6px';
+                        label.style.fontSize = '11px';
+                        label.style.fontWeight = 'bold';
+                        label.style.whiteSpace = 'nowrap';
+                        label.textContent = `${className} ${(confidence * 100).toFixed(0)}%`;
+                        box.appendChild(label);
+                        
                         container.appendChild(box);
+                    } else {
+                        console.warn('Invalid bbox for detection', index, detection);
                     }
                 });
+
+                console.log(`✅ Drew ${container.children.length} bounding boxes`);
             }
 
             clearBoundingBoxes() {
@@ -570,7 +710,7 @@
 
             showError(message) {
                 const container = document.getElementById('resultsContainer');
-                container.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+                container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i> ${message}</div>`;
             }
 
             updateModelInfo() {

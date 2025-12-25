@@ -4,6 +4,7 @@ import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.model.DocumentRequest;
 import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.service.DocumentProcessingService;
 import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.service.DocumentStreamRegistry;
 import com.deepapp.vn.io.storage.service.DocumentUploadService;
+import com.deepapp.vn.io.service.TempFileCleanupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +35,9 @@ public class ZZA0_0100Controller {
     
     @Autowired
     private DocumentUploadService documentUploadService;
+    
+    @Autowired
+    private TempFileCleanupService tempFileCleanupService;
     
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -323,6 +327,151 @@ public class ZZA0_0100Controller {
     }
 
     /**
+     * Upload file and return file path (for path-based processing)
+     */
+    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            // Validate file
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "File is empty"
+                ));
+            }
+
+            String filename = file.getOriginalFilename();
+            String fileExtension = getFileExtension(filename);
+
+            // Validate file type
+            if (!isValidFileType(fileExtension)) {
+                return ResponseEntity.badRequest().body(Map.of(
+                    "success", false,
+                    "error", "Unsupported file format. Only TIFF, TIF, PDF are supported",
+                    "filename", filename
+                ));
+            }
+
+            // Save file to temporary location and get path
+            String filePath = documentUploadService.saveFileToTemp(file);
+
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "filename", filename,
+                "filePath", filePath,
+                "size", file.getSize(),
+                "type", file.getContentType()
+            ));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "error", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Stream document pages using file path (instead of file upload)
+     */
+    @PostMapping(value = "/stream-path", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public SseEmitter streamDocumentPagesByPath(
+            @RequestParam("filePath") String filePath,
+            @RequestParam(value = "startPage", defaultValue = "1") int startPage,
+            @RequestParam(value = "maxPages", defaultValue = "10") int maxPages) {
+
+        // Create SSE emitter with 5 minute timeout
+        SseEmitter emitter = new SseEmitter(300_000L);
+
+        executorService.execute(() -> {
+            try {
+                // Process document from file path
+                documentProcessingService.streamDocumentPagesByPath(
+                    filePath, startPage, maxPages, emitter
+                );
+
+                emitter.complete();
+
+            } catch (Exception e) {
+                try {
+                    emitter.send(SseEmitter.event()
+                        .name("error")
+                        .data(Map.of(
+                            "error", "Document streaming failed: " + e.getMessage()
+                        )));
+                } catch (Exception ignored) {}
+                emitter.completeWithError(e);
+            }
+        });
+
+        return emitter;
+    }
+
+    /**
+     * Get temp directory statistics
+     */
+    @GetMapping("/temp/stats")
+    public ResponseEntity<Map<String, Object>> getTempStats() {
+        try {
+            var stats = tempFileCleanupService.getTempDirectoryStats();
+            var directoryInfo = documentUploadService.getTempDirectoryInfo();
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "stats", Map.of(
+                    "documents", Map.of(
+                        "path", stats.getDocumentsTemp().getPath(),
+                        "fileCount", stats.getDocumentsTemp().getFileCount(),
+                        "totalSize", stats.getDocumentsTemp().getTotalSizeFormatted()
+                    ),
+                    "images", Map.of(
+                        "path", stats.getImagesTemp().getPath(),
+                        "fileCount", stats.getImagesTemp().getFileCount(),
+                        "totalSize", stats.getImagesTemp().getTotalSizeFormatted()
+                    ),
+                    "pages", Map.of(
+                        "path", stats.getPagesTemp().getPath(),
+                        "fileCount", stats.getPagesTemp().getFileCount(),
+                        "totalSize", stats.getPagesTemp().getTotalSizeFormatted()
+                    ),
+                    "total", Map.of(
+                        "fileCount", stats.getTotalFiles(),
+                        "totalSize", formatBytes(stats.getTotalSize())
+                    )
+                ),
+                "directories", directoryInfo
+            ));
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "error", e.getMessage()
+            ));
+        }
+    }
+
+    /**
+     * Manually trigger temp file cleanup
+     */
+    @PostMapping("/temp/cleanup")
+    public ResponseEntity<Map<String, Object>> cleanupTempFiles() {
+        try {
+            tempFileCleanupService.cleanupTempFiles();
+            
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Temp file cleanup completed"
+            ));
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "success", false,
+                "error", e.getMessage()
+            ));
+        }
+    }
+
+    /**
      * Helper method to extract file extension
      */
     private String getFileExtension(String filename) {
@@ -339,5 +488,15 @@ public class ZZA0_0100Controller {
         return extension.equals("tiff") || 
                extension.equals("tif") || 
                extension.equals("pdf");
+    }
+
+    /**
+     * Helper method to format bytes
+     */
+    private String formatBytes(long bytes) {
+        if (bytes < 1024) return bytes + " B";
+        if (bytes < 1024 * 1024) return String.format("%.1f KB", bytes / 1024.0);
+        if (bytes < 1024 * 1024 * 1024) return String.format("%.1f MB", bytes / (1024.0 * 1024.0));
+        return String.format("%.1f GB", bytes / (1024.0 * 1024.0 * 1024.0));
     }
 }

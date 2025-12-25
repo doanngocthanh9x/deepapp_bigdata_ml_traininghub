@@ -351,4 +351,123 @@ public class DocumentProcessingService {
 
         return response;
     }
+
+    /**
+     * Stream document pages using file path (instead of file data)
+     */
+    public void streamDocumentPagesByPath(String filePath, int startPage, int maxPages,
+                                         org.springframework.web.servlet.mvc.method.annotation.SseEmitter emitter)
+            throws Exception {
+
+        logger.info("Streaming document pages from path: {} (startPage: {}, maxPages: {})",
+                   filePath, startPage, maxPages);
+
+        // Validate file exists
+        Path path = Paths.get(filePath);
+        if (!Files.exists(path)) {
+            throw new IllegalArgumentException("File not found: " + filePath);
+        }
+
+        // Get document info first
+        Map<String, Object> docInfo = getDocumentInfoByPath(filePath);
+        int totalPages = ((Number) docInfo.get("pageCount")).intValue();
+
+        logger.info("Document has {} total pages", totalPages);
+
+        // Send document info event
+        emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+            .name("document_info")
+            .data(Map.of(
+                "filePath", filePath,
+                "totalPages", totalPages,
+                "startPage", startPage,
+                "maxPages", maxPages
+            )));
+
+        // Process pages
+        int endPage = Math.min(startPage + maxPages - 1, totalPages);
+        for (int pageNum = startPage; pageNum <= endPage; pageNum++) {
+            try {
+                logger.info("Processing page {}/{}", pageNum, totalPages);
+
+                // Get page data using file path
+                Map<String, Object> pageData = getPageByPath(filePath, pageNum);
+
+                // Send page data via SSE
+                emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+                    .name("page")
+                    .data(Map.of(
+                        "pageNumber", pageNum,
+                        "totalPages", totalPages,
+                        "pageData", pageData
+                    )));
+
+            } catch (Exception e) {
+                logger.error("Failed to process page {}: {}", pageNum, e.getMessage());
+
+                // Send error event for this page
+                emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+                    .name("error")
+                    .data(Map.of(
+                        "pageNumber", pageNum,
+                        "error", e.getMessage()
+                    )));
+            }
+        }
+
+        // Send completion event
+        emitter.send(org.springframework.web.servlet.mvc.method.annotation.SseEmitter.event()
+            .name("complete")
+            .data(Map.of(
+                "processedPages", (endPage - startPage + 1),
+                "totalPages", totalPages
+            )));
+    }
+
+    /**
+     * Get document info using file path
+     */
+    private Map<String, Object> getDocumentInfoByPath(String filePath) throws Exception {
+        Map<String, Object> request = new HashMap<>();
+        request.put("file_path", filePath);
+        request.put("action", "get_info");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        CompletableFuture<String> future = cppWorkerClient.callWorker(
+                WORKER_ID,
+                "get_info",
+                requestJson);
+
+        String responseJson = future.get();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> response = objectMapper.readValue(responseJson, Map.class);
+
+        return response;
+    }
+
+    /**
+     * Get specific page using file path
+     */
+    private Map<String, Object> getPageByPath(String filePath, int pageNumber) throws Exception {
+        Map<String, Object> request = new HashMap<>();
+        request.put("file_path", filePath);
+        request.put("pageNumber", pageNumber);
+        request.put("action", "get_page");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        CompletableFuture<String> future = cppWorkerClient.callWorker(
+                WORKER_ID,
+                "get_page",
+                requestJson);
+
+        String responseJson = future.get();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> response = objectMapper.readValue(responseJson, Map.class);
+
+        return response;
+    }
 }

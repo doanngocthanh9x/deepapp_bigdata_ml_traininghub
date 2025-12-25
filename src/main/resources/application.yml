@@ -91,21 +91,21 @@ document:
 workers:
   # C++ Workers (Local)
   cpp:
-    host: 72.60.111.138
+    host: localhost
     port: 50051
     targetId: cpp-worker
     enabled: true
 
   # Python Workers (Local)
   python:
-    host: 72.60.111.138
+    host: localhost
     port: 50052
     targetId: python-worker
     enabled: true
 
   # OCR Worker Configuration
   ocr:
-    host: 72.60.111.138
+    host: localhost
     port: 50051
     targetId: cpp-ocr-worker
     enabled: true

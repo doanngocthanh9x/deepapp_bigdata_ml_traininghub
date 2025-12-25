@@ -2,6 +2,7 @@ package com.deepapp.vn.io.service;
 
 import com.deepapp.vn.io.workers.CppWorkerClient;
 import com.deepapp.vn.io.model.DetectionResult;
+import com.deepapp.vn.io.utils.ImageProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,8 @@ public class YOLOService {
 
         // Convert image to bytes
         byte[] imageBytes = image.getBytes();
+
+        // Note: Image optimization removed for C++ worker since we now pass file path instead of byte array
 
         DetectionResult result;
         long startTime = System.currentTimeMillis();

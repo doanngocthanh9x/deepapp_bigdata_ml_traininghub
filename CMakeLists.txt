@@ -20,7 +20,8 @@ pkg_check_modules(PNG REQUIRED libpng)
 # Find ONNX Runtime for YOLO models
 find_path(ONNXRUNTIME_INCLUDE_DIR onnxruntime_cxx_api.h PATHS /usr/local/include)
 find_library(ONNXRUNTIME_LIBRARY onnxruntime PATHS /usr/local/lib)
-
+# find_path(ONNXRUNTIME_INCLUDE_DIR onnxruntime_cxx_api.h PATHS /usr/local/include/onnxruntime)
+# find_library(ONNXRUNTIME_LIBRARY NAMES onnxruntime PATHS /usr/local/lib)
 if(NOT ONNXRUNTIME_INCLUDE_DIR OR NOT ONNXRUNTIME_LIBRARY)
     message(FATAL_ERROR "ONNX Runtime not found. Please install ONNX Runtime.")
 else()

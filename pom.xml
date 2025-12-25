@@ -163,6 +163,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<jmxEnabled>false</jmxEnabled>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.xolstice.maven.plugins</groupId>

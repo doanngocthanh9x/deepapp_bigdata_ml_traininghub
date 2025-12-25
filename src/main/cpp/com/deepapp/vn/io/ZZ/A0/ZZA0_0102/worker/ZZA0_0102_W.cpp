@@ -263,14 +263,20 @@ private:
             session_options.SetIntraOpNumThreads(1);
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 
-            // Model path
-            std::string model_path = "/root/deepapp/deepapp_main/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+            // Model path - relative to current working directory
+            std::string model_path = "src/main/resources/models/yolo/giay_ra_vien/best.onnx";
 
             // Check if model file exists
             std::ifstream model_file(model_path);
             if (!model_file.good()) {
-                std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found: " << model_path << std::endl;
-                return;
+                // Try absolute path
+                model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+                std::ifstream abs_model_file(model_path);
+                if (!abs_model_file.good()) {
+                    std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found at: " << model_path << std::endl;
+                    std::cerr << "[ZZA0_0102_Worker] ERROR: Also tried relative path: src/main/resources/models/yolo/giay_ra_vien/best.onnx" << std::endl;
+                    return;
+                }
             }
 
             // Create session
@@ -362,9 +368,10 @@ private:
             std::string base64_data = request["image"];
             std::vector<uint8_t> image_data = decodeBase64(base64_data);
             return cv::imdecode(image_data, cv::IMREAD_COLOR);
-        } else if (request.contains("imagePath") && !request["imagePath"].get<std::string>().empty()) {
+        } else if (request.contains("image_path") && !request["image_path"].get<std::string>().empty()) {
             // Load from file path
-            std::string image_path = request["imagePath"];
+            std::string image_path = request["image_path"];
+            std::cout << "[ZZA0_0102_Worker] Loading image from file: " << image_path << std::endl;
             return cv::imread(image_path, cv::IMREAD_COLOR);
         }
         return cv::Mat();

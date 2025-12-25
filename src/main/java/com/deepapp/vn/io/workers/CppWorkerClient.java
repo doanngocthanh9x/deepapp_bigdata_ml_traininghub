@@ -11,6 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,6 +28,9 @@ public class CppWorkerClient extends BaseWorkerClient {
 
     @Value("${workers.cpp.targetId:cpp-worker}")
     private String cppTargetId;
+    
+    @Value("${cpp.worker.images.path:/tmp/deepapp/images}")
+    private String imagesTempPath;
     
     @Autowired(required = false)
     private DocumentStreamRegistry streamRegistry;
@@ -157,20 +164,29 @@ public class CppWorkerClient extends BaseWorkerClient {
         logger.info("Sending YOLO detection request to C++ worker - Model: {}, Confidence: {}, IOU: {}, MaxDetections: {}, ImgSize: {}, Augment: {}, HalfPrecision: {}", 
                    model, confidence, iou, maxDetections, imgSize, augment, halfPrecision);
 
-        // Create JSON payload
-        Map<String, Object> payload = new HashMap<>();
-        payload.put("image", java.util.Base64.getEncoder().encodeToString(imageBytes));
-        payload.put("model", model);
-        payload.put("confidence", confidence);
-        payload.put("iou", iou);
-        payload.put("max_detections", maxDetections);
-        payload.put("img_size", imgSize);
-        payload.put("augment", augment);
-        payload.put("half_precision", halfPrecision);
+        // Create temporary file for image
+        Path tempDir = Paths.get(imagesTempPath);
+        Files.createDirectories(tempDir);
+        String fileName = "yolo_input_" + System.currentTimeMillis() + "_" + Thread.currentThread().getId() + ".jpg";
+        Path imagePath = tempDir.resolve(fileName);
+        Files.write(imagePath, imageBytes);
 
-        String jsonPayload = objectMapper.writeValueAsString(payload);
+        logger.debug("Saved image to temporary file: {}", imagePath.toString());
 
         try {
+            // Create JSON payload with file path instead of base64
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("image_path", imagePath.toString());
+            payload.put("model", model);
+            payload.put("confidence", confidence);
+            payload.put("iou", iou);
+            payload.put("max_detections", maxDetections);
+            payload.put("img_size", imgSize);
+            payload.put("augment", augment);
+            payload.put("half_precision", halfPrecision);
+
+            String jsonPayload = objectMapper.writeValueAsString(payload);
+
             // Call YOLO detection task
             java.util.concurrent.CompletableFuture<String> future = 
                 callWorker("ZZA0_0102_W", "detect", jsonPayload);
@@ -195,7 +211,7 @@ public class CppWorkerClient extends BaseWorkerClient {
             java.util.List<Map<String, Object>> detectionList = 
                 (java.util.List<Map<String, Object>>) responseData.get("detections");
             
-            if (detectionList != null) {
+            if (detectionList != null && !detectionList.isEmpty()) {
                 java.util.List<Detection> detections = new java.util.ArrayList<>();
                 for (Map<String, Object> det : detectionList) {
                     Detection detection = new Detection();
@@ -241,15 +257,9 @@ public class CppWorkerClient extends BaseWorkerClient {
                 }
                 result.setDetections(detections);
             } else {
-                // Mock detection if no real response
-                Detection detection = new Detection();
-                detection.setClassName("document");
-                detection.setConfidence(0.85f);
-                detection.setX(100);
-                detection.setY(150);
-                detection.setWidth(200);
-                detection.setHeight(100);
-                result.setDetections(java.util.Arrays.asList(detection));
+                // No detections found - return empty list instead of mock data
+                logger.warn("No detections returned from C++ worker - returning empty result");
+                result.setDetections(java.util.Collections.emptyList());
             }
 
             logger.info("YOLO detection completed - Found {} objects", result.getDetections().size());
@@ -258,6 +268,14 @@ public class CppWorkerClient extends BaseWorkerClient {
         } catch (Exception e) {
             logger.error("YOLO detection failed", e);
             throw new RuntimeException("C++ worker detection failed: " + e.getMessage(), e);
+        } finally {
+            // Clean up temporary file
+            try {
+                Files.deleteIfExists(imagePath);
+                logger.debug("Cleaned up temporary image file: {}", imagePath.toString());
+            } catch (Exception e) {
+                logger.warn("Failed to clean up temporary image file: {}", imagePath.toString(), e);
+            }
         }
     }
 

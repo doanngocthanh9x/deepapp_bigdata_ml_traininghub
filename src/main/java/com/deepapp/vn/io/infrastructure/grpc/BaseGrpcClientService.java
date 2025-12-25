@@ -61,7 +61,7 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
                     .keepAliveTimeout(30, TimeUnit.SECONDS)  // Increased timeout
                     .keepAliveWithoutCalls(false)  // Only keepalive during active calls
                     .idleTimeout(Long.MAX_VALUE, TimeUnit.DAYS)  // Disable idle timeout
-                    .maxInboundMessageSize(100 * 1024 * 1024)   // 100MB for receiving messages
+                    .maxInboundMessageSize(200 * 1024 * 1024)   // 200MB for receiving messages
                     .build();
             
             asyncStub = DataStreamGrpc.newStub(channel);

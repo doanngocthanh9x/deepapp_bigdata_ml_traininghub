@@ -41,6 +41,9 @@ public class DocumentUploadService {
     @Value("${document.storage.path:/tmp/deepapp/uploads}")
     private String storagePath;
 
+    @Value("${document.temp.path:/tmp/deepapp/temp}")
+    private String tempPath;
+
     public DocumentUploadService(DocumentRepository documentRepository,
                                 PageRepository pageRepository,
                                 TaskRepository taskRepository,
@@ -411,6 +414,81 @@ public class DocumentUploadService {
         return extension.equalsIgnoreCase("pdf") ||
                extension.equalsIgnoreCase("tiff") ||
                extension.equalsIgnoreCase("tif");
+    }
+
+    /**
+     * Save file to temporary location and return file path (for path-based processing)
+     */
+    public String saveFileToTemp(MultipartFile file) throws IOException {
+        // Validate file first
+        ValidationResult validation = validateFile(file);
+        if (!validation.isValid()) {
+            throw new IllegalArgumentException(validation.getErrorMessage());
+        }
+
+        // Create temp directory for documents
+        Path tempDir = Paths.get(tempPath, "documents");
+        Files.createDirectories(tempDir);
+
+        // Generate unique filename
+        String originalFilename = file.getOriginalFilename();
+        String fileExtension = getFileExtension(originalFilename);
+        String uniqueFilename = UUID.randomUUID().toString() + "." + fileExtension;
+        Path tempFilePath = tempDir.resolve(uniqueFilename);
+
+        // Save file to temp location
+        Files.write(tempFilePath, file.getBytes());
+
+        logger.info("Saved file to temp location: {}", tempFilePath.toString());
+        return tempFilePath.toString();
+    }
+
+    /**
+     * Clean up temporary files older than specified hours
+     */
+    public void cleanupTempFiles(int hoursOld) {
+        try {
+            Path tempDir = Paths.get(tempPath);
+            if (!Files.exists(tempDir)) {
+                return;
+            }
+
+            long cutoffTime = System.currentTimeMillis() - (hoursOld * 60 * 60 * 1000);
+
+            Files.walk(tempDir)
+                .filter(Files::isRegularFile)
+                .filter(path -> {
+                    try {
+                        return Files.getLastModifiedTime(path).toMillis() < cutoffTime;
+                    } catch (IOException e) {
+                        return false;
+                    }
+                })
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                        logger.info("Cleaned up old temp file: {}", path);
+                    } catch (IOException e) {
+                        logger.warn("Failed to delete temp file: {}", path, e);
+                    }
+                });
+
+        } catch (IOException e) {
+            logger.error("Error during temp file cleanup", e);
+        }
+    }
+
+    /**
+     * Get unified temp directory structure info
+     */
+    public Map<String, String> getTempDirectoryInfo() {
+        return Map.of(
+            "temp_base", tempPath,
+            "temp_documents", tempPath + "/documents",
+            "temp_images", tempPath + "/images",
+            "storage_base", storagePath,
+            "pages_output", "/tmp/deepapp/pages"
+        );
     }
 
     /**
