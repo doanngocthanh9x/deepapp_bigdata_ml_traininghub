@@ -12,9 +12,21 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules(GRPC REQUIRED grpc++)
 pkg_check_modules(PROTOBUF REQUIRED protobuf)
 
+# Find Poppler (PDF processing) and TIFF libraries
+pkg_check_modules(POPPLER REQUIRED poppler-cpp)
+pkg_check_modules(TIFF REQUIRED libtiff-4)
+pkg_check_modules(PNG REQUIRED libpng)
+
+# Find SQLite3 for document storage
+find_package(SQLite3 REQUIRED)
+
 # Include directories
 include_directories(${GRPC_INCLUDE_DIRS})
 include_directories(${PROTOBUF_INCLUDE_DIRS})
+include_directories(${POPPLER_INCLUDE_DIRS})
+include_directories(${TIFF_INCLUDE_DIRS})
+include_directories(${PNG_INCLUDE_DIRS})
+include_directories(${SQLite3_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp)
 
 # Generate protobuf files from proto
@@ -48,6 +60,7 @@ include_directories(${PROTO_SRC_DIR})
 # Collect all worker files automatically
 file(GLOB_RECURSE WORKER_SOURCES 
     "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0100/worker/AAA0_0100_W.cpp"
+    "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0101/worker/AAA0_0101_W.cpp"
     "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0200/worker/AAA0_0200_W.cpp"
 )
 
@@ -68,6 +81,8 @@ set(INFRASTRUCTURE_SOURCES
     ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/infrastructure/BaseWorker.cpp
     ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/infrastructure/WorkerRegistry.cpp
     ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/infrastructure/GrpcWorkerClient.cpp
+    ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/document/DocumentProcessor.cpp
+    ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/storage/DocumentStorage.cpp
 )
 
 # Main application
@@ -83,6 +98,10 @@ add_executable(deepapp_worker_main
 target_link_libraries(deepapp_worker_main
     ${GRPC_LIBRARIES}
     ${PROTOBUF_LIBRARIES}
+    ${POPPLER_LIBRARIES}
+    ${TIFF_LIBRARIES}
+    ${PNG_LIBRARIES}
+    SQLite::SQLite3
     pthread
 )
 

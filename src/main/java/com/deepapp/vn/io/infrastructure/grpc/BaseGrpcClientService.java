@@ -29,6 +29,7 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
     protected DataStreamGrpc.DataStreamStub asyncStub;
     protected StreamObserver<EventChunk> requestObserver;
     protected String clientId;
+    protected FileServiceClient fileServiceClient;
     
     // Track pending requests for synchronous communication
     protected final ConcurrentHashMap<String, CompletableFuture<EventChunk>> pendingRequests = new ConcurrentHashMap<>();
@@ -36,6 +37,12 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
 
     private final String serverHost;
     private final int serverPort;
+    
+    // Reconnection management
+    private volatile boolean isShuttingDown = false;
+    private volatile boolean isConnected = false;
+    private static final int MAX_RECONNECT_ATTEMPTS = 5;
+    private static final long RECONNECT_DELAY_MS = 5000;
 
     public BaseGrpcClientService(String clientId, String serverHost, int serverPort) {
         this.clientId = clientId;
@@ -50,12 +57,18 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
             
             channel = ManagedChannelBuilder.forAddress(serverHost, serverPort)
                     .usePlaintext()
+                    .keepAliveTime(10, TimeUnit.MINUTES)  // Increased from 2 to 10 minutes
+                    .keepAliveTimeout(30, TimeUnit.SECONDS)  // Increased timeout
+                    .keepAliveWithoutCalls(false)  // Only keepalive during active calls
+                    .idleTimeout(Long.MAX_VALUE, TimeUnit.DAYS)  // Disable idle timeout
+                    .maxInboundMessageSize(100 * 1024 * 1024)
                     .build();
             
             asyncStub = DataStreamGrpc.newStub(channel);
+            fileServiceClient = new FileServiceClient(channel);
             setupBidirectionalStream();
             
-            logger.info("gRPC client '{}' initialized successfully", clientId);
+            logger.info("gRPC client '{}' initialized with keep-alive and auto-reconnect", clientId);
         } catch (Exception e) {
             logger.error("Failed to initialize gRPC client '{}': {}", clientId, e.getMessage(), e);
             throw new RuntimeException("Failed to initialize gRPC client", e);
@@ -65,6 +78,9 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
     @Override
     public void destroy() throws Exception {
         logger.info("Shutting down gRPC client '{}'", clientId);
+        isShuttingDown = true;
+        isConnected = false;
+        
         if (requestObserver != null) {
             try {
                 requestObserver.onCompleted();
@@ -107,13 +123,25 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
             @Override
             public void onError(Throwable t) {
                 logger.error("gRPC stream error for client '{}': {}", clientId, t.getMessage(), t);
+                isConnected = false;
                 handleStreamError(t);
+                
+                // Auto-reconnect if not shutting down
+                if (!isShuttingDown) {
+                    scheduleReconnect();
+                }
             }
 
             @Override
             public void onCompleted() {
                 logger.info("gRPC stream completed for client '{}'", clientId);
+                isConnected = false;
                 handleStreamCompleted();
+                
+                // Auto-reconnect if not shutting down
+                if (!isShuttingDown) {
+                    scheduleReconnect();
+                }
             }
         };
 
@@ -128,7 +156,61 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
                 .build();
 
         requestObserver.onNext(connectMessage);
-        logger.info("Sent connection message for client '{}'", clientId);
+        isConnected = true;
+        logger.info("Sent connection message for client '{}' - Stream established", clientId);
+    }
+    
+    /**
+     * Schedule reconnection with exponential backoff
+     */
+    private void scheduleReconnect() {
+        if (isShuttingDown) {
+            logger.info("Client '{}' is shutting down, skip reconnect", clientId);
+            return;
+        }
+        
+        new Thread(() -> {
+            for (int attempt = 1; attempt <= MAX_RECONNECT_ATTEMPTS; attempt++) {
+                if (isShuttingDown) {
+                    break;
+                }
+                
+                try {
+                    long delay = RECONNECT_DELAY_MS * attempt;
+                    logger.info("Client '{}' will reconnect in {} seconds (attempt {}/{})", 
+                               clientId, delay/1000, attempt, MAX_RECONNECT_ATTEMPTS);
+                    Thread.sleep(delay);
+                    
+                    if (isShuttingDown) {
+                        break;
+                    }
+                    
+                    logger.info("Client '{}' attempting reconnection (attempt {}/{})", 
+                               clientId, attempt, MAX_RECONNECT_ATTEMPTS);
+                    
+                    // Re-establish stream
+                    setupBidirectionalStream();
+                    logger.info("Client '{}' reconnected successfully", clientId);
+                    return;
+                    
+                } catch (Exception e) {
+                    logger.error("Client '{}' reconnection attempt {} failed: {}", 
+                                clientId, attempt, e.getMessage());
+                    if (attempt == MAX_RECONNECT_ATTEMPTS) {
+                        logger.error("Client '{}' failed to reconnect after {} attempts", 
+                                    clientId, MAX_RECONNECT_ATTEMPTS);
+                        handleReconnectFailed();
+                    }
+                }
+            }
+        }, "reconnect-" + clientId).start();
+    }
+    
+    /**
+     * Check if client is connected
+     */
+    public boolean isConnected() {
+        return isConnected && requestObserver != null;
     }
 
     /**
@@ -142,8 +224,9 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
      * Send an event with custom metadata
      */
     public void sendEvent(String targetId, String eventType, byte[] payload, Map<String, String> metadata) {
-        if (requestObserver == null) {
-            throw new IllegalStateException("gRPC client not initialized");
+        if (requestObserver == null || !isConnected) {
+            logger.warn("Client '{}' is not connected, cannot send event '{}'", clientId, eventType);
+            throw new IllegalStateException("gRPC client not connected");
         }
 
         EventChunk.Builder builder = EventChunk.newBuilder()
@@ -204,6 +287,10 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
         return clientId;
     }
 
+    public FileServiceClient getFileServiceClient() {
+        return fileServiceClient;
+    }
+
     /**
      * Override this method to handle incoming events from the server
      */
@@ -221,5 +308,12 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
      */
     protected void handleStreamCompleted() {
         // Default implementation - can be overridden
+    }
+    
+    /**
+     * Override this method to handle reconnection failure
+     */
+    protected void handleReconnectFailed() {
+        logger.error("Client '{}' failed to reconnect - may need manual intervention", clientId);
     }
 }

@@ -1,9 +1,21 @@
 server:
   port: 8080
+  tomcat:
+    connection-timeout: 600000  # 10 minutes
+    threads:
+      max: 200
+      min-spare: 10
+  # SSE/streaming timeout
+  servlet:
+    session:
+      timeout: 30m
 
 spring:
   application:
     name: deepapp-main
+  mvc:
+    async:
+      request-timeout: 600000  # 10 minutes for async requests
   # Spring Security OAuth2
   security:
     oauth2:
@@ -24,6 +36,19 @@ spring:
   thymeleaf:
     enabled: true
     cache: false
+  
+  # SQLite Database Configuration
+  datasource:
+    url: jdbc:sqlite:/tmp/deepapp/documents.db
+    driver-class-name: org.sqlite.JDBC
+  jpa:
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: update  # Auto-create tables
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
 
 # Swagger/OpenAPI Configuration
 springdoc:
@@ -47,6 +72,20 @@ cpp:
     autoBuild: true        # Auto-compile C++ before starting
     buildDir: build        # C++ build directory
     executable: deepapp_worker_main  # C++ worker executable name
+
+# Document Storage Configuration
+document:
+  storage:
+    path: /tmp/deepapp/uploads
+  cleanup:
+    enabled: true          # Enable scheduled cleanup
+    retention-days: 7      # Keep documents for 7 days
+    cron: "0 0 2 * * ?"    # Run at 2 AM daily (seconds minutes hours day month weekday)
+    # Examples:
+    # "0 */30 * * * ?" - Every 30 minutes
+    # "0 0 * * * ?"   - Every hour
+    # "0 0 2 * * ?"   - 2 AM daily
+    # "0 0 0 * * ?"   - Midnight daily
 
 # Worker configurations - easily scalable
 workers:

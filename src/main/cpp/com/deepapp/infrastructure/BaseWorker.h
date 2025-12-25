@@ -8,14 +8,24 @@
 namespace deepapp {
 namespace infrastructure {
 
+// Forward declaration
+class GrpcWorkerClient;
+
 /**
  * Base class for all workers
  * Each worker must inherit from this and implement processTask()
  */
 class BaseWorker {
 public:
-    BaseWorker(const std::string& worker_id) : worker_id_(worker_id) {}
+    BaseWorker(const std::string& worker_id) : worker_id_(worker_id), grpc_client_(nullptr) {}
     virtual ~BaseWorker() = default;
+
+    /**
+     * Set the gRPC client (called by infrastructure)
+     */
+    void setGrpcClient(GrpcWorkerClient* client) {
+        grpc_client_ = client;
+    }
 
     /**
      * Process a task and return result
@@ -40,6 +50,7 @@ public:
 
 protected:
     std::string worker_id_;
+    GrpcWorkerClient* grpc_client_; // Access to gRPC client for sending events
 };
 
 using WorkerPtr = std::shared_ptr<BaseWorker>;

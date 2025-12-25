@@ -1,0 +1,105 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push
+
+scrape_configs:
+  # Java application logs (JSON format)
+  - job_name: deepapp-java
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: deepapp-java
+          service: deepapp-main
+          language: java
+          __path__: /app/logs/deepapp-main*.json
+    
+    pipeline_stages:
+      # Parse JSON logs
+      - json:
+          expressions:
+            timestamp: timestamp
+            level: level
+            message: message
+            service: service
+            logger: logger_name
+            thread: thread_name
+      
+      # Extract labels
+      - labels:
+          level:
+          service:
+          language:
+      
+      # Set timestamp
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+      
+      # Output
+      - output:
+          source: message
+
+  # C++ worker logs (JSON format)
+  - job_name: deepapp-cpp
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: deepapp-cpp
+          service: deepapp-worker
+          language: cpp
+          __path__: /app/logs/deepapp-worker*.log
+    
+    pipeline_stages:
+      # Parse JSON logs
+      - json:
+          expressions:
+            timestamp: timestamp
+            level: level
+            message: message
+            service: service
+            worker_id: context.worker_id
+      
+      # Extract labels
+      - labels:
+          level:
+          service:
+          language:
+          worker_id:
+      
+      # Set timestamp
+      - timestamp:
+          source: timestamp
+          format: RFC3339
+      
+      # Output
+      - output:
+          source: message
+
+  # System logs
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: system
+          __path__: /var/log/syslog
+    
+    pipeline_stages:
+      - regex:
+          expression: '^(?P<timestamp>\S+ \S+) (?P<hostname>\S+) (?P<service>\S+): (?P<message>.*)$'
+      
+      - labels:
+          hostname:
+          service:
+      
+      - timestamp:
+          source: timestamp
+          format: Jan _2 15:04:05

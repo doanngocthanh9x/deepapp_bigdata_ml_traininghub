@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Stream Test - Real-time Page Processing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .nav-links {
+            margin-top: 15px;
+        }
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+            margin: 0 5px;
+            transition: all 0.3s;
+        }
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .content {
+            padding: 30px;
+        }
+        .upload-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .file-input-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input {
+            display: none;
+        }
+        .file-label {
+            display: block;
+            padding: 20px;
+            background: white;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .file-label:hover {
+            border-color: #764ba2;
+            background: #f0f0ff;
+        }
+        .file-label.has-file {
+            border-color: #28a745;
+            background: #e8f5e9;
+        }
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        .control-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .status-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .status-metadata {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+        }
+        .status-page {
+            background: #d4edda;
+            border-left: 4px solid #155724;
+        }
+        .status-error {
+            background: #f8d7da;
+            border-left: 4px solid #721c24;
+        }
+        .status-complete {
+            background: #fff3cd;
+            border-left: 4px solid #856404;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .page-card {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s;
+            animation: fadeInUp 0.5s ease-out;
+            text-align: center;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        .page-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        .page-image {
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .page-image img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .page-image.loading::before {
+            content: '⏳ Loading image...';
+            position: absolute;
+            color: #999;
+            font-style: italic;
+        }
+        .page-placeholder {
+            color: #999;
+            font-style: italic;
+            padding: 40px 10px;
+        }
+        .page-info {
+            font-size: 0.85em;
+            color: #666;
+            text-align: left;
+        }
+        .page-info div {
+            margin: 3px 0;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Document Stream Processor</h1>
+            <p>Real-time page-by-page processing with Server-Sent Events</p>
+            <div class="nav-links">
+                <a href="/document-management.html">📊 Quản Lý Tài Liệu</a>
+                <a href="#" id="viewCurrentDoc" style="display:none;">👁️ Xem Tài Liệu</a>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="upload-section">
+                <div class="file-input-wrapper">
+                    <input type="file" id="fileInput" class="file-input" accept=".pdf,.tiff,.tif">
+                    <label for="fileInput" class="file-label" id="fileLabel">
+                        <div style="font-size: 3em; margin-bottom: 10px;">📄</div>
+                        <div style="font-size: 1.2em; font-weight: 600;">Choose PDF or TIFF file</div>
+                        <div style="color: #666; margin-top: 5px;">Click or drag file here</div>
+                    </label>
+                </div>
+
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Start Page:</label>
+                        <input type="number" id="startPage" value="1" min="1">
+                    </div>
+                    <div class="control-group">
+                        <label>Max Pages:</label>
+                        <input type="number" id="maxPages" value="10" min="1" max="100">
+                    </div>
+                    <div class="control-group" style="display: flex; align-items: flex-end;">
+                        <button class="btn btn-primary" id="processBtn" disabled onclick="startStreaming()">
+                            ▶ Start Streaming
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="progressSection" style="display: none;">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%">0%</div>
+                </div>
+            </div>
+
+            <div class="status" id="statusLog"></div>
+
+            <div class="pages-grid" id="pagesGrid"></div>
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const fileLabel = document.getElementById('fileLabel');
+        const processBtn = document.getElementById('processBtn');
+        const statusLog = document.getElementById('statusLog');
+        const pagesGrid = document.getElementById('pagesGrid');
+        const progressSection = document.getElementById('progressSection');
+        const progressFill = document.getElementById('progressFill');
+
+        let selectedFile = null;
+        let eventSource = null;
+        let totalPages = 0;
+        let processedPages = 0;
+        let currentRequestId = null;
+
+        // Handle file selection
+        fileInput.addEventListener('change', (e) => {
+            handleFileSelect(e.target.files[0]);
+        });
+
+        // Drag and drop handlers
+        fileLabel.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            fileLabel.style.borderColor = '#764ba2';
+            fileLabel.style.background = '#f0f0ff';
+        });
+
+        fileLabel.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!selectedFile) {
+                fileLabel.style.borderColor = '#667eea';
+                fileLabel.style.background = 'white';
+            }
+        });
+
+        fileLabel.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                // Validate file type
+                const validTypes = ['.pdf', '.tiff', '.tif'];
+                const fileName = file.name.toLowerCase();
+                const isValid = validTypes.some(type => fileName.endsWith(type));
+                
+                if (isValid) {
+                    fileInput.files = files; // Set files to input
+                    handleFileSelect(file);
+                } else {
+                    alert('Please select a PDF or TIFF file');
+                    fileLabel.style.borderColor = '#dc3545';
+                    setTimeout(() => {
+                        fileLabel.style.borderColor = '#667eea';
+                    }, 2000);
+                }
+            }
+        });
+
+        function handleFileSelect(file) {
+            if (!file) return;
+            
+            selectedFile = file;
+            fileLabel.classList.add('has-file');
+            fileLabel.innerHTML = `
+                <div style="font-size: 3em; margin-bottom: 10px;">✅</div>
+                <div style="font-size: 1.2em; font-weight: 600;">${selectedFile.name}</div>
+                <div style="color: #666; margin-top: 5px;">${(selectedFile.size / 1024 / 1024).toFixed(2)} MB</div>
+                <div style="color: #999; margin-top: 10px; font-size: 0.9em;">Click to change file</div>
+            `;
+            processBtn.disabled = false;
+        }
+
+        function addStatus(message, type = 'metadata') {
+            const statusItem = document.createElement('div');
+            statusItem.className = `status-item status-${type}`;
+            statusItem.innerHTML = `
+                <strong>${new Date().toLocaleTimeString()}</strong> - ${message}
+            `;
+            statusLog.insertBefore(statusItem, statusLog.firstChild);
+        }
+
+        function addPageCard(pageData) {
+            const card = document.createElement('div');
+            card.className = 'page-card';
+            
+            const pageInfo = pageData.pageData || {};
+            const imageData = pageInfo.imageData || '';
+            const hasImage = imageData && !imageData.startsWith('base64_page_'); // Check if real base64 or mock data
+            
+            let imageHtml = '';
+            if (hasImage) {
+                // Real base64 image data - detect format from base64 prefix
+                const mimeType = detectImageFormat(imageData);
+                imageHtml = `<div class="page-image">
+                    <img src="data:${mimeType};base64,${imageData}" 
+                         alt="Page ${pageData.pageNumber}"
+                         loading="lazy"
+                         onload="this.style.opacity='1'"
+                         style="opacity:0; transition: opacity 0.3s"
+                         onerror="this.parentElement.innerHTML='<div class=page-placeholder>❌ Failed to load image</div>'">
+                </div>`;
+            } else if (imageData) {
+                // Mock data
+                imageHtml = `<div class="page-image">
+                    <div class="page-placeholder">📄 Mock Data<br/>${imageData}</div>
+                </div>`;
+            } else {
+                // No data
+                imageHtml = `<div class="page-image">
+                    <div class="page-placeholder">⚠️ No image data</div>
+                </div>`;
+            }
+            
+            card.innerHTML = `
+                <div class="page-number">📄 Page ${pageData.pageNumber} / ${pageData.totalPages || '?'}</div>
+                ${imageHtml}
+                <div class="page-info">
+                    <div><strong>Format:</strong> ${pageInfo.format || 'Unknown'}</div>
+                    <div><strong>Size:</strong> ${pageInfo.width || '?'}x${pageInfo.height || '?'}</div>
+                    ${pageInfo.text ? `<div><strong>Text:</strong> ${pageInfo.text.substring(0, 50)}${pageInfo.text.length > 50 ? '...' : ''}</div>` : ''}
+                    <div style="color: #28a745; font-weight: 600; margin-top: 5px;">✓ Loaded</div>
+                </div>
+            `;
+            pagesGrid.appendChild(card);
+        }
+
+        function detectImageFormat(base64String) {
+            // Detect image format from base64 data
+            if (!base64String || base64String.length < 10) return 'image/png';
+            
+            const prefix = base64String.substring(0, 10);
+            
+            // PNG: starts with iVBOR
+            if (prefix.startsWith('iVBOR')) return 'image/png';
+            
+            // JPEG: starts with /9j/
+            if (prefix.startsWith('/9j/')) return 'image/jpeg';
+            
+            // TIFF: starts with SUk or TU0
+            if (prefix.startsWith('SUk') || prefix.startsWith('TU0')) return 'image/tiff';
+            
+            // WebP: starts with UklGR
+            if (prefix.startsWith('UklGR')) return 'image/webp';
+            
+            // Default to PNG
+            return 'image/png';
+        }
+
+        function updateProgress() {
+            if (totalPages > 0) {
+                const percentage = Math.round((processedPages / totalPages) * 100);
+                progressFill.style.width = percentage + '%';
+                progressFill.textContent = `${processedPages} / ${totalPages} pages (${percentage}%)`;
+            }
+        }
+
+        async function startStreaming() {
+            if (!selectedFile) return;
+
+            // Reset
+            statusLog.innerHTML = '';
+            pagesGrid.innerHTML = '';
+            processedPages = 0;
+            totalPages = 0;
+            progressSection.style.display = 'block';
+            processBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+            formData.append('startPage', document.getElementById('startPage').value);
+            formData.append('maxPages', document.getElementById('maxPages').value);
+
+            try {
+                const response = await fetch('/ZZ/A0/ZZA0_0100/stream', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+                let currentEvent = null;
+
+                addStatus('🚀 Started streaming...', 'metadata');
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    
+                    // Keep incomplete line in buffer
+                    buffer = lines.pop() || '';
+
+                    for (const line of lines) {
+                        const trimmedLine = line.trim();
+                        
+                        if (trimmedLine.startsWith('event:')) {
+                            currentEvent = trimmedLine.substring(6).trim();
+                        } else if (trimmedLine.startsWith('data:')) {
+                            const dataStr = trimmedLine.substring(5).trim();
+                            try {
+                                const data = JSON.parse(dataStr);
+                                handleSseEvent(currentEvent, data);
+                            } catch (e) {
+                                console.error('Failed to parse SSE data:', e, dataStr);
+                            }
+                        } else if (trimmedLine === '') {
+                            // Empty line marks end of event
+                            currentEvent = null;
+                        }
+                    }
+                }
+
+                addStatus('✅ Streaming completed!', 'complete');
+
+            } catch (error) {
+                addStatus(`❌ Error: ${error.message}`, 'error');
+            } finally {
+                processBtn.disabled = false;
+            }
+        }
+
+        function handleSseEvent(eventType, data) {
+            console.log('SSE Event:', eventType, data); // Debug log
+            
+            if (eventType === 'status') {
+                addStatus(`ℹ️ ${data.message}`, 'metadata');
+                if (data.requestId) {
+                    currentRequestId = data.requestId;
+                }
+            } else if (eventType === 'metadata') {
+                totalPages = data.pageCount || 0;
+                addStatus(`📊 Document: ${data.filename} | Pages: ${totalPages} | Format: ${data.format}`, 'metadata');
+                if (data.requestId) {
+                    currentRequestId = data.requestId;
+                }
+                updateProgress();
+            } else if (eventType === 'page') {
+                processedPages++;
+                const hasImage = data.pageData?.imageData && !data.pageData.imageData.startsWith('base64_page_');
+                addStatus(`📄 Page ${data.pageNumber}/${totalPages} ${hasImage ? '✓ with image' : '(mock data)'}`, 'page');
+                addPageCard(data);
+                updateProgress();
+            } else if (eventType === 'error') {
+                addStatus(`❌ Error on page ${data.pageNumber}: ${data.error}`, 'error');
+            } else if (eventType === 'complete') {
+                addStatus(`🎉 Complete! Processed ${data.totalPages || totalPages} pages successfully`, 'complete');
+                if (currentRequestId) {
+                    addStatus(`📌 Request ID: ${currentRequestId} - <a href="/document-management.html" target="_blank">Xem trong Quản Lý Tài Liệu</a>`, 'metadata');
+                    document.getElementById('viewCurrentDoc').style.display = 'inline-block';
+                    document.getElementById('viewCurrentDoc').onclick = () => {
+                        window.open(`/document-management.html?requestId=${currentRequestId}`, '_blank');
+                    };
+                }
+            }
+        }
+    </script>
+</body>
+</html>

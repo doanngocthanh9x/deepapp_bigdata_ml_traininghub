@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Console Appender with JSON format -->
+    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- Custom fields -->
+            <customFields>{"service":"deepapp-main","language":"java"}</customFields>
+            
+            <!-- Include MDC (Mapped Diagnostic Context) -->
+            <includeMdcKeyName>traceId</includeMdcKeyName>
+            <includeMdcKeyName>spanId</includeMdcKeyName>
+            <includeMdcKeyName>userId</includeMdcKeyName>
+            <includeMdcKeyName>workerId</includeMdcKeyName>
+            
+            <!-- Timestamp format -->
+            <timestampPattern>yyyy-MM-dd'T'HH:mm:ss.SSSZ</timestampPattern>
+            
+            <!-- Include caller data for debugging -->
+            <includeCallerData>true</includeCallerData>
+            
+            <!-- Stack trace format -->
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <maxLength>2048</maxLength>
+                <shortenedClassNameLength>20</shortenedClassNameLength>
+                <exclude>sun\.reflect\..*</exclude>
+                <exclude>net\.sf\.cglib\..*</exclude>
+                <evaluator class="ch.qos.logback.classic.boolex.OnMarkerEvaluator">
+                    <marker>FULL_STACK_TRACE</marker>
+                </evaluator>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
+    <!-- Console Appender with pretty format for development -->
+    <appender name="CONSOLE_PRETTY" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- File Appender for JSON logs -->
+    <appender name="FILE_JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/app/logs/deepapp-main.json</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/app/logs/deepapp-main.%d{yyyy-MM-dd}.json.gz</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>10GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"deepapp-main","language":"java"}</customFields>
+        </encoder>
+    </appender>
+
+    <!-- Async Appender for better performance -->
+    <appender name="ASYNC_JSON" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="CONSOLE_JSON" />
+    </appender>
+
+    <!-- Spring Boot specific loggers -->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.web" level="INFO"/>
+    <logger name="org.springframework.security" level="INFO"/>
+    
+    <!-- gRPC loggers -->
+    <logger name="io.grpc" level="INFO"/>
+    <logger name="io.grpc.netty" level="WARN"/>
+    
+    <!-- Application loggers -->
+    <logger name="com.deepapp" level="DEBUG"/>
+    <logger name="com.deepapp.vn.io" level="DEBUG"/>
+    
+    <!-- Access logs -->
+    <logger name="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" level="TRACE"/>
+
+    <!-- Root logger -->
+    <springProfile name="default,dev,local">
+        <root level="INFO">
+            <appender-ref ref="CONSOLE_PRETTY" />
+        </root>
+    </springProfile>
+
+    <springProfile name="docker,production">
+        <root level="INFO">
+            <appender-ref ref="ASYNC_JSON" />
+            <appender-ref ref="FILE_JSON" />
+        </root>
+    </springProfile>
+</configuration>

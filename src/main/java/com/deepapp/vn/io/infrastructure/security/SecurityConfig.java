@@ -15,7 +15,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(authorize -> authorize
                 // Public endpoints - no auth required
-                .requestMatchers("/", "/login**", "/error**", "/actuator/**").permitAll()
+                .requestMatchers("/**", "/login**", "/oauth-setup", "/error**", "/actuator/**","/ZZ/**","/document-stream-test.html").permitAll()
                 .requestMatchers("/api/**").permitAll()  // All API endpoints public for testing
                 .requestMatchers("/AA/**").permitAll()   // OAuth test endpoints also public
                 // Swagger/OpenAPI endpoints

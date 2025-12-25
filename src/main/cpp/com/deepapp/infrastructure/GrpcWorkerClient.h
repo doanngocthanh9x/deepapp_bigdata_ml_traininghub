@@ -8,8 +8,10 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <map>
 #include "hub.grpc.pb.h"
 #include "WorkerRegistry.h"
+#include "BaseWorker.h"
 
 namespace deepapp {
 namespace infrastructure {
@@ -39,6 +41,16 @@ public:
         std::cout << "[GrpcWorkerClient] Connecting to " << server_address_ 
                   << " with client_id: " << client_id_ << std::endl;
 
+        // Inject this client into all workers
+        auto task_ids = WorkerRegistry::instance().getTaskIds();
+        for (const auto& id : task_ids) {
+            auto worker = WorkerRegistry::instance().getWorker(id);
+            if (worker) {
+                worker->setGrpcClient(this);
+            }
+        }
+        std::cout << "[GrpcWorkerClient] Injected gRPC client into " << task_ids.size() << " workers" << std::endl;
+
         // Create channel
         auto channel = grpc::CreateChannel(server_address_, 
                                           grpc::InsecureChannelCredentials());
@@ -64,8 +76,7 @@ public:
 
         std::cout << "[GrpcWorkerClient] Connected! Waiting for tasks..." << std::endl;
         
-        // Print registered workers
-        auto task_ids = WorkerRegistry::instance().getTaskIds();
+        // Print registered workers (reuse task_ids from above)
         std::cout << "[GrpcWorkerClient] Registered " 
                   << task_ids.size() << " workers:" << std::endl;
         for (const auto& id : task_ids) {

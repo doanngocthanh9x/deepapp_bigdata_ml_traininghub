@@ -1,0 +1,56 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    cluster: 'deepapp'
+    environment: 'production'
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+
+# Load rules once and periodically evaluate them
+rule_files:
+  # - "alerts.yml"
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+        labels:
+          service: 'prometheus'
+
+  # Spring Boot Java Application
+  - job_name: 'deepapp-java'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['deepapp-main:8080']
+        labels:
+          service: 'deepapp-main'
+          language: 'java'
+          component: 'api'
+
+  # C++ Worker Metrics (if exposing HTTP endpoint)
+  - job_name: 'deepapp-cpp'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['deepapp-main:50052']  # C++ metrics endpoint
+        labels:
+          service: 'deepapp-worker'
+          language: 'cpp'
+          component: 'worker'
+
+  # Node Exporter (optional - for system metrics)
+  # - job_name: 'node'
+  #   static_configs:
+  #     - targets: ['node-exporter:9100']
+
+  # Docker metrics (optional)
+  # - job_name: 'docker'
+  #   static_configs:
+  #     - targets: ['docker-exporter:9323']

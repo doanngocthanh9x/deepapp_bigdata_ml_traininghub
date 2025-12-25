@@ -1,0 +1,88 @@
+# Actuator & Metrics Configuration
+
+# Expose all actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+      base-path: /actuator
+  
+  # Health endpoint configuration
+  endpoint:
+    health:
+      show-details: always
+      show-components: always
+    
+    # Enable metrics endpoint
+    metrics:
+      enabled: true
+    
+    # Enable prometheus endpoint
+    prometheus:
+      enabled: true
+  
+  # Metrics configuration
+  metrics:
+    enable:
+      jvm: true
+      process: true
+      system: true
+      logback: true
+      tomcat: true
+    
+    export:
+      prometheus:
+        enabled: true
+        step: 10s
+        descriptions: true
+    
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true
+      percentiles:
+        http.server.requests: 0.5, 0.95, 0.99
+      sla:
+        http.server.requests: 10ms, 50ms, 100ms, 200ms, 500ms, 1s, 2s
+    
+    tags:
+      application: ${spring.application.name}
+      service: deepapp-main
+      environment: ${spring.profiles.active:default}
+
+  # Health indicators
+  health:
+    defaults:
+      enabled: true
+    diskspace:
+      enabled: true
+      threshold: 10MB
+    ping:
+      enabled: true
+
+# Logging configuration
+logging:
+  level:
+    root: INFO
+    com.deepapp: DEBUG
+    org.springframework.web: INFO
+    org.springframework.security: INFO
+    io.grpc: INFO
+  
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  
+  file:
+    name: /app/logs/deepapp-main.log
+    max-size: 100MB
+    max-history: 30
+    total-size-cap: 10GB
+
+# Application info
+info:
+  app:
+    name: ${spring.application.name}
+    description: Deepapp Main Application
+    version: @project.version@
+    java:
+      version: @java.version@
