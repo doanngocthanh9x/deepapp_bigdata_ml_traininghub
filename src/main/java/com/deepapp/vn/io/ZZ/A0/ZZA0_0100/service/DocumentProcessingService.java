@@ -88,9 +88,16 @@ public class DocumentProcessingService {
 
     /**
      * Get a specific page from the document
+     * For large files (>3MB), use filePath method to avoid message size limits
      */
     public Map<String, Object> getSpecificPage(byte[] fileData, String filename, int pageNumber)
             throws Exception {
+
+        // For large files, save to temp and use filePath method
+        if (fileData.length > 3 * 1024 * 1024) { // > 3MB
+            String tempPath = saveUploadedFile(fileData, filename, "temp_page_" + System.currentTimeMillis());
+            return getSpecificPageByPath(tempPath, filename, pageNumber);
+        }
 
         logger.info("Getting page {} from document: {}", pageNumber, filename);
 
@@ -129,18 +136,64 @@ public class DocumentProcessingService {
     }
 
     /**
+     * Get a specific page using filePath (avoids gRPC message size limits)
+     */
+    public Map<String, Object> getSpecificPageByPath(String filePath, String filename, int pageNumber)
+            throws Exception {
+
+        logger.info("Getting page {} from document: {} via filePath", pageNumber, filename);
+
+        // Prepare request with filePath
+        Map<String, Object> request = new HashMap<>();
+        request.put("filename", filename);
+        request.put("filePath", filePath);  // Send path instead of data
+        request.put("action", "get_page");
+        request.put("pageNumber", pageNumber);
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        // Call C++ worker
+        CompletableFuture<String> future = cppWorkerClient.callWorker(
+                WORKER_ID,
+                "get_page",
+                requestJson);
+
+        String responseJson = future.get();
+        logger.info("C++ Worker page response (via filePath): {}", responseJson);
+
+        // Parse response
+        @SuppressWarnings("unchecked")
+        Map<String, Object> response = objectMapper.readValue(responseJson, Map.class);
+
+        // Build result
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("filename", filename);
+        result.put("pageNumber", pageNumber);
+        result.put("timestamp", System.currentTimeMillis());
+        result.put("worker", WORKER_ID);
+        result.put("pageData", response);
+
+        return result;
+    }
+
+    /**
      * Get document metadata (page count, format info, etc.) - FAST
-     * Only returns metadata, no image data
+     * Uses filePath instead of sending file data to avoid message size limits
      */
     public Map<String, Object> getDocumentInfo(byte[] fileData, String filename)
             throws Exception {
+        // For large files, save to temp and use filePath method
+        if (fileData.length > 3 * 1024 * 1024) { // > 3MB
+            String tempPath = saveUploadedFile(fileData, filename, "temp_" + System.currentTimeMillis());
+            return getDocumentInfoByPath(tempPath, filename, fileData.length);
+        }
 
         long startTime = System.currentTimeMillis();
         logger.info("Getting metadata for document: {} (FAST mode with real parsing)", filename);
 
         Map<String, Object> request = new HashMap<>();
         request.put("filename", filename);
-        // Send data for real page count parsing
         request.put("data", Base64.getEncoder().encodeToString(fileData));
         request.put("action", "get_info");
 
@@ -162,6 +215,46 @@ public class DocumentProcessingService {
         result.put("success", true);
         result.put("filename", filename);
         result.put("fileSize", fileData.length);
+        result.put("pageCount", response.get("pageCount"));
+        result.put("format", response.get("format"));
+        result.put("processingTime", duration + "ms");
+        result.put("message", "Metadata retrieved - use POST /ZZ/A0/ZZA0_0100/page to get individual pages");
+
+        return result;
+    }
+
+    /**
+     * Get document metadata using filePath (avoids gRPC message size limits)
+     */
+    public Map<String, Object> getDocumentInfoByPath(String filePath, String filename, long fileSize)
+            throws Exception {
+
+        long startTime = System.currentTimeMillis();
+        logger.info("Getting metadata for document: {} via filePath (no size limit)", filename);
+
+        Map<String, Object> request = new HashMap<>();
+        request.put("filename", filename);
+        request.put("filePath", filePath);  // Send path instead of data
+        request.put("action", "get_info");
+
+        String requestJson = objectMapper.writeValueAsString(request);
+
+        CompletableFuture<String> future = cppWorkerClient.callWorker(
+                WORKER_ID,
+                "document_info",
+                requestJson);
+
+        String responseJson = future.get();
+        long duration = System.currentTimeMillis() - startTime;
+        logger.info("Metadata retrieved in {}ms via filePath", duration);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> response = objectMapper.readValue(responseJson, Map.class);
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("filename", filename);
+        result.put("fileSize", fileSize);
         result.put("pageCount", response.get("pageCount"));
         result.put("format", response.get("format"));
         result.put("processingTime", duration + "ms");

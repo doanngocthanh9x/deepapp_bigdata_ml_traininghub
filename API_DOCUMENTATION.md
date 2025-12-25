@@ -9,13 +9,20 @@ http://localhost:8080
 
 ## 🚀 Document Processing API
 
-### 1. Stream Document Processing (SSE)
+### 1. Stream Document Processing (SSE) - STORAGE CONTROLLED
 
 **Endpoint:** `POST /ZZ/A0/ZZA0_0100/stream`
 
-**Description:** Upload and process PDF/TIFF documents with real-time streaming of results. Automatically saves to SQLite database.
+**Description:** Upload and process PDF/TIFF documents with real-time streaming of results. **ALL processing now goes through DocumentUploadService in storage layer for centralized control.**
 
 **Content-Type:** `multipart/form-data`
+
+**Processing Flow:**
+1. **Validation** - File type, size, format validation
+2. **Storage** - Save file to `/tmp/deepapp/uploads/{requestId}/`
+3. **Database** - Create document, task, page records
+4. **Processing** - Stream page-by-page processing results
+5. **Completion** - Update status and provide management links
 
 **Request Parameters:**
 
@@ -40,8 +47,10 @@ curl -X POST http://localhost:8080/ZZ/A0/ZZA0_0100/stream \
 #### Event: `status`
 ```json
 {
-  "message": "Processing started",
-  "requestId": "req_1735094123456_abc123"
+  "message": "File uploaded successfully, starting processing...",
+  "requestId": "req_1735094123456_abc123",
+  "filename": "document.pdf",
+  "fileSize": 12345678
 }
 ```
 
@@ -52,8 +61,7 @@ curl -X POST http://localhost:8080/ZZ/A0/ZZA0_0100/stream \
   "filename": "document.pdf",
   "format": "pdf",
   "pageCount": 100,
-  "fileSize": 12345678,
-  "dpi": 150
+  "fileSize": 12345678
 }
 ```
 
@@ -67,19 +75,10 @@ curl -X POST http://localhost:8080/ZZ/A0/ZZA0_0100/stream \
     "height": 3508,
     "dpi": 150,
     "format": "PNG",
-    "imageData": "iVBORw0KGgoAAAANSUhEUgAA...(base64)",
-    "text": "Extracted text from page",
-    "hasText": true
+    "imagePath": "/tmp/deepapp/uploads/req_1735094123456_abc123/page_1.png",
+    "text": "Extracted text content",
+    "status": "completed"
   }
-}
-```
-
-#### Event: `error`
-```json
-{
-  "requestId": "req_1735094123456_abc123",
-  "pageNumber": 5,
-  "error": "Failed to render page"
 }
 ```
 
@@ -88,10 +87,19 @@ curl -X POST http://localhost:8080/ZZ/A0/ZZA0_0100/stream \
 {
   "requestId": "req_1735094123456_abc123",
   "totalPages": 100,
-  "processedPages": 100,
-  "status": "completed"
+  "message": "Document processing completed successfully"
 }
 ```
+
+**Database Records Created:**
+- **DocumentEntity**: Stores file metadata and processing status
+- **TaskEntity**: Tracks processing progress and status
+- **PageEntity**: Stores individual page data and extracted text
+
+**Integration with Document Management:**
+- After processing completes, client receives `requestId`
+- Can immediately view document in management interface
+- All data accessible via REST APIs for further processing
 
 ---
 
@@ -559,7 +567,53 @@ curl -X DELETE http://localhost:8080/api/documents/clear-all
 
 ---
 
-## 📊 Data Models
+## � Architecture - Storage Layer Control
+
+### Document Processing Flow
+
+```
+1. Client Upload → POST /ZZ/A0/ZZA0_0100/stream
+2. Controller → DocumentUploadService.processDocumentUpload()
+3. Validation → File type, size, format checks
+4. Storage → Save to /tmp/deepapp/uploads/{requestId}/
+5. Database → Create DocumentEntity, TaskEntity records
+6. Processing → Stream page-by-page via SSE
+7. Completion → Update status, provide management access
+8. Management → View in document-management.html
+```
+
+### Service Layer Responsibilities
+
+**DocumentUploadService** - Central upload control:
+- ✅ File validation (type, size, format)
+- ✅ File storage management
+- ✅ Database record creation (documents, tasks, pages)
+- ✅ Processing coordination
+- ✅ Status tracking and updates
+- ✅ Error handling and cleanup
+
+**DocumentManagementService** - Data management:
+- ✅ CRUD operations for documents/pages
+- ✅ Statistics and reporting
+- ✅ Scheduled cleanup (cron jobs)
+- ✅ Batch operations
+- ✅ Storage management
+
+### Data Flow
+
+```
+Upload Request
+    ↓
+DocumentUploadService (Validation & Storage)
+    ↓
+SQLite Database (Documents, Tasks, Pages)
+    ↓
+SSE Streaming (Real-time progress)
+    ↓
+Document Management UI (View & Control)
+    ↓
+REST APIs (Programmatic access)
+```
 
 ### Document Entity
 ```typescript
@@ -746,6 +800,74 @@ const stats = await fetch('http://localhost:8080/api/documents/statistics/detail
 const data = await stats.json();
 console.log(`Total: ${data.totalDocuments}, Storage: ${data.totalStorageSizeFormatted}`);
 ```
+
+---
+
+## 🏗️ Architecture Overview
+
+### Storage Layer Control Architecture
+
+```
+┌─────────────────┐    ┌──────────────────────┐    ┌─────────────────┐
+│   Controller    │───▶│ DocumentUploadService │───▶│   Repositories  │
+│                 │    │  (Storage Layer)      │    │                 │
+│ ZZA0_0100       │    │                      │    │ DocumentEntity   │
+│ Controller      │    │ • File Validation    │    │ TaskEntity       │
+└─────────────────┘    │ • Storage Management │    │ PageEntity       │
+                       │ • Database Records   │    └─────────────────┘
+                       │ • Processing Control │
+                       └──────────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────────┐
+                       │  DocumentManagement  │
+                       │      Service         │
+                       │                      │
+                       │ • Statistics         │
+                       │ • Cleanup            │
+                       │ • UI Integration     │
+                       └──────────────────────┘
+```
+
+### Service Responsibilities
+
+#### DocumentUploadService (Storage Layer)
+- **File Validation**: Type, size, format checks (PDF/TIFF, max 100MB)
+- **Storage Management**: Save files to `/tmp/deepapp/uploads/{requestId}/`
+- **Database Operations**: Create/update DocumentEntity, TaskEntity, PageEntity
+- **Processing Coordination**: Stream page-by-page results via SSE
+- **Error Handling**: Comprehensive validation and cleanup on failures
+
+#### DocumentManagementService
+- **Statistics**: Document counts, storage usage, processing metrics
+- **Cleanup Operations**: Scheduled and manual document deletion
+- **UI Integration**: Provide data for web interface
+- **API Endpoints**: RESTful access to document information
+
+#### Controller Layer
+- **HTTP Handling**: Receive multipart file uploads
+- **SSE Streaming**: Real-time progress updates to client
+- **Delegation**: Forward processing to DocumentUploadService
+- **Error Responses**: Handle and format error responses
+
+### Data Flow
+
+1. **Upload Request** → Controller receives multipart file
+2. **Validation** → DocumentUploadService validates file
+3. **Storage** → File saved to organized directory structure
+4. **Database** → Records created for document, task, pages
+5. **Processing** → Page-by-page processing with SSE streaming
+6. **Completion** → Status updated, management integration ready
+7. **UI Access** → Document highlighted in management interface
+
+### Key Benefits
+
+- **Centralized Control**: All upload logic in one service
+- **Separation of Concerns**: Storage, processing, management separated
+- **Database Consistency**: Automatic record creation during upload
+- **Real-time Feedback**: SSE streaming for progress updates
+- **Error Resilience**: Comprehensive validation and cleanup
+- **UI Integration**: Seamless document management experience
 
 ---
 

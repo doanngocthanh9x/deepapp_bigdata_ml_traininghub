@@ -3,6 +3,7 @@ package com.deepapp.vn.io.ZZ.A0.ZZA0_0100.controller;
 import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.model.DocumentRequest;
 import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.service.DocumentProcessingService;
 import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.service.DocumentStreamRegistry;
+import com.deepapp.vn.io.storage.service.DocumentUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +31,9 @@ public class ZZA0_0100Controller {
     
     @Autowired
     private DocumentStreamRegistry streamRegistry;
+    
+    @Autowired
+    private DocumentUploadService documentUploadService;
     
     private final ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -99,57 +103,54 @@ public class ZZA0_0100Controller {
     }
 
     /**
-     * Stream document pages using C++ → Java gRPC streaming (NEW SMART DESIGN)
-     * C++ worker actively pushes each page to Java via gRPC events
-     * Java forwards to client via SSE - No polling needed!
+     * Stream document pages using DocumentUploadService (STORAGE CONTROLLED)
+     * All document processing goes through storage layer for centralized control
      */
     @PostMapping(value = "/stream", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public SseEmitter streamDocumentPages(@RequestParam("file") MultipartFile file) {
-        
-        // Create SSE emitter with 5 minute timeout
-        SseEmitter emitter = new SseEmitter(300_000L);
-        
+
+        // Create SSE emitter with 10 minute timeout (increased for large documents)
+        SseEmitter emitter = new SseEmitter(600_000L);
+
         // Generate unique request ID
         String requestId = UUID.randomUUID().toString();
-        
-        // Register emitter to receive C++ events
-        streamRegistry.registerStream(requestId, emitter);
-        
+
+        // Set up emitter completion/error handling
+        emitter.onCompletion(() -> streamRegistry.removeStream(requestId));
+        emitter.onError((throwable) -> streamRegistry.removeStream(requestId));
+        emitter.onTimeout(() -> streamRegistry.removeStream(requestId));
+
         executorService.execute(() -> {
             try {
-                String filename = file.getOriginalFilename();
-                byte[] fileData = file.getBytes();
-                
-                // Send initial status
-                emitter.send(SseEmitter.event()
-                    .name("status")
-                    .data(Map.of(
-                        "message", "C++ worker processing...",
-                        "requestId", requestId,
-                        "filename", filename
-                    )));
-                
-                // Trigger C++ processing - C++ will stream pages back via gRPC!
-                documentProcessingService.processDocumentStreaming(
-                    fileData, 
-                    filename,
-                    requestId
-                );
-                
-                // C++ sends: metadata → page1 → page2 → ... → complete
-                // CppWorkerClient receives & forwards to this emitter automatically
-                
+                // Process document upload through storage service
+                // This handles validation, file storage, database records, and processing
+                documentUploadService.processDocumentUpload(file, emitter, requestId)
+                    .whenComplete((result, throwable) -> {
+                        if (throwable != null) {
+                            // Error already handled in service
+                            emitter.completeWithError(throwable);
+                        } else {
+                            // Success - emitter already completed in service
+                            emitter.complete();
+                        }
+                        streamRegistry.removeStream(requestId);
+                    })
+                    .get(); // Wait for completion
+
             } catch (Exception e) {
                 try {
                     emitter.send(SseEmitter.event()
                         .name("error")
-                        .data(Map.of("error", e.getMessage())));
+                        .data(Map.of(
+                            "requestId", requestId,
+                            "error", "Document processing failed: " + e.getMessage()
+                        )));
                 } catch (Exception ignored) {}
                 emitter.completeWithError(e);
                 streamRegistry.removeStream(requestId);
             }
         });
-        
+
         return emitter;
     }
 

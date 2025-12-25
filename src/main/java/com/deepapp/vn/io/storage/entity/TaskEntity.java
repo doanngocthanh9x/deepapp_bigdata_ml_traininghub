@@ -1,5 +1,6 @@
 package com.deepapp.vn.io.storage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ public class TaskEntity {
     
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", referencedColumnName = "request_id", unique = true)
+    @JsonBackReference("document-task")
     private DocumentEntity document;
     
     @Column(name = "task_type", nullable = false)

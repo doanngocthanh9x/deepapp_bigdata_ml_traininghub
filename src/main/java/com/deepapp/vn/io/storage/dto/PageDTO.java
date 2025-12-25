@@ -35,7 +35,8 @@ public class PageDTO {
     }
     
     public static PageDTO fromEntity(PageEntity entity) {
-        return new PageDTO(entity, true);
+        // Don't load imageData - let frontend load from imagePath
+        return new PageDTO(entity, false);
     }
     
     public static PageDTO fromEntityWithoutImage(PageEntity entity) {

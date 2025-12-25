@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOLO Object Detection - DeepApp</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .detection-result {
+            border: 2px solid #007bff;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            background-color: #f8f9fa;
+        }
+        .confidence-high { 
+            color: #28a745; 
+            font-weight: bold;
+        }
+        .confidence-medium { 
+            color: #ffc107; 
+            font-weight: bold;
+        }
+        .confidence-low { 
+            color: #dc3545; 
+            font-weight: bold;
+        }
+        .worker-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        .worker-java { background-color: #007bff; color: white; }
+        .worker-cpp { background-color: #28a745; color: white; }
+        .worker-python { background-color: #ffc107; color: black; }
+        .image-preview {
+            max-width: 100%;
+            max-height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            display: block;
+        }
+        .detection-overlay {
+            position: relative;
+            display: inline-block;
+            line-height: 0;
+        }
+        .bounding-box {
+            position: absolute;
+            border: 3px solid #ff0000;
+            background-color: rgba(255, 0, 0, 0.1);
+            box-sizing: border-box;
+            pointer-events: none;
+        }
+        #boundingBoxes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        .model-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .processing-time {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-brain"></i> DeepApp - YOLO Detection
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/document-management.html">
+                    <i class="fas fa-file-alt"></i> Document Management
+                </a>
+                <a class="nav-link" href="/ZZ/A0/ZZA0_0100/stream">
+                    <i class="fas fa-upload"></i> Upload Document
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-search"></i> YOLO Object Detection
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Worker Selection -->
+                        <div class="mb-3">
+                            <label class="form-label">Detection Engine:</label>
+                            <div class="btn-group w-100" role="group" aria-label="Worker selection">
+                                <input type="radio" class="btn-check" name="workerType" id="javaWorker" value="java">
+                                <label class="btn btn-outline-primary" for="javaWorker">
+                                    <i class="fab fa-java"></i> Java Worker
+                                </label>
+
+                                <input type="radio" class="btn-check" name="workerType" id="cppWorker" value="cpp" checked>
+                                <label class="btn btn-outline-success" for="cppWorker">
+                                    <i class="fas fa-code"></i> C++ Worker
+                                </label>
+
+                                <input type="radio" class="btn-check" name="workerType" id="pythonWorker" value="python">
+                                <label class="btn btn-outline-warning" for="pythonWorker">
+                                    <i class="fab fa-python"></i> Python Worker
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Model Selection -->
+                        <div class="mb-3">
+                            <label class="form-label">Model:</label>
+                            <select class="form-select" id="modelSelect">
+                                <option value="giay_ra_vien">Giấy Ra Viện</option>
+                                <option value="general">General Objects</option>
+                            </select>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="mb-3">
+                            <label for="imageInput" class="form-label">Select Image:</label>
+                            <input type="file" class="form-control" id="imageInput" accept="image/*" required>
+                        </div>
+
+                        <!-- Image Preview -->
+                        <div id="imagePreview" class="mb-3" style="display: none;">
+                            <h6>Image Preview:</h6>
+                            <div class="detection-overlay">
+                                <img id="previewImg" class="image-preview" alt="Preview">
+                                <div id="boundingBoxes"></div>
+                            </div>
+                        </div>
+
+                        <!-- Control Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                            <button type="button" class="btn btn-primary" id="detectBtn">
+                                <i class="fas fa-search"></i> Detect Objects
+                            </button>
+                            <button type="button" class="btn btn-secondary" id="clearBtn">
+                                <i class="fas fa-trash"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <!-- Results Panel -->
+                <div class="card">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-list"></i> Detection Results
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="resultsContainer">
+                            <p class="text-muted">Upload an image and click "Detect Objects" to see results.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Info -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-info-circle"></i> Model Information
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div id="modelInfo" class="model-info">
+                            <strong>Current Model:</strong> Giấy Ra Viện<br>
+                            <strong>Engine:</strong> Java Worker<br>
+                            <strong>Status:</strong> <span class="text-success">Ready</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processing Modal -->
+    <div class="modal fade" id="processingModal" tabindex="-1" aria-labelledby="processingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Processing...</span>
+                    </div>
+                    <h5 class="mt-3">Processing Image</h5>
+                    <p class="text-muted">Running YOLO detection...</p>
+                    <div id="processingStatus"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class YOLODetector {
+            constructor() {
+                this.currentWorker = 'cpp';
+                this.currentModel = 'giay_ra_vien';
+                this.originalImageWidth = 0;
+                this.originalImageHeight = 0;
+                this.setupEventListeners();
+                this.updateModelInfo();
+            }
+
+            setupEventListeners() {
+                // Worker selection
+                document.querySelectorAll('input[name="workerType"]').forEach(radio => {
+                    radio.addEventListener('change', (e) => {
+                        this.currentWorker = e.target.value;
+                        this.updateModelInfo();
+                    });
+                });
+
+                // Model selection
+                document.getElementById('modelSelect').addEventListener('change', (e) => {
+                    this.currentModel = e.target.value;
+                    this.updateModelInfo();
+                });
+
+                // File input
+                document.getElementById('imageInput').addEventListener('change', (e) => {
+                    this.handleFileSelect(e);
+                });
+
+                // Detect button
+                document.getElementById('detectBtn').addEventListener('click', () => {
+                    this.detectObjects();
+                });
+
+                // Clear button
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearResults();
+                });
+
+                // Redraw boxes on window resize
+                window.addEventListener('resize', () => {
+                    if (this.lastDetections) {
+                        this.drawBoundingBoxes(this.lastDetections);
+                    }
+                });
+            }
+
+            handleFileSelect(event) {
+                const file = event.target.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.getElementById('previewImg');
+                        img.onload = () => {
+                            // Store original dimensions
+                            this.originalImageWidth = img.naturalWidth;
+                            this.originalImageHeight = img.naturalHeight;
+                            console.log('Original image dimensions:', this.originalImageWidth, 'x', this.originalImageHeight);
+                        };
+                        img.src = e.target.result;
+                        document.getElementById('imagePreview').style.display = 'block';
+                        this.clearBoundingBoxes();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            async detectObjects() {
+                const fileInput = document.getElementById('imageInput');
+                if (!fileInput.files[0]) {
+                    alert('Please select an image first.');
+                    return;
+                }
+
+                // Show processing modal
+                const modal = new bootstrap.Modal(document.getElementById('processingModal'));
+                modal.show();
+
+                try {
+                    // Prepare form data
+                    const formData = new FormData();
+                    formData.append('image', fileInput.files[0]);
+                    formData.append('model', this.currentModel);
+                    formData.append('worker', this.currentWorker);
+
+                    // Make request
+                    const response = await fetch('/api/yolo/detect', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('Detection result:', result);
+                    this.displayResults(result);
+
+                } catch (error) {
+                    console.error('Detection error:', error);
+                    this.showError('Detection failed: ' + error.message);
+                } finally {
+                    modal.hide();
+                }
+            }
+
+            displayResults(result) {
+                const container = document.getElementById('resultsContainer');
+
+                if (result.error) {
+                    container.innerHTML = `<div class="alert alert-danger">${result.error}</div>`;
+                    return;
+                }
+
+                let html = `
+                    <div class="detection-result">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0">Detection Results</h6>
+                            <span class="worker-badge worker-${result.worker || 'java'}">
+                                ${result.worker || 'java'}
+                            </span>
+                        </div>
+                        <div class="processing-time mb-2">
+                            Processing Time: ${result.processingTime || result.processing_time || 'N/A'}ms
+                        </div>
+                `;
+
+                const detections = result.detections || [];
+                
+                if (detections.length > 0) {
+                    html += `<div class="mb-2"><strong>Found ${detections.length} object(s)</strong></div>`;
+                    html += '<div class="detections-list">';
+                    
+                    detections.forEach((detection, index) => {
+                        const confidenceClass = this.getConfidenceClass(detection.confidence);
+                        const bbox = detection.bbox || {};
+                        
+                        let bboxText = '';
+                        if (bbox.x1 !== undefined && bbox.y1 !== undefined && 
+                            bbox.x2 !== undefined && bbox.y2 !== undefined) {
+                            // Original format
+                            bboxText = `(${Math.round(bbox.x1)}, ${Math.round(bbox.y1)}) - (${Math.round(bbox.x2)}, ${Math.round(bbox.y2)})`;
+                        } else if (bbox.x !== undefined && bbox.y !== undefined && 
+                                   bbox.width !== undefined && bbox.height !== undefined) {
+                            // New format
+                            bboxText = `(${Math.round(bbox.x)}, ${Math.round(bbox.y)}) ${Math.round(bbox.width)}x${Math.round(bbox.height)}`;
+                        }
+                        
+                        html += `
+                            <div class="detection-item mb-2 p-2 border rounded">
+                                <div class="d-flex justify-content-between">
+                                    <strong>${detection.class || detection.label || 'Object'}</strong>
+                                    <span class="${confidenceClass}">
+                                        ${(detection.confidence * 100).toFixed(1)}%
+                                    </span>
+                                </div>
+                                ${bboxText ? `<small class="text-muted">Box: ${bboxText}</small>` : ''}
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+
+                    // Store and draw bounding boxes
+                    this.lastDetections = detections;
+                    this.drawBoundingBoxes(detections);
+                } else {
+                    html += '<p class="text-muted">No objects detected.</p>';
+                    this.lastDetections = null;
+                }
+
+                html += '</div>';
+                container.innerHTML = html;
+            }
+
+            drawBoundingBoxes(detections) {
+                const container = document.getElementById('boundingBoxes');
+                const img = document.getElementById('previewImg');
+                
+                if (!img.complete || img.naturalWidth === 0) {
+                    console.log('Image not loaded yet, retrying...');
+                    setTimeout(() => this.drawBoundingBoxes(detections), 100);
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                // Get displayed image dimensions
+                const displayedWidth = img.width;
+                const displayedHeight = img.height;
+                
+                // Calculate scale factors
+                const scaleX = displayedWidth / this.originalImageWidth;
+                const scaleY = displayedHeight / this.originalImageHeight;
+
+                console.log('Drawing boxes:');
+                console.log('  Original image:', this.originalImageWidth, 'x', this.originalImageHeight);
+                console.log('  Displayed size:', displayedWidth, 'x', displayedHeight);
+                console.log('  Scale factors:', scaleX, scaleY);
+
+                detections.forEach((detection, index) => {
+                    const bbox = detection.bbox;
+                    
+                    if (bbox && ((bbox.x1 !== undefined && bbox.y1 !== undefined && 
+                        bbox.x2 !== undefined && bbox.y2 !== undefined) ||
+                        (bbox.x !== undefined && bbox.y !== undefined && 
+                        bbox.width !== undefined && bbox.height !== undefined))) {
+                        
+                        let x1, y1, x2, y2;
+                        
+                        // Handle both bbox formats: {x1,y1,x2,y2} or {x,y,width,height}
+                        if (bbox.x1 !== undefined) {
+                            // Original format
+                            x1 = bbox.x1 * scaleX;
+                            y1 = bbox.y1 * scaleY;
+                            x2 = bbox.x2 * scaleX;
+                            y2 = bbox.y2 * scaleY;
+                        } else {
+                            // New format: x,y,width,height
+                            x1 = bbox.x * scaleX;
+                            y1 = bbox.y * scaleY;
+                            x2 = (bbox.x + bbox.width) * scaleX;
+                            y2 = (bbox.y + bbox.height) * scaleY;
+                        }
+                        
+                        const width = x2 - x1;
+                        const height = y2 - y1;
+
+                        console.log(`  Box ${index}: (${x1.toFixed(1)}, ${y1.toFixed(1)}) - ${width.toFixed(1)}x${height.toFixed(1)}`);
+
+                        // Create bounding box element
+                        const box = document.createElement('div');
+                        box.className = 'bounding-box';
+                        box.style.left = x1 + 'px';
+                        box.style.top = y1 + 'px';
+                        box.style.width = width + 'px';
+                        box.style.height = height + 'px';
+                        box.style.borderColor = this.getColorForClass(detection.label || detection.class);
+                        
+                        // Add label
+                        const label = document.createElement('div');
+                        label.style.position = 'absolute';
+                        label.style.top = '-25px';
+                        label.style.left = '0';
+                        label.style.backgroundColor = this.getColorForClass(detection.label || detection.class);
+                        label.style.color = 'white';
+                        label.style.padding = '2px 6px';
+                        label.style.borderRadius = '3px';
+                        label.style.fontSize = '12px';
+                        label.style.whiteSpace = 'nowrap';
+                        label.textContent = `${detection.label || detection.class} ${(detection.confidence * 100).toFixed(0)}%`;
+                        
+                        box.appendChild(label);
+                        container.appendChild(box);
+                    }
+                });
+            }
+
+            getColorForClass(className) {
+                // Generate consistent colors for different classes
+                const colors = {
+                    'text': '#ff0000',
+                    'signature': '#00ff00',
+                    'stamp': '#0000ff',
+                    'logo': '#ffff00',
+                    'table': '#ff00ff',
+                    'image': '#00ffff'
+                };
+                return colors[className] || '#ff0000';
+            }
+
+            clearBoundingBoxes() {
+                document.getElementById('boundingBoxes').innerHTML = '';
+                this.lastDetections = null;
+            }
+
+            getConfidenceClass(confidence) {
+                if (confidence >= 0.8) return 'confidence-high';
+                if (confidence >= 0.5) return 'confidence-medium';
+                return 'confidence-low';
+            }
+
+            clearResults() {
+                document.getElementById('resultsContainer').innerHTML =
+                    '<p class="text-muted">Upload an image and click "Detect Objects" to see results.</p>';
+                document.getElementById('imageInput').value = '';
+                document.getElementById('imagePreview').style.display = 'none';
+                this.clearBoundingBoxes();
+                this.originalImageWidth = 0;
+                this.originalImageHeight = 0;
+            }
+
+            showError(message) {
+                const container = document.getElementById('resultsContainer');
+                container.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+            }
+
+            updateModelInfo() {
+                const info = document.getElementById('modelInfo');
+                const workerNames = {
+                    'java': 'Java Worker',
+                    'cpp': 'C++ Worker',
+                    'python': 'Python Worker'
+                };
+                const modelNames = {
+                    'giay_ra_vien': 'Giấy Ra Viện',
+                    'general': 'General Objects'
+                };
+
+                info.innerHTML = `
+                    <strong>Current Model:</strong> ${modelNames[this.currentModel]}<br>
+                    <strong>Engine:</strong> ${workerNames[this.currentWorker]}<br>
+                    <strong>Status:</strong> <span class="text-success">Ready</span>
+                `;
+            }
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new YOLODetector();
+        });
+    </script>
+    <!-- Cache buster: 2025-12-25-16:30 -->
+</body>
+</html>

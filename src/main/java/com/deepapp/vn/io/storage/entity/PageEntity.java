@@ -1,5 +1,6 @@
 package com.deepapp.vn.io.storage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,6 +19,7 @@ public class PageEntity {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "document_id", nullable = false)
+    @JsonBackReference("document-pages")
     private DocumentEntity document;
     
     @Column(name = "request_id", nullable = false)
@@ -40,7 +42,10 @@ public class PageEntity {
     
     @Column(name = "image_path", length = 500)
     private String imagePath;
-    
+
+    @Column(name = "image_data", columnDefinition = "MEDIUMTEXT")
+    private String imageData;
+
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
     
@@ -85,7 +90,10 @@ public class PageEntity {
     
     public String getImagePath() { return imagePath; }
     public void setImagePath(String imagePath) { this.imagePath = imagePath; }
-    
+
+    public String getImageData() { return imageData; }
+    public void setImageData(String imageData) { this.imageData = imageData; }
+
     public String getText() { return text; }
     public void setText(String text) { this.text = text; }
     
@@ -96,13 +104,20 @@ public class PageEntity {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     
     /**
-     * Load image data from file system and return as base64
+     * Get image data as base64
+     * Priority: 1) imageData from DB, 2) load from file system
      */
     public String getImageDataBase64() {
+        // First try to return imageData from database
+        if (imageData != null && !imageData.isEmpty()) {
+            return imageData;
+        }
+
+        // Fallback to loading from file system
         if (imagePath == null || imagePath.isEmpty()) {
             return null;
         }
-        
+
         try {
             Path path = Paths.get(imagePath);
             if (!Files.exists(path)) {

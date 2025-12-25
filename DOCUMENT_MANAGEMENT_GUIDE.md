@@ -313,11 +313,44 @@ Page text already stored in database → Easy to query for OCR results
 
 ## 🛠️ Testing
 
-### Test Document Upload:
+### Test Document Upload with Storage Control:
 ```bash
 cd /root/deepapp/deepapp_main
+
+# Upload document - now goes through DocumentUploadService
 curl -X POST http://localhost:8080/ZZ/A0/ZZA0_0100/stream \
   -F "file=@test.pdf"
+
+# Check database records created automatically
+sqlite3 /tmp/deepapp/documents.db "SELECT * FROM documents ORDER BY created_at DESC LIMIT 1;"
+
+# Check file storage structure
+ls -la /tmp/deepapp/uploads/req_*/
+
+# Check task progress
+sqlite3 /tmp/deepapp/documents.db "SELECT * FROM tasks ORDER BY created_at DESC LIMIT 1;"
+```
+
+### Test Integration Flow:
+```bash
+# 1. Upload document
+UPLOAD_RESPONSE=$(curl -s -X POST http://localhost:8080/ZZ/A0/ZZA0_0100/stream \
+  -F "file=@test.pdf")
+
+# 2. Extract requestId from SSE events (in real implementation)
+REQUEST_ID="req_1735094123456_abc123"
+
+# 3. Check document in database
+curl http://localhost:8080/api/documents/$REQUEST_ID
+
+# 4. View pages
+curl http://localhost:8080/api/documents/$REQUEST_ID/pages
+
+# 5. Check statistics
+curl http://localhost:8080/api/documents/statistics/detailed
+
+# 6. Manual cleanup
+curl -X POST "http://localhost:8080/api/documents/cleanup/retention?amount=1&unit=minutes"
 ```
 
 ### Test Management API:
@@ -335,8 +368,10 @@ curl -X POST "http://localhost:8080/api/documents/cleanup/retention?amount=1&uni
 ### Test Web UI:
 1. Open: http://localhost:8080/document-management.html
 2. Upload document via: http://localhost:8080/document-stream-test.html
-3. Refresh management page
-4. View pages, delete documents, run cleanup
+3. **NEW**: Document will be highlighted automatically after upload
+4. **NEW**: URL parameter `?requestId=req_xxx` will highlight specific document
+5. Refresh management page
+6. View pages, delete documents, run cleanup
 
 ## 📝 Notes
 

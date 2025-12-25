@@ -409,17 +409,31 @@
         function addPageCard(pageData) {
             const card = document.createElement('div');
             card.className = 'page-card';
-            
+
             const pageInfo = pageData.pageData || {};
             const imageData = pageInfo.imageData || '';
-            const hasImage = imageData && !imageData.startsWith('base64_page_'); // Check if real base64 or mock data
-            
+            const filePath = pageInfo.filePath || '';
+
+            // Priority: filePath > imageData
+            const hasRealImage = filePath || (imageData && !imageData.startsWith('base64_page_'));
+
             let imageHtml = '';
-            if (hasImage) {
-                // Real base64 image data - detect format from base64 prefix
+            if (filePath) {
+                // Load from file path (convert /tmp/deepapp/pages/... to /pages/...)
+                const webPath = filePath.replace('/tmp/deepapp/pages', '/pages');
+                imageHtml = `<div class="page-image">
+                    <img src="${webPath}"
+                         alt="Page ${pageData.pageNumber}"
+                         loading="lazy"
+                         onload="this.style.opacity='1'"
+                         style="opacity:0; transition: opacity 0.3s"
+                         onerror="this.parentElement.innerHTML='<div class=page-placeholder>❌ Failed to load image</div>'">
+                </div>`;
+            } else if (hasRealImage) {
+                // Fallback: Real base64 image data
                 const mimeType = detectImageFormat(imageData);
                 imageHtml = `<div class="page-image">
-                    <img src="data:${mimeType};base64,${imageData}" 
+                    <img src="data:${mimeType};base64,${imageData}"
                          alt="Page ${pageData.pageNumber}"
                          loading="lazy"
                          onload="this.style.opacity='1'"
@@ -566,7 +580,7 @@
                 updateProgress();
             } else if (eventType === 'page') {
                 processedPages++;
-                const hasImage = data.pageData?.imageData && !data.pageData.imageData.startsWith('base64_page_');
+                const hasImage = data.pageData?.filePath || (data.pageData?.imageData && !data.pageData.imageData.startsWith('base64_page_'));
                 addStatus(`📄 Page ${data.pageNumber}/${totalPages} ${hasImage ? '✓ with image' : '(mock data)'}`, 'page');
                 addPageCard(data);
                 updateProgress();

@@ -96,19 +96,43 @@ workers:
     targetId: cpp-worker
     enabled: true
 
+  # Python Workers (Local)
+  python:
+    host: 72.60.111.138
+    port: 50052
+    targetId: python-worker
+    enabled: true
+
   # OCR Worker Configuration
   ocr:
     host: 72.60.111.138
     port: 50051
     targetId: cpp-ocr-worker
     enabled: true
-  
+
   # NER Worker Configuration
   ner:
     host: 72.60.111.138
     port: 50051
     targetId: cpp-ner-worker
     enabled: true
+
+# Python Worker Configuration
+python:
+  worker:
+    autoStart: true
+    pythonPath: python3
+    mainScript: src/main/python/com/deepapp/vn/io/main.py
+    workingDir: ""
+
+# gRPC Worker Configuration
+grpc:
+  cpp:
+    host: localhost
+    port: 50052
+  python:
+    host: localhost
+    port: 50053
 
 # Logging configuration
 logging:

@@ -17,6 +17,22 @@ pkg_check_modules(POPPLER REQUIRED poppler-cpp)
 pkg_check_modules(TIFF REQUIRED libtiff-4)
 pkg_check_modules(PNG REQUIRED libpng)
 
+# Find ONNX Runtime for YOLO models
+find_path(ONNXRUNTIME_INCLUDE_DIR onnxruntime_cxx_api.h PATHS /usr/local/include)
+find_library(ONNXRUNTIME_LIBRARY onnxruntime PATHS /usr/local/lib)
+
+if(NOT ONNXRUNTIME_INCLUDE_DIR OR NOT ONNXRUNTIME_LIBRARY)
+    message(FATAL_ERROR "ONNX Runtime not found. Please install ONNX Runtime.")
+else()
+    message(STATUS "Found ONNX Runtime: ${ONNXRUNTIME_INCLUDE_DIR}, ${ONNXRUNTIME_LIBRARY}")
+endif()
+
+# Find OpenCV for image processing
+find_package(OpenCV REQUIRED)
+
+# Find SQLite3 for document storage
+find_package(SQLite3 REQUIRED)
+
 # Find SQLite3 for document storage
 find_package(SQLite3 REQUIRED)
 
@@ -27,7 +43,9 @@ include_directories(${POPPLER_INCLUDE_DIRS})
 include_directories(${TIFF_INCLUDE_DIRS})
 include_directories(${PNG_INCLUDE_DIRS})
 include_directories(${SQLite3_INCLUDE_DIRS})
+include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp)
+include_directories(${ONNXRUNTIME_INCLUDE_DIR})
 
 # Generate protobuf files from proto
 find_program(PROTOC protoc)
@@ -62,6 +80,8 @@ file(GLOB_RECURSE WORKER_SOURCES
     "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0100/worker/AAA0_0100_W.cpp"
     "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0101/worker/AAA0_0101_W.cpp"
     "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0200/worker/AAA0_0200_W.cpp"
+    "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/ZZ/A0/ZZA0_0100/worker/ZZA0_0100_W.cpp"
+    "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/ZZ/A0/ZZA0_0102/worker/ZZA0_0102_W.cpp"
 )
 
 # Alternative: Auto-discover all *_W.cpp files
@@ -101,6 +121,8 @@ target_link_libraries(deepapp_worker_main
     ${POPPLER_LIBRARIES}
     ${TIFF_LIBRARIES}
     ${PNG_LIBRARIES}
+    ${OpenCV_LIBRARIES}
+    ${ONNXRUNTIME_LIBRARY}
     SQLite::SQLite3
     pthread
 )

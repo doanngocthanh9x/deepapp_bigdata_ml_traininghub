@@ -9,6 +9,9 @@
 #include <fstream>
 #include <sstream>
 #include <cstring>
+#include <ctime>
+#include <cstdlib>
+#include <unistd.h>
 #include <iostream>
 
 namespace deepapp {
@@ -76,11 +79,16 @@ public:
     std::string format;
     std::string lastError;
     std::vector<uint8_t> fileData;
+    std::string tempTiffPath;  // Temp file path for TIFF loaded from memory
 
     ~Impl() {
         if (tiffHandle) {
             TIFFClose(tiffHandle);
             tiffHandle = nullptr;
+        }
+        // Clean up temp TIFF file
+        if (!tempTiffPath.empty()) {
+            std::remove(tempTiffPath.c_str());
         }
     }
 
@@ -116,6 +124,50 @@ public:
         }
         format = "TIFF";
         return true;
+    }
+
+    bool loadTIFFFromMemory(const uint8_t* data, size_t size) {
+        // Save fileData for TIFF operations
+        fileData.assign(data, data + size);
+
+        // TIFF doesn't have native memory loading like PDF
+        // Write to temporary file and load from there
+        // Use PID + timestamp + random to ensure unique filename (avoid race conditions)
+        std::srand(std::time(nullptr));
+        std::string tempPath = "/tmp/tiff_temp_"
+            + std::to_string(getpid()) + "_"
+            + std::to_string(std::time(nullptr)) + "_"
+            + std::to_string(std::rand()) + ".tif";
+
+        std::ofstream tempFile(tempPath, std::ios::binary);
+        if (!tempFile.is_open()) {
+            lastError = "Failed to create temp TIFF file: " + tempPath;
+            return false;
+        }
+
+        tempFile.write(reinterpret_cast<const char*>(data), size);
+        tempFile.close();
+
+        if (!tempFile.good()) {
+            lastError = "Failed to write TIFF data to temp file";
+            std::remove(tempPath.c_str());  // Clean up failed file
+            return false;
+        }
+
+        // Load from temp file
+        bool success = loadTIFFFromFile(tempPath);
+
+        // Clean up temp file (don't delete yet - TIFF handle still needs it)
+        // Store path for cleanup in destructor
+        tempTiffPath = tempPath;
+
+        if (!success) {
+            // If load failed, clean up immediately
+            std::remove(tempPath.c_str());
+            tempTiffPath.clear();
+        }
+
+        return success;
     }
 
     std::string renderPDFPageToPNG(int pageNumber, int dpi) {
@@ -262,6 +314,8 @@ bool DocumentProcessor::loadFromFile(const std::string& filePath) {
 bool DocumentProcessor::loadFromMemory(const uint8_t* data, size_t size, const std::string& fileType) {
     if (fileType == "pdf") {
         return pImpl->loadPDFFromMemory(data, size);
+    } else if (fileType == "tiff" || fileType == "tif") {
+        return pImpl->loadTIFFFromMemory(data, size);
     } else {
         pImpl->lastError = "Memory loading not implemented for: " + fileType;
         return false;

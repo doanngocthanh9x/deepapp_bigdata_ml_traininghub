@@ -272,10 +272,15 @@
             margin-bottom: 10px;
         }
         
-        input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
+        .highlight-row {
+            background-color: #fff3cd !important;
+            border-left: 4px solid #ffc107;
+            animation: highlight 2s ease-out;
+        }
+        
+        @keyframes highlight {
+            0% { background-color: #fff3cd; }
+            100% { background-color: #fff3cd; }
         }
     </style>
 </head>
@@ -379,9 +384,14 @@
     <script>
         const API_BASE = '/api/documents';
         let allDocuments = [];
+        let highlightRequestId = null;
         
         // Load data on page load
         window.addEventListener('load', () => {
+            // Check for requestId parameter to highlight specific document
+            const urlParams = new URLSearchParams(window.location.search);
+            highlightRequestId = urlParams.get('requestId');
+            
             refreshData();
             setupEventListeners();
             // Auto refresh every 30 seconds
@@ -457,6 +467,13 @@
             
             documents.forEach(doc => {
                 const tr = document.createElement('tr');
+                const isHighlighted = highlightRequestId && doc.requestId === highlightRequestId;
+                if (isHighlighted) {
+                    tr.classList.add('highlight-row');
+                    // Clear highlight after 5 seconds
+                    setTimeout(() => tr.classList.remove('highlight-row'), 5000);
+                }
+                
                 tr.innerHTML = `
                     <td><input type="checkbox" class="doc-checkbox" value="${doc.requestId}"></td>
                     <td><code>${doc.requestId}</code></td>
@@ -472,6 +489,11 @@
                     </td>
                 `;
                 tbody.appendChild(tr);
+                
+                // Auto-scroll to highlighted row
+                if (isHighlighted) {
+                    setTimeout(() => tr.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+                }
             });
         }
         
@@ -499,9 +521,26 @@
                 pages.forEach(page => {
                     const pageCard = document.createElement('div');
                     pageCard.className = 'page-card';
+
+                    // Convert absolute file path to web URL
+                    // /tmp/deepapp/pages/document1/page_1.png -> /pages/document1/page_1.png
+                    // /tmp/deepapp/uploads/uuid/page_1.png -> /uploads/uuid/page_1.png
+                    let imageUrl;
+                    const imagePath = page.filePath || page.imagePath; // Support both field names
+                    if (imagePath) {
+                        imageUrl = imagePath
+                            .replace('/tmp/deepapp/pages', '/pages')
+                            .replace('/tmp/deepapp/uploads', '/uploads');
+                    } else if (page.imageData) {
+                        // Fallback to base64 if filePath not available
+                        imageUrl = `data:image/png;base64,${page.imageData}`;
+                    } else {
+                        imageUrl = '/static/placeholder.png'; // Default placeholder
+                    }
+
                     pageCard.innerHTML = `
                         <h4>Trang ${page.pageNumber}</h4>
-                        <img src="data:image/png;base64,${page.imageData}" alt="Page ${page.pageNumber}" loading="lazy">
+                        <img src="${imageUrl}" alt="Page ${page.pageNumber}" loading="lazy" onerror="this.src='/static/error.png'">
                         <p>${page.width} x ${page.height} px</p>
                         <p>${page.dpi} DPI</p>
                     `;

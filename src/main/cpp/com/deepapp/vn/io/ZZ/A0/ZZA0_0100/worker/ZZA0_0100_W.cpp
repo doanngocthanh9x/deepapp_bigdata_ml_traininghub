@@ -1,6 +1,7 @@
 #include "com/deepapp/infrastructure/BaseWorker.h"
 #include "com/deepapp/infrastructure/WorkerRegistry.h"
 #include "com/deepapp/infrastructure/GrpcWorkerClient.h"
+#include "com/deepapp/infrastructure/FileHasher.h"
 #include "com/deepapp/document/DocumentProcessor.h"
 #include "com/deepapp/storage/DocumentStorage.h"
 #include <nlohmann/json.hpp>
@@ -8,6 +9,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <ctime>
 #include <sstream>
 #include <iomanip>
@@ -296,15 +299,34 @@ private:
                 
                 // Render page to PNG and encode to base64 (this is the heavy operation)
                 std::string imageBase64 = processor.extractPageAsBase64PNG(pageNum, dpi);
-                
+
                 if (imageBase64.empty()) {
-                    std::cerr << "[ZZA0_0100_Worker] Failed to render page " << pageNum << ": " 
+                    std::cerr << "[ZZA0_0100_Worker] Failed to render page " << pageNum << ": "
                               << processor.getLastError() << std::endl;
                     continue;
                 }
-                
+
                 std::cout << "[ZZA0_0100_Worker] Rendered page " << pageNum << " (" << imageBase64.length() << " bytes base64)" << std::endl;
-                
+
+                // ============================================================
+                // SAVE PNG TO DISK
+                // ============================================================
+                std::string filenameNoExt = filename.substr(0, filename.find_last_of('.'));
+                std::string pageDir = "/tmp/deepapp/pages/" + filenameNoExt;
+                std::string pngFilePath = "";
+
+                if (!createDirectory(pageDir)) {
+                    std::cerr << "[ZZA0_0100_Worker] ✗ Failed to create directory: " << pageDir << std::endl;
+                } else {
+                    pngFilePath = pageDir + "/page_" + std::to_string(pageNum) + ".png";
+                    if (savePngToFile(imageBase64, pngFilePath)) {
+                        std::cout << "[ZZA0_0100_Worker] ✓ Saved page " << pageNum << " to: " << pngFilePath << std::endl;
+                    } else {
+                        std::cerr << "[ZZA0_0100_Worker] ✗ Failed to save PNG: " << pngFilePath << std::endl;
+                        pngFilePath = "";  // Reset on failure
+                    }
+                }
+
                 // ============================================================
                 // SAVE PAGE TO DATABASE
                 // ============================================================
@@ -317,27 +339,27 @@ private:
                     page.height = pageInfo.height;
                     page.dpi = dpi;
                     page.format = format;
-                    page.imagePath = "";  // Could save PNG to disk and store path
+                    page.imagePath = pngFilePath;  // Save file path instead of base64
                     page.text = sanitizeUtf8(pageInfo.text);
                     page.status = "rendered";
-                    
+
                     int pageId = storage_->savePage(page);
                     if (pageId > 0) {
                         std::cout << "[ZZA0_0100_Worker] ✓ Saved page " << pageNum << " to DB (ID: " << pageId << ")" << std::endl;
-                        
+
                         // Update task progress
                         storage_->updateTaskProgress(requestId, pageNum);
                     }
                 }
-                
-                // Build page data
+
+                // Build page data - Send filePath instead of base64 imageData
                 json pageData;
                 pageData["pageNumber"] = pageNum;
                 pageData["format"] = format;
                 pageData["width"] = pageInfo.width;
                 pageData["height"] = pageInfo.height;
                 pageData["dpi"] = dpi;
-                pageData["imageData"] = imageBase64;  // Real PNG image!
+                pageData["filePath"] = pngFilePath;  // Send file path instead of base64
                 if (!pageInfo.text.empty()) {
                     // Sanitize text to remove invalid UTF-8 characters
                     pageData["text"] = sanitizeUtf8(pageInfo.text);
@@ -444,24 +466,130 @@ private:
     }
 
     /**
-     * Get a specific page from document
+     * Get a specific page from document - REAL RENDERING
      */
     std::string getPage(const std::string& payload) {
         try {
             json request = json::parse(payload);
             std::string filename = request.value("filename", "unknown");
             int page_number = request.value("pageNumber", 1);
+            std::string file_type = getFileExtension(filename);
+            int dpi = request.value("dpi", 150);  // Default 150 DPI
 
-            std::cout << "[ZZA0_0100_Worker] Getting page " << page_number 
-                      << " from: " << filename << std::endl;
+            std::cout << "[ZZA0_0100_Worker] Rendering page " << page_number
+                      << " from: " << filename << " at " << dpi << " DPI" << std::endl;
 
             json response;
             response["worker"] = "ZZA0_0100_W";
             response["status"] = "success";
             response["filename"] = filename;
             response["pageNumber"] = page_number;
-            response["pageData"] = "Page " + std::to_string(page_number) + " image data (base64)";
             response["timestamp"] = std::time(nullptr);
+
+            // Check if we have file data or file path
+            if (request.contains("data") && !request["data"].get<std::string>().empty()) {
+                // Load from base64 data
+                std::string base64_data = request["data"];
+                std::vector<uint8_t> file_data = decodeBase64(base64_data);
+
+                DocumentProcessor processor;
+                if (processor.loadFromMemory(file_data.data(), file_data.size(), file_type)) {
+                    // Get page info
+                    auto pageInfo = processor.extractPageInfo(page_number, dpi);
+
+                    // Render page to PNG base64
+                    std::string imageBase64 = processor.extractPageAsBase64PNG(page_number, dpi);
+
+                    if (!imageBase64.empty()) {
+                        // Create output directory structure: /tmp/deepapp/pages/{filename}/
+                        std::string filenameNoExt = filename.substr(0, filename.find_last_of('.'));
+                        std::string pageDir = "/tmp/deepapp/pages/" + filenameNoExt;
+
+                        if (!createDirectory(pageDir)) {
+                            response["status"] = "error";
+                            response["error"] = "Failed to create page directory: " + pageDir;
+                            std::cerr << "[ZZA0_0100_Worker] ✗ Failed to create directory: " << pageDir << std::endl;
+                        } else {
+                            // Save PNG to file: page_1.png, page_2.png, etc.
+                            std::string outputPath = pageDir + "/page_" + std::to_string(page_number) + ".png";
+
+                            if (savePngToFile(imageBase64, outputPath)) {
+                                // Return file path instead of base64
+                                response["format"] = file_type;
+                                response["width"] = pageInfo.width;
+                                response["height"] = pageInfo.height;
+                                response["dpi"] = dpi;
+                                response["filePath"] = outputPath;  // Changed from imageData to filePath
+                                response["text"] = sanitizeUtf8(pageInfo.text);
+
+                                std::cout << "[ZZA0_0100_Worker] ✓ Saved page " << page_number
+                                          << " to: " << outputPath << std::endl;
+                            } else {
+                                response["status"] = "error";
+                                response["error"] = "Failed to save PNG file: " + outputPath;
+                                std::cerr << "[ZZA0_0100_Worker] ✗ Failed to save PNG: " << outputPath << std::endl;
+                            }
+                        }
+                    } else {
+                        response["status"] = "error";
+                        response["error"] = "Failed to render page: " + processor.getLastError();
+                        std::cerr << "[ZZA0_0100_Worker] ✗ Failed to render page " << page_number
+                                  << ": " << processor.getLastError() << std::endl;
+                    }
+                } else {
+                    response["status"] = "error";
+                    response["error"] = "Failed to load document: " + processor.getLastError();
+                    std::cerr << "[ZZA0_0100_Worker] ✗ Failed to load document: "
+                              << processor.getLastError() << std::endl;
+                }
+            } else if (request.contains("filePath") && !request["filePath"].get<std::string>().empty()) {
+                // Load from file path
+                std::string filePath = request["filePath"];
+
+                DocumentProcessor processor;
+                if (processor.loadFromFile(filePath)) {
+                    auto pageInfo = processor.extractPageInfo(page_number, dpi);
+                    std::string imageBase64 = processor.extractPageAsBase64PNG(page_number, dpi);
+
+                    if (!imageBase64.empty()) {
+                        // Create output directory structure
+                        std::string filenameNoExt = filename.substr(0, filename.find_last_of('.'));
+                        std::string pageDir = "/tmp/deepapp/pages/" + filenameNoExt;
+
+                        if (!createDirectory(pageDir)) {
+                            response["status"] = "error";
+                            response["error"] = "Failed to create page directory: " + pageDir;
+                        } else {
+                            std::string outputPath = pageDir + "/page_" + std::to_string(page_number) + ".png";
+
+                            if (savePngToFile(imageBase64, outputPath)) {
+                                response["format"] = file_type;
+                                response["width"] = pageInfo.width;
+                                response["height"] = pageInfo.height;
+                                response["dpi"] = dpi;
+                                response["filePath"] = outputPath;  // Changed from imageData to filePath
+                                response["text"] = sanitizeUtf8(pageInfo.text);
+
+                                std::cout << "[ZZA0_0100_Worker] ✓ Saved page " << page_number
+                                          << " from file to: " << outputPath << std::endl;
+                            } else {
+                                response["status"] = "error";
+                                response["error"] = "Failed to save PNG file: " + outputPath;
+                            }
+                        }
+                    } else {
+                        response["status"] = "error";
+                        response["error"] = "Failed to render page from file";
+                    }
+                } else {
+                    response["status"] = "error";
+                    response["error"] = "Failed to load document from file";
+                }
+            } else {
+                // No data provided - return mock
+                response["pageData"] = "Page " + std::to_string(page_number) + " image data (base64)";
+                std::cout << "[ZZA0_0100_Worker] ⚠ No data provided, returning mock" << std::endl;
+            }
 
             return response.dump();
 
@@ -476,23 +604,54 @@ private:
 
     /**
      * Get document information (page count, dimensions, etc.)
+     * Uses DocumentProcessor (Poppler/libtiff) for accurate parsing
+     * Supports both base64 data and file path
      */
     std::string getDocumentInfo(const std::string& payload) {
         try {
             json request = json::parse(payload);
             std::string filename = request.value("filename", "unknown");
             std::string file_type = getFileExtension(filename);
-            
+
             int pageCount = -1;
-            
-            // Try to get real page count if data is provided
+            std::string errorMsg;
+
+            // Try base64 data first
             if (request.contains("data") && !request["data"].get<std::string>().empty()) {
                 std::string base64_data = request["data"];
                 std::vector<uint8_t> file_data = decodeBase64(base64_data);
-                pageCount = getRealPageCount(file_data, file_type);
+
+                // Use DocumentProcessor for accurate parsing with Poppler/libtiff
+                DocumentProcessor processor;
+                if (processor.loadFromMemory(file_data.data(), file_data.size(), file_type)) {
+                    pageCount = processor.getPageCount();
+                    std::cout << "[ZZA0_0100_Worker] DocumentProcessor (from memory): " << filename
+                              << " has " << pageCount << " pages" << std::endl;
+                } else {
+                    errorMsg = processor.getLastError();
+                    std::cerr << "[ZZA0_0100_Worker] Failed to load from memory: " << errorMsg << std::endl;
+                    // Fallback to simple parser
+                    pageCount = getRealPageCount(file_data, file_type);
+                }
+            }
+            // Try file path if no data provided
+            else if (request.contains("filePath") && !request["filePath"].get<std::string>().empty()) {
+                std::string filePath = request["filePath"];
+
+                DocumentProcessor processor;
+                if (processor.loadFromFile(filePath)) {
+                    pageCount = processor.getPageCount();
+                    std::cout << "[ZZA0_0100_Worker] DocumentProcessor (from file): " << filename
+                              << " has " << pageCount << " pages (path: " << filePath << ")" << std::endl;
+                } else {
+                    errorMsg = processor.getLastError();
+                    std::cerr << "[ZZA0_0100_Worker] Failed to load from file: " << errorMsg << std::endl;
+                }
             } else {
-                // No data provided - return mock value with warning
-                pageCount = -1;  // -1 indicates unknown
+                // No data or path provided
+                pageCount = -1;
+                errorMsg = "No file data or path provided";
+                std::cerr << "[ZZA0_0100_Worker] " << errorMsg << std::endl;
             }
 
             json response;
@@ -502,9 +661,12 @@ private:
             response["pageCount"] = pageCount;
             response["format"] = file_type;
             response["timestamp"] = std::time(nullptr);
-            
+
             if (pageCount == -1) {
                 response["note"] = "Page count unavailable - no file data provided";
+                if (!errorMsg.empty()) {
+                    response["error"] = errorMsg;
+                }
             }
 
             return response.dump();
@@ -701,15 +863,37 @@ private:
     }
 
     /**
-     * Decode base64 string (simplified implementation)
+     * Decode base64 string (PROPER IMPLEMENTATION)
      */
     std::vector<uint8_t> decodeBase64(const std::string& base64_string) {
-        // This is a simplified mock - use proper base64 library in production
-        std::vector<uint8_t> data;
-        data.resize(base64_string.size());
-        // Just copy for demo purposes
-        std::memcpy(data.data(), base64_string.data(), base64_string.size());
-        return data;
+        static const std::string base64_chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz"
+            "0123456789+/";
+
+        std::vector<uint8_t> result;
+        result.reserve(base64_string.size() * 3 / 4);
+
+        std::vector<int> decoded_values(256, -1);
+        for (int i = 0; i < 64; i++) {
+            decoded_values[static_cast<unsigned char>(base64_chars[i])] = i;
+        }
+        decoded_values[static_cast<unsigned char>('=')] = 0;
+
+        int val = 0;
+        int valb = -8;
+
+        for (unsigned char c : base64_string) {
+            if (decoded_values[c] == -1) continue;
+            val = (val << 6) + decoded_values[c];
+            valb += 6;
+            if (valb >= 0) {
+                result.push_back(static_cast<uint8_t>((val >> valb) & 0xFF));
+                valb -= 8;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -725,7 +909,75 @@ private:
         }
         return "";
     }
-    
+
+    /**
+     * Create directory recursively (like mkdir -p)
+     */
+    bool createDirectory(const std::string& path) {
+        struct stat st;
+        if (stat(path.c_str(), &st) == 0) {
+            return S_ISDIR(st.st_mode);  // Already exists
+        }
+
+        // Try to create parent directory first
+        size_t pos = path.find_last_of('/');
+        if (pos != std::string::npos && pos > 0) {
+            std::string parent = path.substr(0, pos);
+            if (!createDirectory(parent)) {
+                return false;
+            }
+        }
+
+        // Create this directory
+        return mkdir(path.c_str(), 0755) == 0;
+    }
+
+    /**
+     * Save base64 PNG data to file
+     * @param base64Data Base64 encoded PNG data
+     * @param outputPath Output file path
+     * @return true if successful
+     */
+    bool savePngToFile(const std::string& base64Data, const std::string& outputPath) {
+        try {
+            // Ensure directory exists
+            size_t lastSlash = outputPath.find_last_of('/');
+            if (lastSlash != std::string::npos) {
+                std::string dir = outputPath.substr(0, lastSlash);
+                if (!createDirectory(dir)) {
+                    std::cerr << "[ZZA0_0100_Worker] Failed to create directory: " << dir << std::endl;
+                    return false;
+                }
+            }
+
+            // Decode base64 to binary
+            std::vector<uint8_t> pngData = decodeBase64(base64Data);
+
+            // Write to file
+            std::ofstream file(outputPath, std::ios::binary);
+            if (!file.is_open()) {
+                std::cerr << "[ZZA0_0100_Worker] Failed to open file for writing: " << outputPath << std::endl;
+                return false;
+            }
+
+            file.write(reinterpret_cast<const char*>(pngData.data()), pngData.size());
+            file.close();
+
+            if (!file.good()) {
+                std::cerr << "[ZZA0_0100_Worker] Failed to write PNG data" << std::endl;
+                return false;
+            }
+
+            std::cout << "[ZZA0_0100_Worker] ✓ Saved PNG: " << outputPath
+                      << " (" << pngData.size() << " bytes)" << std::endl;
+            return true;
+
+        } catch (const std::exception& e) {
+            std::cerr << "[ZZA0_0100_Worker] Error saving PNG: " << e.what() << std::endl;
+            return false;
+        }
+    }
+
     /**
      * Read file from disk
      * Returns file content as bytes

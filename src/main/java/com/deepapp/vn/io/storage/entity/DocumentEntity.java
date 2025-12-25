@@ -1,5 +1,6 @@
 package com.deepapp.vn.io.storage.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,9 +45,11 @@ public class DocumentEntity {
     private String errorMessage;
     
     @OneToMany(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("document-pages")
     private List<PageEntity> pages = new ArrayList<>();
-    
+
     @OneToOne(mappedBy = "document", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference("document-task")
     private TaskEntity task;
     
     // Constructors

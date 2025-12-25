@@ -136,6 +136,12 @@ private:
         std::cout << "  To: " << event.target_id() << std::endl;
         std::cout << "  Type: " << event.event_type() << std::endl;
         std::cout << "  Payload: " << event.payload() << std::endl;
+        
+        // Debug: Print all metadata
+        std::cout << "  Metadata count: " << event.metadata().size() << std::endl;
+        for (const auto& [key, value] : event.metadata()) {
+            std::cout << "    " << key << " = " << value << std::endl;
+        }
 
         // Get task_id from metadata first, fallback to target_id
         std::string task_id;
