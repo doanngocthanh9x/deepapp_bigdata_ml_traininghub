@@ -179,6 +179,14 @@ public class CppWorkerManager {
             );
             pb.directory(buildDirectory);
             pb.redirectErrorStream(false);
+            
+            // Inherit environment variables from parent process
+            pb.environment().putAll(System.getenv());
+            
+            // Set DEEPAPP_PROJECT_ROOT environment variable for C++ worker
+            pb.environment().put("DEEPAPP_PROJECT_ROOT", projectRoot.getAbsolutePath());
+            
+            logger.info("Setting DEEPAPP_PROJECT_ROOT={} for C++ worker", projectRoot.getAbsolutePath());
 
             workerProcess = pb.start();
             running = true;

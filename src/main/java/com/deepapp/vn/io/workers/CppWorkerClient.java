@@ -164,17 +164,20 @@ public class CppWorkerClient extends BaseWorkerClient {
         logger.info("Sending YOLO detection request to C++ worker - Model: {}, Confidence: {}, IOU: {}, MaxDetections: {}, ImgSize: {}, Augment: {}, HalfPrecision: {}", 
                    model, confidence, iou, maxDetections, imgSize, augment, halfPrecision);
 
-        // Create temporary file for image
-        Path tempDir = Paths.get(imagesTempPath);
-        Files.createDirectories(tempDir);
-        String fileName = "yolo_input_" + System.currentTimeMillis() + "_" + Thread.currentThread().getId() + ".jpg";
-        Path imagePath = tempDir.resolve(fileName);
-        Files.write(imagePath, imageBytes);
-
-        logger.debug("Saved image to temporary file: {}", imagePath.toString());
-
+        java.nio.file.Path imagePath = null;
         try {
-            // Create JSON payload with file path instead of base64
+            // Create temporary file for image
+            java.nio.file.Path tempDir = java.nio.file.Paths.get(imagesTempPath);
+            java.nio.file.Files.createDirectories(tempDir);
+            
+            String fileName = "yolo_input_" + System.currentTimeMillis() + "_" + java.util.concurrent.ThreadLocalRandom.current().nextInt(1000) + ".jpg";
+            imagePath = tempDir.resolve(fileName);
+            
+            // Write image bytes to temporary file
+            java.nio.file.Files.write(imagePath, imageBytes);
+            logger.debug("Saved image to temporary file: {}", imagePath.toString());
+
+            // Create JSON payload with file path instead of base64 image data
             Map<String, Object> payload = new HashMap<>();
             payload.put("image_path", imagePath.toString());
             payload.put("model", model);
@@ -263,19 +266,28 @@ public class CppWorkerClient extends BaseWorkerClient {
             }
 
             logger.info("YOLO detection completed - Found {} objects", result.getDetections().size());
+            
+            // Clean up temporary file
+            try {
+                java.nio.file.Files.deleteIfExists(imagePath);
+                logger.debug("Cleaned up temporary image file: {}", imagePath.toString());
+            } catch (Exception e) {
+                logger.warn("Failed to cleanup temporary image file: {}", imagePath.toString(), e);
+            }
+            
             return result;
 
         } catch (Exception e) {
+            // Clean up temporary file on error
+            try {
+                java.nio.file.Files.deleteIfExists(imagePath);
+                logger.debug("Cleaned up temporary image file after error: {}", imagePath.toString());
+            } catch (Exception cleanupException) {
+                logger.warn("Failed to cleanup temporary image file after error: {}", imagePath.toString(), cleanupException);
+            }
+            
             logger.error("YOLO detection failed", e);
             throw new RuntimeException("C++ worker detection failed: " + e.getMessage(), e);
-        } finally {
-            // Clean up temporary file
-            try {
-                Files.deleteIfExists(imagePath);
-                logger.debug("Cleaned up temporary image file: {}", imagePath.toString());
-            } catch (Exception e) {
-                logger.warn("Failed to clean up temporary image file: {}", imagePath.toString(), e);
-            }
         }
     }
 

@@ -267,23 +267,33 @@ private:
             session_options.SetIntraOpNumThreads(1);
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
 
-            // Model path - relative to current working directory
-            std::string model_path = "src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+            // Model path - use environment variable for project root
+            const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
+            std::string model_path;
+
+            if (project_root_env) {
+                model_path = std::string(project_root_env) + "/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+                std::cout << "[ZZA0_0102_Worker] Using project root from environment: " << project_root_env << std::endl;
+            } else {
+                // Fallback to absolute path if environment variable not set
+                model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+                std::cout << "[ZZA0_0102_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
+            }
 
             // Check if model file exists
             std::ifstream model_file(model_path);
-            if (!model_file.good()) {
-                // Try absolute path
-                //model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
-                model_path = "/root/deepapp/deepapp_main/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+            // if (!model_file.good()) {
+            //     // Try absolute path
+            //     model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+            //     //model_path = "/root/deepapp/deepapp_main/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
                
-                std::ifstream abs_model_file(model_path);
-                if (!abs_model_file.good()) {
-                    std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found at: " << model_path << std::endl;
-                    std::cerr << "[ZZA0_0102_Worker] ERROR: Also tried relative path: src/main/resources/models/yolo/giay_ra_vien/best.onnx" << std::endl;
-                    return;
-                }
-            }
+            //     std::ifstream abs_model_file(model_path);
+            //     if (!abs_model_file.good()) {
+            //         std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found at: " << model_path << std::endl;
+            //         std::cerr << "[ZZA0_0102_Worker] ERROR: Also tried relative path: src/main/resources/models/yolo/giay_ra_vien/best.onnx" << std::endl;
+            //         return;
+            //     }
+            // }
 
             // Create session
             session_ = new Ort::Session(*env_, model_path.c_str(), session_options);
@@ -369,8 +379,13 @@ private:
      * Load image from base64 or file path
      */
     cv::Mat loadImage(const json& request) {
-        if (request.contains("image") && !request["image"].get<std::string>().empty()) {
+        if (request.contains("image_data") && !request["image_data"].get<std::string>().empty()) {
             // Load from base64
+            std::string base64_data = request["image_data"];
+            std::vector<uint8_t> image_data = decodeBase64(base64_data);
+            return cv::imdecode(image_data, cv::IMREAD_COLOR);
+        } else if (request.contains("image") && !request["image"].get<std::string>().empty()) {
+            // Load from base64 (legacy)
             std::string base64_data = request["image"];
             std::vector<uint8_t> image_data = decodeBase64(base64_data);
             return cv::imdecode(image_data, cv::IMREAD_COLOR);

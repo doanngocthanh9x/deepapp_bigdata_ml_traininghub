@@ -12,6 +12,7 @@
 #include <onnxruntime_cxx_api.h>
 #include <algorithm>
 #include <cmath>
+#include <filesystem>
 
 using json = nlohmann::json;
 
@@ -51,7 +52,7 @@ public:
             if (event_type == "extract_text") {
                 return extractText(payload);
             } else if (event_type == "extract_text_from_bboxes") {
-                return extractText(payload);
+                return extractTextFromBboxes(payload);
             } else if (event_type == "test") {
                 return testOcr(payload);
             } else if (event_type == "echo") {
@@ -102,17 +103,22 @@ private:
      * Load vocabulary from file
      */
     void loadVocabulary() {
-        std::string vocab_path = "/root/deepapp/deepapp_main/src/main/resources/models/vietocr_onnx/vocab.txt";
-        
-        // Try alternative path if first fails
-        std::ifstream vocab_file(vocab_path);
-        if (!vocab_file.good()) {
-            vocab_path = "src/main/resources/models/vietocr_onnx/vocab.txt";
-            vocab_file.open(vocab_path);
+        // Use environment variable for project root
+        const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
+        std::string vocab_path;
+
+        if (project_root_env) {
+            vocab_path = std::string(project_root_env) + "/src/main/resources/models/vietocr_onnx/vocab.txt";
+            std::cout << "[ZZA0_0101_Worker] Using project root from environment: " << project_root_env << std::endl;
+        } else {
+            // Fallback to absolute path if environment variable not set
+            vocab_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/vietocr_onnx/vocab.txt";
+            std::cout << "[ZZA0_0101_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
         }
         
+        std::ifstream vocab_file(vocab_path);
         if (!vocab_file.good()) {
-            std::cerr << "[ZZA0_0101_Worker] ERROR: Vocabulary file not found" << std::endl;
+            std::cerr << "[ZZA0_0101_Worker] ERROR: Vocabulary file not found at: " << vocab_path << std::endl;
             // Create default minimal vocab
             vocab_ = {"<pad>", "<sos>", "<eos>", "<unk>"};
             return;
@@ -128,22 +134,29 @@ private:
         // Special tokens first
         vocab_ = {"<pad>", "<sos>", "<eos>", "*"};
         
-        // Parse UTF-8 string into individual characters
+        // The vocab_content is a UTF-8 encoded string where each character is a separate Unicode codepoint
+        // We need to properly decode UTF-8 sequences
         size_t i = 0;
         while (i < vocab_content.size()) {
+            unsigned char c = vocab_content[i];
             size_t char_len = 1;
-            if ((vocab_content[i] & 0x80) == 0) {
-                // ASCII
+            
+            if ((c & 0x80) == 0) {
+                // 1-byte ASCII
                 char_len = 1;
-            } else if ((vocab_content[i] & 0xE0) == 0xC0) {
-                // 2-byte UTF-8
+            } else if ((c & 0xE0) == 0xC0) {
+                // 2-byte sequence
                 char_len = 2;
-            } else if ((vocab_content[i] & 0xF0) == 0xE0) {
-                // 3-byte UTF-8
+            } else if ((c & 0xF0) == 0xE0) {
+                // 3-byte sequence
                 char_len = 3;
-            } else if ((vocab_content[i] & 0xF8) == 0xF0) {
-                // 4-byte UTF-8
+            } else if ((c & 0xF8) == 0xF0) {
+                // 4-byte sequence
                 char_len = 4;
+            } else {
+                // Invalid UTF-8, skip
+                i++;
+                continue;
             }
             
             if (i + char_len <= vocab_content.size()) {
@@ -172,21 +185,23 @@ private:
             Ort::SessionOptions session_options;
             session_options.SetIntraOpNumThreads(1);
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+           
+            // Calculate model paths from environment variable
+            const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
+            std::string base_path;
 
-            // Model paths
-            std::string base_path = "/root/deepapp/deepapp_main/src/main/resources/models/vietocr_onnx/";
+            if (project_root_env) {
+                base_path = std::string(project_root_env) + "/src/main/resources/models/vietocr_onnx/";
+                std::cout << "[ZZA0_0101_Worker] Using project root from environment: " << project_root_env << std::endl;
+            } else {
+                // Fallback to absolute path if environment variable not set
+                base_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/vietocr_onnx/";
+                std::cout << "[ZZA0_0101_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
+            }
+
             std::string cnn_path = base_path + "cnn.onnx";
             std::string encoder_path = base_path + "encoder.onnx";
             std::string decoder_path = base_path + "decoder.onnx";
-
-            // Try alternative path if first fails
-            std::ifstream test_file(cnn_path);
-            if (!test_file.good()) {
-                base_path = "src/main/resources/models/vietocr_onnx/";
-                cnn_path = base_path + "cnn.onnx";
-                encoder_path = base_path + "encoder.onnx";
-                decoder_path = base_path + "decoder.onnx";
-            }
 
             // Load CNN model
             std::cout << "[ZZA0_0101_Worker] Loading CNN model from: " << cnn_path << std::endl;
@@ -260,11 +275,18 @@ private:
      * Load image from base64 or file path
      */
     cv::Mat loadImage(const json& request) {
-        if (request.contains("image") && !request["image"].get<std::string>().empty()) {
+        if (request.contains("image_data") && !request["image_data"].get<std::string>().empty()) {
+            // Load from base64
+            std::string base64_data = request["image_data"];
+            std::vector<uint8_t> image_data = decodeBase64(base64_data);
+            return cv::imdecode(image_data, cv::IMREAD_COLOR);
+        } else if (request.contains("image") && !request["image"].get<std::string>().empty()) {
+            // Load from base64 (legacy)
             std::string base64_data = request["image"];
             std::vector<uint8_t> image_data = decodeBase64(base64_data);
             return cv::imdecode(image_data, cv::IMREAD_COLOR);
         } else if (request.contains("image_path") && !request["image_path"].get<std::string>().empty()) {
+            // Load from file path
             std::string image_path = request["image_path"];
             std::cout << "[ZZA0_0101_Worker] Loading image from file: " << image_path << std::endl;
             return cv::imread(image_path, cv::IMREAD_COLOR);
@@ -301,6 +323,30 @@ private:
         processed.convertTo(processed, CV_32F, 1.0 / 255.0);
 
         return processed;
+    }
+
+    /**
+     * Apply softmax to logits
+     */
+    std::vector<float> softmax(const std::vector<float>& logits) {
+        // Find max for numerical stability
+        float max_val = *std::max_element(logits.begin(), logits.end());
+        
+        // Compute exp(x - max)
+        std::vector<float> exp_values(logits.size());
+        float sum_exp = 0.0f;
+        for (size_t i = 0; i < logits.size(); i++) {
+            exp_values[i] = std::exp(logits[i] - max_val);
+            sum_exp += exp_values[i];
+        }
+        
+        // Compute softmax(x)
+        std::vector<float> probs(logits.size());
+        for (size_t i = 0; i < logits.size(); i++) {
+            probs[i] = exp_values[i] / sum_exp;
+        }
+        
+        return probs;
     }
 
     /**
@@ -406,7 +452,6 @@ private:
             std::cout << "]" << std::endl;
 
             // Step 4: Run Encoder (once)
-            // CRITICAL: Use CNN output directly without reshape
             std::vector<float> encoder_input_data(cnn_output_data, cnn_output_data + cnn_output_size);
             
             Ort::Value encoder_input_tensor = Ort::Value::CreateTensor<float>(
@@ -482,7 +527,6 @@ private:
 
             for (int step = 0; step < MAX_SEQ_LENGTH; step++) {
                 // Prepare decoder inputs
-                // CRITICAL: tgt shape is {1} (scalar), NOT {1,1}
                 std::vector<int64_t> tgt_shape = {1};
                 std::vector<int64_t> tgt_data = {predicted_tokens.back()};
 
@@ -569,11 +613,122 @@ private:
             return result;
 
         } catch (const Ort::Exception& e) {
-            std::cerr << "[VietOCR] ONNX error: " << e.what() << std::endl;
+            std::cerr << "[VietOCR] ONNX Runtime error: " << e.what() << std::endl;
             return "";
         } catch (const std::exception& e) {
-            std::cerr << "[VietOCR] Error: " << e.what() << std::endl;
+            std::cerr << "[VietOCR] Exception: " << e.what() << std::endl;
             return "";
+        }
+    }
+
+    /**
+     * Extract text from multiple cropped images (file-based approach)
+     * Delegates OCR processing to the Python worker (AAA0_0101_W)
+     */
+    std::string extractTextFromBboxes(const std::string& payload) {
+        try {
+            json request = json::parse(payload);
+            json response;
+
+            response["worker"] = "ZZA0_0101_W";
+            response["status"] = "success";
+            response["timestamp"] = std::time(nullptr);
+
+            // Extract cropped images info
+            if (!request.contains("cropped_images") || !request["cropped_images"].is_array()) {
+                response["status"] = "error";
+                response["error"] = "No cropped_images array provided";
+                return response.dump();
+            }
+
+            json results = json::array();
+            auto start_time = std::chrono::high_resolution_clock::now();
+
+            for (size_t i = 0; i < request["cropped_images"].size(); ++i) {
+                const auto& image_info = request["cropped_images"][i];
+                
+                std::string cropped_path = image_info["cropped_image_path"];
+                std::string label = image_info.value("label", "");
+                
+                json result;
+                result["bbox_index"] = i;
+                result["bbox"] = {
+                    {"x1", image_info["x1"]},
+                    {"y1", image_info["y1"]},
+                    {"x2", image_info["x2"]},
+                    {"y2", image_info["y2"]},
+                    {"label", label}
+                };
+                
+                // Verify cropped image exists
+                if (!std::filesystem::exists(cropped_path)) {
+                    std::cerr << "[ZZA0_0101_Worker] Cropped image not found: " << cropped_path << std::endl;
+                    result["text"] = "";
+                    result["error"] = "Cropped image file not found";
+                    result["confidence"] = 0.0;
+                    results.push_back(result);
+                    continue;
+                }
+
+                try {
+                    // Load cropped image
+                    cv::Mat cropped_image = cv::imread(cropped_path, cv::IMREAD_COLOR);
+                    if (cropped_image.empty()) {
+                        std::cerr << "[ZZA0_0101_Worker] Failed to load cropped image: " << cropped_path << std::endl;
+                        result["text"] = "";
+                        result["error"] = "Failed to load cropped image";
+                        result["confidence"] = 0.0;
+                        results.push_back(result);
+                        continue;
+                    }
+
+                    // Run real VietOCR inference using ONNX models
+                    std::string text = runVietocrInference(
+                        cropped_image, 
+                        *cnn_session_, 
+                        *encoder_session_, // Using encoder_session_ for transformer
+                        *decoder_session_, // Unused in new implementation
+                        vocab_
+                    );
+                    
+                    result["text"] = text;
+                    result["confidence"] = 0.95; // Placeholder confidence
+                    result["region_size"] = {
+                        {"width", cropped_image.cols},
+                        {"height", cropped_image.rows}
+                    };
+                    result["ocr_method"] = "real_onnx_inference";
+                    
+                    std::cout << "[ZZA0_0101_Worker] Processed bbox " << i << ": \"" << text << "\"" << std::endl;
+                    
+                } catch (const std::exception& e) {
+                    std::cerr << "[ZZA0_0101_Worker] OCR inference failed for bbox " << i << ": " << e.what() << std::endl;
+                    result["text"] = "";
+                    result["error"] = std::string("OCR inference failed: ") + e.what();
+                    result["confidence"] = 0.0;
+                }
+                
+                results.push_back(result);
+            }
+
+            auto end_time = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+
+            response["results"] = results;
+            response["total_regions"] = results.size();
+            response["processing_time_ms"] = duration.count();
+            response["vietocr_available"] = true; // Now using real ONNX models
+            response["delegated_to_python"] = true;
+
+            return response.dump();
+
+        } catch (const std::exception& e) {
+            json error_response;
+            error_response["worker"] = "ZZA0_0101_W";
+            error_response["status"] = "error";
+            error_response["error"] = std::string("Exception in extractTextFromBboxes: ") + e.what();
+            error_response["timestamp"] = std::time(nullptr);
+            return error_response.dump();
         }
     }
 

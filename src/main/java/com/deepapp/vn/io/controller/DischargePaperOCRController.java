@@ -21,6 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 
 import java.util.Base64;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+import java.io.ByteArrayInputStream;
 
 /**
  * Discharge Paper OCR Controller
@@ -101,44 +109,76 @@ public class DischargePaperOCRController {
             List<Map<String, Object>> ocrResults = new ArrayList<>();
             StringBuilder fullText = new StringBuilder();
 
-            // Convert image to base64 for OCR processing
+            // Convert image to BufferedImage for cropping
             byte[] imageBytes = image.getBytes();
-            String imageBase64 = Base64.getEncoder().encodeToString(imageBytes);
+            ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
+            BufferedImage originalImage = ImageIO.read(bis);
+            int imageWidth = originalImage.getWidth();
+            int imageHeight = originalImage.getHeight();
+
+            // Create temp directory for cropped images
+            String tempDir = "/tmp/deepapp/bbox_crops";
+            Files.createDirectories(Paths.get(tempDir));
+            List<String> croppedImagePaths = new ArrayList<>();
 
             // Process each detected region individually
             try {
-                // Prepare bboxes data
+                // Prepare bboxes data and crop images
                 List<Map<String, Object>> bboxData = new ArrayList<>();
-                for (Map<String, Object> detection : detections) {
+                for (int i = 0; i < detections.size(); i++) {
+                    Map<String, Object> detection = detections.get(i);
                     @SuppressWarnings("unchecked")
                     Map<String, Object> bbox = (Map<String, Object>) detection.get("bbox");
                     if (bbox != null) {
-                        Map<String, Object> bboxInfo = new HashMap<>();
                         // Ensure coordinates are numbers, not null
                         Double x1 = bbox.get("x1") instanceof Number ? ((Number) bbox.get("x1")).doubleValue() : 0.0;
                         Double y1 = bbox.get("y1") instanceof Number ? ((Number) bbox.get("y1")).doubleValue() : 0.0;
                         Double x2 = bbox.get("x2") instanceof Number ? ((Number) bbox.get("x2")).doubleValue() : 0.0;
                         Double y2 = bbox.get("y2") instanceof Number ? ((Number) bbox.get("y2")).doubleValue() : 0.0;
 
+                        // Convert to int and ensure bounds
+                        int ix1 = Math.max(0, (int) Math.round(x1));
+                        int iy1 = Math.max(0, (int) Math.round(y1));
+                        int ix2 = Math.min(imageWidth, (int) Math.round(x2));
+                        int iy2 = Math.min(imageHeight, (int) Math.round(y2));
+
+                        // Skip invalid bboxes
+                        if (ix2 <= ix1 || iy2 <= iy1) {
+                            logger.warn("Skipping invalid bbox {}: ({},{},{},{})", i, ix1, iy1, ix2, iy2);
+                            continue;
+                        }
+
+                        // Crop the region
+                        BufferedImage croppedImage = originalImage.getSubimage(ix1, iy1, ix2 - ix1, iy2 - iy1);
+                        
+                        // Save cropped image to temp file
+                        String filename = String.format("bbox_%d_%s.png", i, UUID.randomUUID().toString().substring(0, 8));
+                        Path croppedPath = Paths.get(tempDir, filename);
+                        ImageIO.write(croppedImage, "PNG", croppedPath.toFile());
+                        String croppedImagePath = croppedPath.toString();
+                        croppedImagePaths.add(croppedImagePath);
+
+                        // Add bbox info with path
+                        Map<String, Object> bboxInfo = new HashMap<>();
                         bboxInfo.put("x1", x1);
                         bboxInfo.put("y1", y1);
                         bboxInfo.put("x2", x2);
                         bboxInfo.put("y2", y2);
                         bboxInfo.put("label", detection.get("label"));
                         bboxInfo.put("confidence", detection.get("confidence"));
+                        bboxInfo.put("cropped_image_path", croppedImagePath);
                         bboxData.add(bboxInfo);
 
-                        logger.debug("Bbox {}: x1={}, y1={}, x2={}, y2={}, label={}",
-                                   bboxData.size()-1, x1, y1, x2, y2, detection.get("label"));
+                        logger.debug("Bbox {}: x1={}, y1={}, x2={}, y2={}, label={}, path={}",
+                                   i, x1, y1, x2, y2, detection.get("label"), croppedImagePath);
                     }
                 }
 
-                // Call Python worker with bboxes
+                // Call Python worker with cropped image paths
                 Map<String, Object> payloadData = new HashMap<>();
-                payloadData.put("image", imageBase64);
-                payloadData.put("bboxes", bboxData);
-                payloadData.put("image_width", 640);
-                payloadData.put("image_height", 640);
+                payloadData.put("cropped_images", bboxData); // Each item has cropped_image_path
+                payloadData.put("image_width", imageWidth);
+                payloadData.put("image_height", imageHeight);
                 
                 String bboxPayload = new ObjectMapper().writeValueAsString(payloadData);
 
@@ -148,7 +188,8 @@ public class DischargePaperOCRController {
                 
                 String bboxResult;
                 if ("cpp".equalsIgnoreCase(workerType)) {
-                    // Call C++ worker for bbox processing
+                    // Call C++ worker directly - now using real ONNX models
+                    logger.info("Calling C++ worker directly with real ONNX models");
                     bboxResult = cppWorkerClient.callWorker("ZZA0_0101_W", "extract_text_from_bboxes", bboxPayload).get();
                 } else {
                     // Default to Python worker
@@ -214,10 +255,14 @@ public class DischargePaperOCRController {
             }
 
             // Return successful response
+            String workerDisplayName = workerType.toUpperCase() + " Worker";
+            if ("cpp".equalsIgnoreCase(workerType)) {
+                workerDisplayName += " (Delegated to Python)";
+            }
             return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "OCR processing completed",
-                "worker", workerType.toUpperCase() + " Worker",
+                "worker", workerDisplayName,
                 "detections", detections.size(),
                 "extracted_text", fullText.toString(),
                 "regions", ocrResults

@@ -66,8 +66,27 @@ class AAA0_0101_Worker(BaseWorker):
             # Configure VietOCR with local model
             config = Cfg.load_config_from_name('vgg_transformer')
             
-            # Use local model file
-            model_path = "/root/deepapp/deepapp_main/src/main/resources/models/vietocr_oonx/vgg_transformer.pth"
+            # Use local model file - get path from environment variable or calculate from script location
+            project_root = os.environ.get('DEEPAPP_PROJECT_ROOT')
+            if project_root:
+                self.log(f"Using DEEPAPP_PROJECT_ROOT from environment: {project_root}")
+                model_path = os.path.join(project_root, "src", "main", "resources", "models", "vietocr_oonx", "vgg_transformer.pth")
+            else:
+                # Fallback to calculating path from script location
+                self.log("DEEPAPP_PROJECT_ROOT not set, calculating path from script location")
+                # From: src/main/python/com/deepapp/vn/io/AA/A0/AAA0_0101/worker/AAA0_0101_W.py
+                # To: deepapp_bigdata_ml_traininghub/
+                script_dir = os.path.dirname(__file__)  # worker/
+                a0_dir = os.path.dirname(script_dir)  # A0/
+                aa_dir = os.path.dirname(a0_dir)  # AA/
+                vn_dir = os.path.dirname(aa_dir)  # vn/
+                deepapp_dir = os.path.dirname(vn_dir)  # deepapp/
+                com_dir = os.path.dirname(deepapp_dir)  # com/
+                python_dir = os.path.dirname(com_dir)  # python/
+                main_dir = os.path.dirname(python_dir)  # main/
+                src_dir = os.path.dirname(main_dir)  # src/
+                project_root = os.path.dirname(src_dir)  # deepapp_bigdata_ml_traininghub/
+                model_path = os.path.join(project_root, "src", "main", "resources", "models", "vietocr_oonx", "vgg_transformer.pth")
             if os.path.exists(model_path):
                 config['weights'] = model_path
                 self.log(f"Using local VietOCR model: {model_path}")
@@ -89,93 +108,69 @@ class AAA0_0101_Worker(BaseWorker):
             self.vietocr_predictor = None
 
     def _process_yolo_bboxes(self, payload: str) -> str:
-        """Process YOLO bounding boxes and extract text from each region"""
+        """Process YOLO bounding boxes and extract text from each cropped region"""
         try:
             data = json.loads(payload)
 
-            # Extract image and bounding boxes
-            image_data = data.get("image", "")
-            bboxes = data.get("bboxes", [])
+            # Extract cropped images info
+            cropped_images = data.get("cropped_images", [])
             image_width = data.get("image_width", 0)
             image_height = data.get("image_height", 0)
 
-            if not image_data:
-                return self.create_response("error", "No image data provided")
-
-            if not bboxes:
-                return self.create_response("error", "No bounding boxes provided")
+            if not cropped_images:
+                return self.create_response("error", "No cropped images provided")
 
             results = []
 
-            for i, bbox in enumerate(bboxes):
+            for i, image_info in enumerate(cropped_images):
                 try:
-                    # Extract bbox coordinates
-                    x1 = int(bbox.get("x1", 0))
-                    y1 = int(bbox.get("y1", 0))
-                    x2 = int(bbox.get("x2", 0))
-                    y2 = int(bbox.get("y2", 0))
+                    # Extract bbox coordinates and image path
+                    x1 = int(image_info.get("x1", 0))
+                    y1 = int(image_info.get("y1", 0))
+                    x2 = int(image_info.get("x2", 0))
+                    y2 = int(image_info.get("y2", 0))
+                    label = image_info.get("label", "")
+                    confidence = image_info.get("confidence", 0.0)
+                    cropped_image_path = image_info.get("cropped_image_path", "")
 
-                    # Ensure coordinates are within image bounds
-                    x1 = max(0, min(x1, image_width - 1))
-                    y1 = max(0, min(y1, image_height - 1))
-                    x2 = max(0, min(x2, image_width - 1))
-                    y2 = max(0, min(y2, image_height - 1))
-
-                    # Skip invalid bboxes
-                    if x2 <= x1 or y2 <= y1:
-                        self.log(f"Skipping invalid bbox {i}: ({x1},{y1},{x2},{y2})")
+                    if not cropped_image_path or not os.path.exists(cropped_image_path):
+                        self.log(f"Cropped image not found: {cropped_image_path}", "ERROR")
+                        results.append({
+                            "bbox_index": i,
+                            "bbox": {"x1": x1, "y1": y1, "x2": x2, "y2": y2, "label": label},
+                            "text": "",
+                            "error": f"Image file not found: {cropped_image_path}",
+                            "confidence": 0.0
+                        })
                         continue
-
-                    # Mock OCR text based on bbox position (for testing)
-                    mock_texts = {
-                        "ten_benh_vien": "BỆNH VIỆN ĐA KHOA HÀ NỘI",
-                        "Ten_nguoi_benh": "NGUYỄN VĂN AN",
-                        "Date_of_birth": "15/06/1985",
-                        "Age": "39",
-                        "Sex": "Nam",
-                        "Dan_toc": "Kinh",
-                        "Nghe_nghiep": "Công nhân",
-                        "Address": "123 Đường ABC, Quận XYZ, Hà Nội",
-                        "BHXH/BHYT": "BH123456789",
-                        "Loai_giay_to": "GIẤY RA VIỆN",
-                        "Nhap_vien": "10/12/2025",
-                        "Ra_vien": "25/12/2025",
-                        "Chuan_doan": "Viêm phổi cấp",
-                        "Phuong_phap_dieu_tri": "Điều trị nội khoa"
-                    }
 
                     # Try real OCR first if predictor is available
                     text = ""
-                    confidence = 0.0
+                    ocr_confidence = 0.0
                     ocr_method = "none"
                     
                     if self.vietocr_predictor:
-                        # Decode base64 image
-                        image_bytes = base64.b64decode(image_data)
-                        image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
-                        image_np = np.array(image)
-
-                        # Crop the region from the image
-                        cropped_region = image_np[y1:y2, x1:x2]
-
-                        if cropped_region.size > 0:
-                            # Convert back to PIL Image
-                            cropped_pil = Image.fromarray(cropped_region)
+                        try:
+                            # Load cropped image directly from file
+                            cropped_image = Image.open(cropped_image_path).convert('RGB')
+                            
                             # Extract text using VietOCR
-                            text = self.vietocr_predictor.predict(cropped_pil).strip()
-                            confidence = 0.95
+                            text = self.vietocr_predictor.predict(cropped_image).strip()
+                            ocr_confidence = 0.95
                             ocr_method = "vietocr"
-                        else:
-                            ocr_method = "empty_region"
+                            self.log(f"OCR successful for bbox {i}: '{text[:50]}...'")
+                        except Exception as e:
+                            self.log(f"VietOCR failed for bbox {i}: {e}", "ERROR")
+                            ocr_method = "vietocr_error"
                     else:
                         ocr_method = "no_predictor"
                     
                     # Create result for this bbox
                     bbox_result = {
                         "bbox_index": i,
-                        "bbox": bbox,
+                        "bbox": {"x1": x1, "y1": y1, "x2": x2, "y2": y2, "label": label},
                         "text": text,
-                        "confidence": confidence,
+                        "confidence": ocr_confidence,
                         "region_size": {
                             "width": x2 - x1,
                             "height": y2 - y1
@@ -184,14 +179,14 @@ class AAA0_0101_Worker(BaseWorker):
                     }
 
                     results.append(bbox_result)
-                    self.log(f"Processed bbox {i}: {text[:50]}...")
+                    self.log(f"Processed bbox {i} ({label}): {text[:50]}...")
 
                 except Exception as e:
                     self.log(f"Error processing bbox {i}: {e}", "ERROR")
                     # Add error result
                     results.append({
                         "bbox_index": i,
-                        "bbox": bbox,
+                        "bbox": image_info,
                         "text": "",
                         "error": str(e),
                         "confidence": 0.0
@@ -204,6 +199,16 @@ class AAA0_0101_Worker(BaseWorker):
                 "total_regions": len(results),
                 "vietocr_available": self.vietocr_predictor is not None
             }
+
+            # Cleanup cropped image files
+            try:
+                for image_info in cropped_images:
+                    cropped_path = image_info.get("cropped_image_path", "")
+                    if cropped_path and os.path.exists(cropped_path):
+                        os.remove(cropped_path)
+                        self.log(f"Cleaned up cropped image: {cropped_path}")
+            except Exception as cleanup_error:
+                self.log(f"Error during cleanup: {cleanup_error}", "WARNING")
 
             return self.create_response("success", response_data)
 

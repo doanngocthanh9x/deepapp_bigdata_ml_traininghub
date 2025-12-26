@@ -10,6 +10,7 @@ import jakarta.annotation.PreDestroy;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -115,6 +116,12 @@ public class PythonWorkerManager {
 
             // Set working directory
             pb.directory(new File(getWorkingDirectory()));
+
+            // Inherit environment and ensure DEEPAPP_PROJECT_ROOT is set
+            Map<String, String> env = pb.environment();
+            String currentDir = System.getProperty("user.dir");
+            env.put("DEEPAPP_PROJECT_ROOT", currentDir);
+            logger.info("Setting DEEPAPP_PROJECT_ROOT={} for Python worker", currentDir);
 
             // Don't redirect error stream - we'll handle both separately
             pb.redirectErrorStream(false);
