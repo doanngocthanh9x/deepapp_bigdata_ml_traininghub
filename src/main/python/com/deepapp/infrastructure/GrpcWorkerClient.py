@@ -7,13 +7,14 @@ import grpc
 import time
 import threading
 import json
-from typing import Optional, Callable, Any
+from typing import Optional, Callable, Any, Dict
 from concurrent import futures
+import queue
 import sys
 import os
 
 # Add proto path
-proto_path = os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'proto')
+proto_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'src', 'main', 'python'))
 sys.path.insert(0, proto_path)
 
 try:
@@ -30,6 +31,7 @@ except ImportError:
                 self.event_type = ""
                 self.payload = ""
                 self.timestamp = 0
+                self.metadata = {}
 
             def set_sender_id(self, value): self.sender_id = value
             def set_target_id(self, value): self.target_id = value
@@ -57,6 +59,7 @@ class GrpcWorkerClient:
         self.stub = None
         self.connected = False
         self.running = False
+        self.message_queue = queue.Queue()
         self.message_handlers: Dict[str, Callable] = {}
 
     def connect(self) -> bool:
@@ -64,8 +67,15 @@ class GrpcWorkerClient:
         try:
             # Check if we have real gRPC or dummy classes
             if hasattr(hub_pb2_grpc, 'DataStreamStub') and hasattr(hub_pb2_grpc.DataStreamStub, '__init__'):
-                # Real gRPC classes
-                self.channel = grpc.insecure_channel(f"{self.host}:{self.port}")
+                # Real gRPC classes - configure with keepalive options like Java
+                options = [
+                    ('grpc.keepalive_time_ms', 10 * 60 * 1000),  # 10 minutes
+                    ('grpc.keepalive_timeout_ms', 30 * 1000),    # 30 seconds
+                    ('grpc.keepalive_permit_without_calls', 0),  # Only keepalive during active calls
+                    ('grpc.http2.max_pings_without_data', 0),    # Disable pings without data
+                    ('grpc.max_receive_message_length', 200 * 1024 * 1024),  # 200MB
+                ]
+                self.channel = grpc.insecure_channel(f"{self.host}:{self.port}", options=options)
                 self.stub = hub_pb2_grpc.DataStreamStub(self.channel)
             else:
                 # Dummy classes - simulate connection
@@ -88,28 +98,37 @@ class GrpcWorkerClient:
         self.connected = False
         print("[GrpcWorkerClient] Disconnected")
 
-    def send_message(self, target_id: str, event_type: str, payload: str) -> bool:
+    def send_message(self, target_id: str, event_type: str, payload: str, metadata: Dict[str, str] = None) -> bool:
         """Send a message to another client"""
-        if not self.connected or not self.stub:
-            print("[GrpcWorkerClient] Not connected, cannot send message")
+        if not self.connected or not self.running:
+            print("[GrpcWorkerClient] Not connected or not running, cannot send message")
             return False
 
         try:
             # Create message
             message = hub_pb2.EventChunk()
-            message.set_sender_id(self.client_id)
-            message.set_target_id(target_id)
-            message.set_event_type(event_type)
-            message.set_payload(payload)
-            message.set_timestamp(int(time.time() * 1000))
+            message.sender_id = self.client_id
+            message.target_id = target_id
+            message.event_type = event_type
+            # Convert payload to bytes if it's a string
+            if isinstance(payload, str):
+                message.payload = payload.encode('utf-8')
+            else:
+                message.payload = payload
+            message.timestamp = int(time.time() * 1000)
+            
+            # Add metadata if provided
+            if metadata:
+                for key, value in metadata.items():
+                    message.metadata[key] = value
 
-            # For now, we'll use a simple approach
-            # In a real implementation, you'd maintain a persistent stream
-            print(f"[GrpcWorkerClient] Sending message: {event_type} to {target_id}")
+            # Put message in queue for the generator to send
+            self.message_queue.put(message)
+            print(f"[GrpcWorkerClient] Queued message: {event_type} to {target_id}")
             return True
 
         except Exception as e:
-            print(f"[GrpcWorkerClient] Failed to send message: {e}")
+            print(f"[GrpcWorkerClient] Failed to queue message: {e}")
             return False
 
     def register_message_handler(self, event_type: str, handler: Callable) -> None:
@@ -118,7 +137,7 @@ class GrpcWorkerClient:
         print(f"[GrpcWorkerClient] Registered handler for event: {event_type}")
 
     def start_listening(self) -> None:
-        """Start listening for incoming messages"""
+        """Start listening for incoming messages using bidirectional streaming"""
         if not self.connected:
             print("[GrpcWorkerClient] Not connected, cannot start listening")
             return
@@ -126,32 +145,155 @@ class GrpcWorkerClient:
         self.running = True
         print("[GrpcWorkerClient] Started listening for messages")
 
-        # In a real implementation, this would maintain a persistent stream
-        # For now, we'll simulate periodic checks
-        def listen_loop():
+        def request_generator():
+            """Generator that yields messages to send"""
+            # Send initial connect message
+            connect_message = hub_pb2.EventChunk()
+            connect_message.sender_id = self.client_id
+            connect_message.target_id = "server"
+            connect_message.event_type = "connect"
+            connect_message.payload = b"connect"
+            connect_message.timestamp = int(time.time() * 1000)
+            print(f"[GrpcWorkerClient] Sending connect message for client '{self.client_id}'")
+            yield connect_message
+            
+            # Wait for messages to send
             while self.running:
                 try:
-                    # Simulate receiving messages
-                    time.sleep(1)
-                except Exception as e:
-                    print(f"[GrpcWorkerClient] Error in listen loop: {e}")
-                    break
+                    # Wait for a message with timeout
+                    message = self.message_queue.get(timeout=1.0)
+                    print(f"[GrpcWorkerClient] Sending message: {message.event_type} to {message.target_id}")
+                    yield message
+                except queue.Empty:
+                    # Don't send keepalives for now
+                    continue
+
+        def listen_loop():
+            try:
+                # Create metadata with client ID
+                metadata = [('client-id', self.client_id)]
+                
+                # Start bidirectional streaming with metadata
+                responses = self.stub.StreamEvents(request_generator(), metadata=metadata)
+                
+                # Read responses
+                for response in responses:
+                    if not self.running:
+                        break
+                    self._handle_event(response)
+                    
+            except Exception as e:
+                print(f"[GrpcWorkerClient] Error in listen loop: {e}")
+                import traceback
+                traceback.print_exc()
+                self.connected = False
 
         thread = threading.Thread(target=listen_loop, daemon=True)
         thread.start()
+
+    def _handle_event(self, event) -> None:
+        """Handle incoming event from gRPC stream"""
+        try:
+            sender_id = getattr(event, 'sender_id', '')
+            target_id = getattr(event, 'target_id', '')
+            event_type = getattr(event, 'event_type', '')
+            payload = getattr(event, 'payload', '')
+            timestamp = getattr(event, 'timestamp', 0)
+            
+            print(f"[GrpcWorkerClient] Received event:")
+            print(f"  From: {sender_id}")
+            print(f"  To: {target_id}")
+            print(f"  Type: {event_type}")
+            print(f"  Payload: {payload[:100]}..." if len(payload) > 100 else f"  Payload: {payload}")
+            
+            # Get task_id from metadata or target_id
+            task_id = target_id
+            request_id = None
+            
+            # Check for metadata
+            metadata = {}
+            if hasattr(event, 'metadata'):
+                metadata = getattr(event, 'metadata', {})
+                if isinstance(metadata, dict):
+                    if 'taskId' in metadata:
+                        task_id = metadata['taskId']
+                        print(f"  TaskId (from metadata): {task_id}")
+                    if 'requestId' in metadata:
+                        request_id = metadata['requestId']
+                        print(f"  RequestId: {request_id}")
+                else:
+                    # Handle protobuf map
+                    for key in metadata:
+                        if key == 'taskId':
+                            task_id = metadata[key]
+                            print(f"  TaskId (from metadata): {task_id}")
+                        elif key == 'requestId':
+                            request_id = metadata[key]
+                            print(f"  RequestId: {request_id}")
+            else:
+                print(f"  TaskId (from targetId): {task_id}")
+            
+            # Route to appropriate worker
+            from .WorkerRegistry import get_registry
+            registry = get_registry()
+            
+            if task_id in registry.workers:
+                worker = registry.workers[task_id]
+                if worker.can_handle(event_type):
+                    print(f"[GrpcWorkerClient] Routing {event_type} to worker {task_id}")
+                    
+                    try:
+                        result = worker.process_task(event_type, payload)
+                        
+                        # Send response back with the same requestId
+                        response_metadata = {}
+                        if request_id:
+                            response_metadata['requestId'] = request_id
+                        
+                        self.send_message(sender_id, "response", result, response_metadata)
+                        print(f"[GrpcWorkerClient] Sent response to {sender_id} for request {request_id}")
+                        
+                    except Exception as worker_error:
+                        error_msg = json.dumps({
+                            "error": f"Worker processing failed: {str(worker_error)}"
+                        })
+                        response_metadata = {}
+                        if request_id:
+                            response_metadata['requestId'] = request_id
+                        
+                        self.send_message(sender_id, "response", error_msg, response_metadata)
+                        print(f"[GrpcWorkerClient] Sent error response to {sender_id}")
+                        
+                else:
+                    print(f"[GrpcWorkerClient] Worker {task_id} cannot handle event {event_type}")
+                    error_response = json.dumps({
+                        "error": f"Event type '{event_type}' not supported by worker {task_id}"
+                    })
+                    response_metadata = {}
+                    if request_id:
+                        response_metadata['requestId'] = request_id
+                    
+                    self.send_message(sender_id, "response", error_response, response_metadata)
+            else:
+                print(f"[GrpcWorkerClient] No worker found for task_id: {task_id}")
+                error_response = json.dumps({
+                    "error": f"Worker not found: {task_id}"
+                })
+                response_metadata = {}
+                if request_id:
+                    response_metadata['requestId'] = request_id
+                
+                self.send_message(sender_id, "response", error_response, response_metadata)
+                
+        except Exception as e:
+            print(f"[GrpcWorkerClient] Error handling event: {e}")
+            import traceback
+            traceback.print_exc()
 
     def stop_listening(self) -> None:
         """Stop listening for messages"""
         self.running = False
         print("[GrpcWorkerClient] Stopped listening")
-
-    def is_connected(self) -> bool:
-        """Check if connected to server"""
-        return self.connected
-
-    def get_client_id(self) -> str:
-        """Get client ID"""
-        return self.client_id
 
 
 class WorkerManager:
@@ -159,8 +301,8 @@ class WorkerManager:
     Manages Python workers and their lifecycle
     """
 
-    def __init__(self):
-        self.grpc_client = GrpcWorkerClient()
+    def __init__(self, host: str = "72.60.111.138", port: int = 50051, client_id: str = "python-worker"):
+        self.grpc_client = GrpcWorkerClient(host, port, client_id)
         self.workers_initialized = False
 
     def initialize_workers(self) -> bool:

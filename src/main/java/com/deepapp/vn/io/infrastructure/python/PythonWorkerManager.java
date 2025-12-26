@@ -40,7 +40,7 @@ public class PythonWorkerManager {
     @Value("${workers.python.host:localhost}")
     private String grpcHost;
 
-    @Value("${workers.python.port:50052}")
+    @Value("${workers.python.port:50051}")
     private String grpcPort;
 
     @Value("${workers.python.targetId:python-worker}")

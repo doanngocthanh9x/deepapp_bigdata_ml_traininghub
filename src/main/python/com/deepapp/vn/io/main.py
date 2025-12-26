@@ -40,7 +40,11 @@ class PythonWorkerApplication:
         print()
 
         # Create worker manager
-        self.worker_manager = WorkerManager()
+        self.worker_manager = WorkerManager(
+            host=self.host,
+            port=self.port,
+            client_id=self.client_id
+        )
 
         # Load all workers (this will trigger registration)
         self._load_workers()

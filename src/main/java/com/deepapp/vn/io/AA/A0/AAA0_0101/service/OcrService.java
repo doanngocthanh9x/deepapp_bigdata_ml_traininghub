@@ -2,7 +2,7 @@ package com.deepapp.vn.io.AA.A0.AAA0_0101.service;
 
 import com.deepapp.vn.io.AA.A0.AAA0_0101.model.OcrRequest;
 import com.deepapp.vn.io.AA.A0.AAA0_0101.model.OcrResponse;
-import com.deepapp.vn.io.workers.CppWorkerClient;
+import com.deepapp.vn.io.workers.PythonWorkerClient;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -24,7 +24,7 @@ public class OcrService {
     private static final String OCR_WORKER_ID = "AAA0_0101_W";  // C++ OCR worker task ID
     
     @Autowired
-    private CppWorkerClient cppWorkerClient;
+    private PythonWorkerClient pythonWorkerClient;
     
     private final ObjectMapper objectMapper = new ObjectMapper();
     
@@ -43,9 +43,9 @@ public class OcrService {
             logger.info("Sending OCR request to worker: engine={}, language={}", 
                        request.getEngine(), request.getLanguage());
             
-            // Call OCR worker via gRPC using CppWorkerClient
+            // Call OCR worker via gRPC using PythonWorkerClient
             long startTime = System.currentTimeMillis();
-            String result = cppWorkerClient.callWorker(OCR_WORKER_ID, "process", payload).get();
+            String result = pythonWorkerClient.callWorker(OCR_WORKER_ID, "vietocr", payload).get();
             long duration = System.currentTimeMillis() - startTime;
             
             logger.info("OCR completed in {}ms", duration);
@@ -97,9 +97,20 @@ public class OcrService {
                 return OcrResponse.error(jsonNode.get("error").asText());
             }
             
-            // Extract text and build response
-            String text = jsonNode.has("text") ? jsonNode.get("text").asText() : "";
-            Long timeMs = jsonNode.has("time_ms") ? jsonNode.get("time_ms").asLong() : duration;
+            // Extract text - check both direct field and nested in data field
+            String text = "";
+            if (jsonNode.has("text")) {
+                text = jsonNode.get("text").asText();
+            } else if (jsonNode.has("data") && jsonNode.get("data").has("text")) {
+                text = jsonNode.get("data").get("text").asText();
+            }
+            
+            Long timeMs = duration;
+            if (jsonNode.has("time_ms")) {
+                timeMs = jsonNode.get("time_ms").asLong();
+            } else if (jsonNode.has("data") && jsonNode.get("data").has("processing_time")) {
+                timeMs = (long) (jsonNode.get("data").get("processing_time").asDouble() * 1000);
+            }
             
             OcrResponse response = OcrResponse.success(text, timeMs);
             response.setEngine(request.getEngine());

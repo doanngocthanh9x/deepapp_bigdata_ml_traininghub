@@ -53,6 +53,10 @@ public:
                 response["status"] = "success";
                 response["data"] = "Echo: " + payload;
                 return response.dump();
+            } else if (event_type == "health_check") {
+                response["status"] = "success";
+                response["message"] = "YOLO worker is healthy";
+                return response.dump();
             } else {
                 response["status"] = "error";
                 response["error"] = "Unknown event type: " + event_type;
@@ -270,7 +274,9 @@ private:
             std::ifstream model_file(model_path);
             if (!model_file.good()) {
                 // Try absolute path
-                model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+                //model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+                model_path = "/root/deepapp/deepapp_main/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
+               
                 std::ifstream abs_model_file(model_path);
                 if (!abs_model_file.good()) {
                     std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found at: " << model_path << std::endl;

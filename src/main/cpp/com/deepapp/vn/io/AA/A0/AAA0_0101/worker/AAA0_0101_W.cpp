@@ -72,14 +72,23 @@ public:
             std::cout << "  Language: " << language << std::endl;
 
             // TODO: Implement actual VietOCR processing
-            // For now, return mock response
-            std::string recognizedText = "Văn bản tiếng Việt được nhận diện - Mock Data";
+            // For now, return mock response with sample discharge paper text
+            std::string recognizedText = "BỆNH VIỆN ĐA KHOA HÀ NỘI\n\n"
+                                        "GIẤY RA VIỆN\n\n"
+                                        "Họ và tên bệnh nhân: Nguyễn Văn A\n"
+                                        "Ngày sinh: 15/03/1985\n"
+                                        "Địa chỉ: 123 Đường ABC, Quận XYZ, Hà Nội\n\n"
+                                        "Chẩn đoán: Viêm phổi cấp\n"
+                                        "Ngày nhập viện: 20/12/2025\n"
+                                        "Ngày ra viện: 26/12/2025\n\n"
+                                        "Hướng điều trị: Nghỉ ngơi tại nhà, uống thuốc theo đơn\n\n"
+                                        "Bác sĩ điều trị: Dr. Trần Thị B\n"
+                                        "Ngày cấp: 26/12/2025";
             
             if (!imagePath.empty()) {
-                recognizedText = "Image from path: " + imagePath + " - Mock OCR result";
+                recognizedText = "Đã xử lý ảnh từ đường dẫn: " + imagePath + "\n\n" + recognizedText;
             } else if (!image.empty()) {
-                recognizedText = "Base64 image decoded - Mock OCR result (length: " + 
-                               std::to_string(image.length()) + " chars)";
+                recognizedText = "Đã giải mã ảnh Base64 (độ dài: " + std::to_string(image.length()) + " ký tự)\n\n" + recognizedText;
             }
 
             auto end_time = std::chrono::high_resolution_clock::now();
@@ -172,5 +181,5 @@ private:
 } // namespace workers
 } // namespace deepapp
 
-// Auto-register this worker with task ID "AAA0_0101_W"
-REGISTER_WORKER(deepapp::workers::AAA0_0101_Worker, "AAA0_0101_W")
+// Auto-register this worker with task ID "AAA0_0101_W_CPP" (disabled to use Python worker)
+// REGISTER_WORKER(deepapp::workers::AAA0_0101_Worker, "AAA0_0101_W")

@@ -284,11 +284,11 @@ public class CppWorkerClient extends BaseWorkerClient {
      */
     public boolean isAvailable() {
         try {
-            // Simple ping test by calling a basic task
+            // Test with a known worker (YOLO worker) and health_check event
             java.util.concurrent.CompletableFuture<String> future = 
-                callWorker("ping", "ping", "{}");
+                callWorker("ZZA0_0102_W", "health_check", "{}");
             String response = future.get(5, java.util.concurrent.TimeUnit.SECONDS);
-            return response != null && response.contains("pong");
+            return response != null && !response.contains("error");
         } catch (Exception e) {
             logger.warn("C++ worker availability check failed: {}", e.getMessage());
             return false;

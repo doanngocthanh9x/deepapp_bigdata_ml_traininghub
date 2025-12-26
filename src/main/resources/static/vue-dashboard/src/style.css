@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+
+/* Custom styles for router-link active state */
+/* .router-link-active {
+  @apply bg-blue-700 text-white border-blue-400;
+} */

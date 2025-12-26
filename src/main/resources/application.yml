@@ -98,8 +98,8 @@ workers:
 
   # Python Workers (Local)
   python:
-    host: localhost
-    port: 50052
+    host: 72.60.111.138
+    port: 50051
     targetId: python-worker
     enabled: true
 
@@ -129,10 +129,10 @@ python:
 grpc:
   cpp:
     host: localhost
-    port: 50052
+    port: 50051
   python:
     host: localhost
-    port: 50053
+    port: 50051
 
 # Logging configuration
 logging:

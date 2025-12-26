@@ -224,3 +224,6 @@ python3 main.py --client-id python-worker --host localhost --port 50052
 - [ ] Load balancing across multiple Python processes
 - [ ] Configuration management
 - [ ] Logging integration with main application
+
+
+Downloading: "https://download.pytorch.org/models/vgg19_bn-c79401a0.pth" to /root/.cache/torch/hub/checkpoints/vgg19_bn-c79401a0.pth

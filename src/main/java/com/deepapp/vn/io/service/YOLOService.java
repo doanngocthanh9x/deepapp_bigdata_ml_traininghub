@@ -127,13 +127,14 @@ public class YOLOService {
         List<Map<String, Object>> detections = new ArrayList<>();
         for (var detection : result.getDetections()) {
             Map<String, Object> det = new HashMap<>();
-            det.put("class", detection.getClassName());
+            det.put("label", detection.getClassName());
             det.put("confidence", detection.getConfidence());
+            // Use x1,y1,x2,y2 format for consistency with C++ worker
             det.put("bbox", Map.of(
-                "x", detection.getX(),
-                "y", detection.getY(),
-                "width", detection.getWidth(),
-                "height", detection.getHeight()
+                "x1", detection.getX(),
+                "y1", detection.getY(),
+                "x2", detection.getX() + detection.getWidth(),
+                "y2", detection.getY() + detection.getHeight()
             ));
             detections.add(det);
         }

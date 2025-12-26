@@ -2,29 +2,60 @@
 
 ## Tổng quan
 
-Worker AAA0_0101 tích hợp VietOCR (Vietnamese OCR) với 2 versions:
+Worker AAA0_0101 tích hợp VietOCR (Vietnamese OCR) với 3 versions:
 
-1. **AAA0_0101_W.cpp** (Current - Mock version)
-   - Đang sử dụng
+1. **AAA0_0101_W.py** (Python - Recommended)
+   - Sử dụng VietOCR Python library
+   - Tích hợp với YOLO bounding boxes
+   - Dễ deploy và maintain
+
+2. **AAA0_0101_W.cpp** (C++ - Mock version)
+   - Đang sử dụng cho C++ infrastructure
    - Trả về mock data để test infrastructure
    - Không cần dependencies phức tạp
 
-2. **AAA0_0101_W_FULL.cpp** (Full VietOCR implementation)
+3. **AAA0_0101_W_FULL.cpp** (C++ - Full VietOCR implementation)
    - Implementation đầy đủ với ONNX Runtime
    - Cần models và dependencies bổ sung
    - Sẵn sàng deploy khi có models
+
+## Python Version Features
+
+- **Event type**: `extract_text_from_bboxes`
+- **Input**: YOLO bounding boxes + base64 image
+- **Output**: Extracted text from each bounding box region
+- **Dependencies**: VietOCR, PyTorch, PIL, numpy
+
+### Usage Example
+
+```python
+# Input payload
+payload = {
+    "image": "base64_encoded_image",
+    "bboxes": [
+        {"x1": 10, "y1": 20, "x2": 100, "y2": 50},
+        {"x1": 200, "y1": 30, "x2": 300, "y2": 60}
+    ],
+    "image_width": 640,
+    "image_height": 480
+}
+
+# Call worker
+result = worker.process_task("extract_text_from_bboxes", json.dumps(payload))
+```
 
 ## Architecture
 
 ```
 AAA0_0101/
 ├── worker/
-│   ├── AAA0_0101_W.cpp          # Mock version (hiện tại)
-│   └── AAA0_0101_W_FULL.cpp     # Full version (sẵn sàng)
+│   ├── AAA0_0101_W.py           # Python version (recommended)
+│   ├── AAA0_0101_W.cpp          # C++ mock version
+│   └── AAA0_0101_W_FULL.cpp     # C++ full version
 └── lib/
     ├── vietocr_onnx.hpp         # VietOCR ONNX wrapper
     ├── vietocr_onnx.cpp
-    ├── yolov8_onnx.hpp          # YOLO v8 ONNX wrapper  
+    ├── yolov8_onnx.hpp          # YOLO v8 ONNX wrapper
     └── yolov8_onnx.cpp
 ```
 
