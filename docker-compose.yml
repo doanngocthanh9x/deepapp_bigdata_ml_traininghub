@@ -14,9 +14,12 @@ services:
       - WORKERS_CPP_HOST=localhost
       - WORKERS_CPP_PORT=50051
       - CPP_CLIENT_ID=cpp-worker
+      - DEEPAPP_PROJECT_ROOT=/app/config
     volumes:
       # Mount logs directory
       - ./logs:/app/logs
+      # Mount models directory
+      - ./src/main/resources/models:/app/config/src/main/resources/models:ro
       # Optional: mount config for easy updates
       - ./src/main/resources/application-docker.yml:/app/config/application-docker.yml:ro
     restart: unless-stopped

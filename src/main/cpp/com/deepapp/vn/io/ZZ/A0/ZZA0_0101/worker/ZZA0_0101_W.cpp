@@ -178,19 +178,26 @@ private:
      */
     void initializeOnnxRuntime() {
         try {
+            std::cout << "[ZZA0_0101_Worker] ===== ONNX Runtime Initialization Debug =====" << std::endl;
+            
             // Create ONNX Runtime environment
+            std::cout << "[ZZA0_0101_Worker] Creating ONNX Runtime environment..." << std::endl;
             env_ = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "VietOCR");
+            std::cout << "[ZZA0_0101_Worker] ONNX Runtime environment created successfully" << std::endl;
 
             // Configure session options
             Ort::SessionOptions session_options;
             session_options.SetIntraOpNumThreads(1);
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+            std::cout << "[ZZA0_0101_Worker] Session options configured" << std::endl;
            
             // Calculate model paths from environment variable
             const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
             std::string base_path;
 
+            std::cout << "[ZZA0_0101_Worker] Environment variable check:" << std::endl;
             if (project_root_env) {
+                std::cout << "[ZZA0_0101_Worker] DEEPAPP_PROJECT_ROOT = " << project_root_env << std::endl;
                 base_path = std::string(project_root_env) + "/src/main/resources/models/vietocr_onnx/";
                 std::cout << "[ZZA0_0101_Worker] Using project root from environment: " << project_root_env << std::endl;
             } else {
@@ -199,23 +206,52 @@ private:
                 std::cout << "[ZZA0_0101_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
             }
 
+            std::cout << "[ZZA0_0101_Worker] Base model path: " << base_path << std::endl;
+
             std::string cnn_path = base_path + "cnn.onnx";
             std::string encoder_path = base_path + "encoder.onnx";
             std::string decoder_path = base_path + "decoder.onnx";
 
+            // Check if model files exist
+            std::cout << "[ZZA0_0101_Worker] Checking model files..." << std::endl;
+            std::ifstream cnn_file(cnn_path);
+            if (!cnn_file.good()) {
+                std::cerr << "[ZZA0_0101_Worker] ERROR: CNN model file not found at: " << cnn_path << std::endl;
+                return;
+            }
+            std::cout << "[ZZA0_0101_Worker] CNN model file exists: " << cnn_path << std::endl;
+
+            std::ifstream encoder_file(encoder_path);
+            if (!encoder_file.good()) {
+                std::cerr << "[ZZA0_0101_Worker] ERROR: Encoder model file not found at: " << encoder_path << std::endl;
+                return;
+            }
+            std::cout << "[ZZA0_0101_Worker] Encoder model file exists: " << encoder_path << std::endl;
+
+            std::ifstream decoder_file(decoder_path);
+            if (!decoder_file.good()) {
+                std::cerr << "[ZZA0_0101_Worker] ERROR: Decoder model file not found at: " << decoder_path << std::endl;
+                return;
+            }
+            std::cout << "[ZZA0_0101_Worker] Decoder model file exists: " << decoder_path << std::endl;
+
             // Load CNN model
             std::cout << "[ZZA0_0101_Worker] Loading CNN model from: " << cnn_path << std::endl;
             cnn_session_ = new Ort::Session(*env_, cnn_path.c_str(), session_options);
+            std::cout << "[ZZA0_0101_Worker] CNN model loaded successfully" << std::endl;
 
             // Load Encoder model
             std::cout << "[ZZA0_0101_Worker] Loading Encoder model from: " << encoder_path << std::endl;
             encoder_session_ = new Ort::Session(*env_, encoder_path.c_str(), session_options);
+            std::cout << "[ZZA0_0101_Worker] Encoder model loaded successfully" << std::endl;
 
             // Load Decoder model
             std::cout << "[ZZA0_0101_Worker] Loading Decoder model from: " << decoder_path << std::endl;
             decoder_session_ = new Ort::Session(*env_, decoder_path.c_str(), session_options);
+            std::cout << "[ZZA0_0101_Worker] Decoder model loaded successfully" << std::endl;
 
             std::cout << "[ZZA0_0101_Worker] ✓ All ONNX models loaded successfully" << std::endl;
+            std::cout << "[ZZA0_0101_Worker] ===== ONNX Runtime Initialization Complete =====" << std::endl;
 
         } catch (const Ort::Exception& e) {
             std::cerr << "[ZZA0_0101_Worker] ERROR: Failed to initialize ONNX Runtime: " << e.what() << std::endl;

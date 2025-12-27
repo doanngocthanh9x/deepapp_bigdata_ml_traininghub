@@ -3,11 +3,9 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+      - main      # Build khi push lên main
+#      - develop   # Build khi push lên develop
+  workflow_dispatch:  # Cho phép chạy thủ công từ giao diện GitHub
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -27,4 +25,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/deepapp-bigdata-ml-traininghub:latest
+        tags: |
+          ${{ secrets.DOCKERHUB_USERNAME }}/deepapp-bigdata-ml-traininghub:latest
+         # ${{ secrets.DOCKERHUB_USERNAME }}/deepapp-bigdata-ml-traininghub:${{ github.sha }}

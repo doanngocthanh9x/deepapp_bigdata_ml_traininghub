@@ -259,19 +259,26 @@ private:
      */
     void initializeOnnxRuntime() {
         try {
+            std::cout << "[ZZA0_0102_Worker] ===== ONNX Runtime Initialization Debug =====" << std::endl;
+            
             // Create ONNX Runtime environment
+            std::cout << "[ZZA0_0102_Worker] Creating ONNX Runtime environment..." << std::endl;
             env_ = new Ort::Env(ORT_LOGGING_LEVEL_WARNING, "YOLO_Detection");
+            std::cout << "[ZZA0_0102_Worker] ONNX Runtime environment created successfully" << std::endl;
 
             // Configure session options
             Ort::SessionOptions session_options;
             session_options.SetIntraOpNumThreads(1);
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
+            std::cout << "[ZZA0_0102_Worker] Session options configured" << std::endl;
 
             // Model path - use environment variable for project root
             const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
             std::string model_path;
 
+            std::cout << "[ZZA0_0102_Worker] Environment variable check:" << std::endl;
             if (project_root_env) {
+                std::cout << "[ZZA0_0102_Worker] DEEPAPP_PROJECT_ROOT = " << project_root_env << std::endl;
                 model_path = std::string(project_root_env) + "/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
                 std::cout << "[ZZA0_0102_Worker] Using project root from environment: " << project_root_env << std::endl;
             } else {
@@ -280,53 +287,73 @@ private:
                 std::cout << "[ZZA0_0102_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
             }
 
+            std::cout << "[ZZA0_0102_Worker] Final model path: " << model_path << std::endl;
+
             // Check if model file exists
+            std::cout << "[ZZA0_0102_Worker] Checking if model file exists..." << std::endl;
             std::ifstream model_file(model_path);
-            // if (!model_file.good()) {
-            //     // Try absolute path
-            //     model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
-            //     //model_path = "/root/deepapp/deepapp_main/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
-               
-            //     std::ifstream abs_model_file(model_path);
-            //     if (!abs_model_file.good()) {
-            //         std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found at: " << model_path << std::endl;
-            //         std::cerr << "[ZZA0_0102_Worker] ERROR: Also tried relative path: src/main/resources/models/yolo/giay_ra_vien/best.onnx" << std::endl;
-            //         return;
-            //     }
-            // }
+            if (!model_file.good()) {
+                std::cerr << "[ZZA0_0102_Worker] ERROR: Model file not found at: " << model_path << std::endl;
+                std::cerr << "[ZZA0_0102_Worker] ERROR: Also tried relative path: src/main/resources/models/yolo/giay_ra_vien/best.onnx" << std::endl;
+                std::cerr << "[ZZA0_0102_Worker] ERROR: Please check if the model file exists at the specified location" << std::endl;
+                return;
+            }
+            std::cout << "[ZZA0_0102_Worker] Model file exists and is readable" << std::endl;
 
             // Create session
+            std::cout << "[ZZA0_0102_Worker] Creating ONNX session..." << std::endl;
             session_ = new Ort::Session(*env_, model_path.c_str(), session_options);
+            std::cout << "[ZZA0_0102_Worker] ONNX session created successfully" << std::endl;
 
             // Load class names from model metadata
+            std::cout << "[ZZA0_0102_Worker] Loading class names from model metadata..." << std::endl;
             loadClassNamesFromModel();
+            std::cout << "[ZZA0_0102_Worker] Class names loaded, count: " << class_names_.size() << std::endl;
 
             // Get input/output names and shapes
+            std::cout << "[ZZA0_0102_Worker] Getting input/output tensor information..." << std::endl;
             Ort::AllocatorWithDefaultOptions allocator;
 
             // Input info
             size_t input_count = session_->GetInputCount();
+            std::cout << "[ZZA0_0102_Worker] Processing " << input_count << " input tensors:" << std::endl;
             for (size_t i = 0; i < input_count; i++) {
                 auto input_name = session_->GetInputNameAllocated(i, allocator);
                 input_names_.push_back(input_name.get());
 
                 auto input_shape = session_->GetInputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
                 input_shapes_.push_back(input_shape);
+                
+                std::cout << "[ZZA0_0102_Worker]   Input " << i << ": " << input_name.get() << ", Shape: [";
+                for (size_t j = 0; j < input_shape.size(); j++) {
+                    std::cout << input_shape[j];
+                    if (j < input_shape.size() - 1) std::cout << ",";
+                }
+                std::cout << "]" << std::endl;
             }
 
             // Output info
             size_t output_count = session_->GetOutputCount();
+            std::cout << "[ZZA0_0102_Worker] Processing " << output_count << " output tensors:" << std::endl;
             for (size_t i = 0; i < output_count; i++) {
                 auto output_name = session_->GetOutputNameAllocated(i, allocator);
                 output_names_.push_back(output_name.get());
 
                 auto output_shape = session_->GetOutputTypeInfo(i).GetTensorTypeAndShapeInfo().GetShape();
                 output_shapes_.push_back(output_shape);
+                
+                std::cout << "[ZZA0_0102_Worker]   Output " << i << ": " << output_name.get() << ", Shape: [";
+                for (size_t j = 0; j < output_shape.size(); j++) {
+                    std::cout << output_shape[j];
+                    if (j < output_shape.size() - 1) std::cout << ",";
+                }
+                std::cout << "]" << std::endl;
             }
 
             std::cout << "[ZZA0_0102_Worker] ✓ ONNX model loaded successfully" << std::endl;
             std::cout << "[ZZA0_0102_Worker]   - Inputs: " << input_count << std::endl;
             std::cout << "[ZZA0_0102_Worker]   - Outputs: " << output_count << std::endl;
+            std::cout << "[ZZA0_0102_Worker] ===== ONNX Runtime Initialization Complete =====" << std::endl;
 
         } catch (const Ort::Exception& e) {
             std::cerr << "[ZZA0_0102_Worker] ERROR: Failed to initialize ONNX Runtime: " << e.what() << std::endl;
