@@ -99,8 +99,8 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-mi
     && ldconfig
 
 # Copy Go gRPC server source
-COPY go_grpc_hub /tmp/go_grpc_hub
-
+RUN git clone https://gitlab.com/dnt.doanngocthanh/go_grpc_hub.git /tmp/go_grpc_hub
+#COPY go_grpc_hub /tmp/go_grpc_hub
 # Build Go gRPC server
 RUN cd /tmp/go_grpc_hub \
     && go mod tidy \
