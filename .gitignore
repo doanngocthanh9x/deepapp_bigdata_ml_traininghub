@@ -19,6 +19,9 @@ Makefile
 *.cmake
 !CMakeLists.txt
 
+# External repos
+go_grpc_hub/
+
 # IDE files
 .idea/
 .vscode/

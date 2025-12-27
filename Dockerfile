@@ -94,8 +94,18 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-mi
     libopencv-dev \
     libsqlite3-dev \
     wget \
+    golang-go \
     && rm -rf /var/lib/apt/lists/*\
     && ldconfig
+
+# Copy Go gRPC server source
+COPY go_grpc_hub /tmp/go_grpc_hub
+
+# Build Go gRPC server
+RUN cd /tmp/go_grpc_hub \
+    && go mod tidy \
+    && go build -o /app/grpc-server ./cmd/server \
+    && rm -rf /tmp/go_grpc_hub
 
 WORKDIR /app
 
@@ -105,6 +115,7 @@ COPY --from=cpp-builder /usr/local/include/onnxruntime /usr/local/include/onnxru
 # 🔴 FIX QUAN TRỌNG
 RUN echo "/usr/local/lib" > /etc/ld.so.conf.d/onnxruntime.conf \
     && ldconfig
+
 # Copy C++ worker binary
 COPY --from=cpp-builder /app/build/deepapp_worker_main ./build/
 
@@ -115,16 +126,23 @@ COPY --from=java-builder /app/app.jar ./app.jar
 COPY src/main/resources/application.yml ./config/application.yml
 COPY src/main/resources/application-docker.yml ./config/application-docker.yml
 
+# Create start script
+RUN echo '#!/bin/bash\n\
+./grpc-server &\n\
+sleep 5\n\
+java $JAVA_OPTS -jar app.jar' > /app/start.sh \
+    && chmod +x /app/start.sh
+
 # Ensure linker can find libs
 ENV LD_LIBRARY_PATH="/usr/local/lib:/usr/lib/x86_64-linux-gnu"
 
 # Logs & temp
 RUN mkdir -p /app/logs /tmp/deepapp
 
-EXPOSE 8080
+EXPOSE 8080 50051
 
 ENV JAVA_OPTS="-Xms512m -Xmx2g" \
-    GRPC_HOST="72.60.111.138" \
+    GRPC_HOST="localhost" \
     GRPC_PORT="50051" \
     CPP_CLIENT_ID="cpp-worker" \
     SPRING_PROFILES_ACTIVE="docker"
@@ -132,5 +150,5 @@ ENV JAVA_OPTS="-Xms512m -Xmx2g" \
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
-CMD ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
+CMD ["./start.sh"]
 

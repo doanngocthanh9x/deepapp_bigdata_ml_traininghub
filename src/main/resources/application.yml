@@ -95,10 +95,10 @@ workers:
     port: 50051
     targetId: cpp-worker
     enabled: true
-
+  #72.60.111.138
   # Python Workers (Local)
   python:
-    host: 72.60.111.138
+    host: localhost
     port: 50051
     targetId: python-worker
     enabled: true
@@ -112,7 +112,7 @@ workers:
 
   # NER Worker Configuration
   ner:
-    host: 72.60.111.138
+    host: localhost
     port: 50051
     targetId: cpp-ner-worker
     enabled: true

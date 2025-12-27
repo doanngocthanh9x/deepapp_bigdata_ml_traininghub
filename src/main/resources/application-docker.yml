@@ -17,7 +17,7 @@ cpp:
 # gRPC Workers Configuration
 workers:
   cpp:
-    host: ${GRPC_HOST:72.60.111.138}
+    host: ${GRPC_HOST:localhost}
     port: ${GRPC_PORT:50051}
     targetId: cpp-worker
 

@@ -6,11 +6,13 @@ services:
     container_name: deepapp-main
     ports:
       - "8080:8080"
+      - "50051:50051"
     environment:
       - JAVA_OPTS=-Xms512m -Xmx2g
       - SPRING_PROFILES_ACTIVE=docker
-      # gRPC server address (external hub)
-      - GRPC_SERVER=72.60.111.138:50051
+      # gRPC server address (local in container)
+      - WORKERS_CPP_HOST=localhost
+      - WORKERS_CPP_PORT=50051
       - CPP_CLIENT_ID=cpp-worker
     volumes:
       # Mount logs directory
