@@ -51,6 +51,7 @@ COPY CMakeLists.txt ./
 
 # Build C++ workers
 RUN mkdir -p build && cd build && \
+    export CMAKE_PREFIX_PATH=/usr/local && \
     cmake .. && \
     make -j$(nproc)
 # Stage 2: Build Java Application
