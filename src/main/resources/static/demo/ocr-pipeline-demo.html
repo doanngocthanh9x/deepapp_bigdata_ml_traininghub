@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCR Pipeline Demo - AAA0_0102</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+
+        .upload-section:hover {
+            border-color: #2980b9;
+            background-color: #e8f4fd;
+        }
+
+        .upload-section.dragover {
+            border-color: #27ae60;
+            background-color: #d5f4e6;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        .upload-label {
+            cursor: pointer;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .upload-label:hover {
+            color: #2980b9;
+        }
+
+        #previewImage {
+            max-width: 100%;
+            max-height: 400px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .button.secondary {
+            background-color: #95a5a6;
+        }
+
+        .button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .results-section {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+        }
+
+        .result-item {
+            background: white;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .result-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .result-angle {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .result-bbox {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .status.processing {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 5px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 OCR Pipeline Demo - AAA0_0102</h1>
+        <p style="text-align: center; color: #7f8c8d; margin-bottom: 30px;">
+            Demo cho OCR Pipeline kết hợp PaddleOCR detection/classification với VietOCR recognition
+        </p>
+
+        <!-- Upload Section -->
+        <div class="upload-section" id="uploadSection">
+            <div>
+                <input type="file" id="imageInput" accept="image/*">
+                <label for="imageInput" class="upload-label">
+                    📸 Chọn ảnh hoặc kéo thả vào đây
+                </label>
+                <p style="color: #7f8c8d; margin-top: 10px;">Hỗ trợ: JPG, PNG, JPEG</p>
+            </div>
+            <img id="previewImage" class="hidden" alt="Preview">
+        </div>
+
+        <!-- Control Buttons -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <button id="processBtn" class="button" disabled>
+                🚀 Xử lý OCR
+            </button>
+            <button id="clearBtn" class="button secondary">
+                🗑️ Xóa
+            </button>
+        </div>
+
+        <!-- Status -->
+        <div id="status" class="status hidden"></div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="results-section hidden">
+            <h3>📋 Kết quả OCR:</h3>
+            <div id="stats" class="stats hidden">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalRegions">0</div>
+                    <div class="stat-label">VÙNG TEXT</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="processingTime">0ms</div>
+                    <div class="stat-label">THỜI GIAN</div>
+                </div>
+            </div>
+            <div id="results"></div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const imageInput = document.getElementById('imageInput');
+        const previewImage = document.getElementById('previewImage');
+        const uploadSection = document.getElementById('uploadSection');
+        const processBtn = document.getElementById('processBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const status = document.getElementById('status');
+        const resultsSection = document.getElementById('resultsSection');
+        const results = document.getElementById('results');
+        const stats = document.getElementById('stats');
+        const totalRegions = document.getElementById('totalRegions');
+        const processingTime = document.getElementById('processingTime');
+
+        let selectedImage = null;
+
+        // Event Listeners
+        imageInput.addEventListener('change', handleImageSelect);
+        uploadSection.addEventListener('dragover', handleDragOver);
+        uploadSection.addEventListener('dragleave', handleDragLeave);
+        uploadSection.addEventListener('drop', handleDrop);
+        processBtn.addEventListener('click', processImage);
+        clearBtn.addEventListener('click', clearAll);
+
+        // Handle image selection
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                displayImage(file);
+            }
+        }
+
+        // Handle drag and drop
+        function handleDragOver(event) {
+            event.preventDefault();
+            uploadSection.classList.add('dragover');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            uploadSection.classList.remove('dragover');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            uploadSection.classList.remove('dragover');
+
+            const files = event.dataTransfer.files;
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.type.startsWith('image/')) {
+                    imageInput.files = files; // Set the input files
+                    displayImage(file);
+                } else {
+                    showStatus('Vui lòng chọn file ảnh!', 'error');
+                }
+            }
+        }
+
+        // Display selected image
+        function displayImage(file) {
+            selectedImage = file;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.classList.remove('hidden');
+                processBtn.disabled = false;
+                hideStatus();
+                hideResults();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Process image with OCR
+        async function processImage() {
+            if (!selectedImage) {
+                showStatus('Vui lòng chọn ảnh trước!', 'error');
+                return;
+            }
+
+            // Show processing status
+            showStatus('<span class="loading"></span> Đang xử lý OCR...', 'processing');
+            processBtn.disabled = true;
+
+            try {
+                // Convert image to base64
+                const base64Image = await fileToBase64(selectedImage);
+
+                // Prepare request payload
+                const payload = {
+                    image: base64Image,
+                    engine: "pipeline",
+                    language: "vie"
+                };
+
+                // Call API
+                const response = await fetch('/api/v1/ocr-pipeline/process', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayResults(result);
+                    showStatus('✅ OCR hoàn thành thành công!', 'success');
+                } else {
+                    showStatus('❌ Lỗi: ' + (result.error || result.message), 'error');
+                }
+
+            } catch (error) {
+                console.error('Error:', error);
+                showStatus('❌ Lỗi kết nối: ' + error.message, 'error');
+            } finally {
+                processBtn.disabled = false;
+            }
+        }
+
+        // Convert file to base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result.split(',')[1]); // Remove data:image/... prefix
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Display OCR results
+        function displayResults(result) {
+            const data = result.data;
+            if (!data || !data.results) {
+                showStatus('Không có kết quả OCR', 'error');
+                return;
+            }
+
+            // Update stats
+            totalRegions.textContent = data.totalRegions || data.results.length;
+            processingTime.textContent = data.processingTimeMs ? data.processingTimeMs + 'ms' : 'N/A';
+            stats.classList.remove('hidden');
+
+            // Clear previous results
+            results.innerHTML = '';
+
+            // Display each result
+            data.results.forEach((item, index) => {
+                const resultDiv = document.createElement('div');
+                resultDiv.className = 'result-item';
+
+                resultDiv.innerHTML = `
+                    <div class="result-text">${item.text || 'N/A'}</div>
+                    <div class="result-angle">Góc xoay: ${item.angle || 0}°</div>
+                    <div class="result-bbox">Bbox: ${JSON.stringify(item.bbox || [])}</div>
+                `;
+
+                results.appendChild(resultDiv);
+            });
+
+            resultsSection.classList.remove('hidden');
+        }
+
+        // Status management
+        function showStatus(message, type) {
+            status.innerHTML = message;
+            status.className = `status ${type}`;
+            status.classList.remove('hidden');
+        }
+
+        function hideStatus() {
+            status.classList.add('hidden');
+        }
+
+        function hideResults() {
+            resultsSection.classList.add('hidden');
+            stats.classList.add('hidden');
+        }
+
+        // Clear all
+        function clearAll() {
+            selectedImage = null;
+            imageInput.value = '';
+            previewImage.src = '';
+            previewImage.classList.add('hidden');
+            processBtn.disabled = true;
+            hideStatus();
+            hideResults();
+        }
+
+        // Initialize
+        hideStatus();
+        hideResults();
+    </script>
+</body>
+</html>

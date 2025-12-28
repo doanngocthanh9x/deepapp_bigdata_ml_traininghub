@@ -4,7 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Web Controller for serving static pages
+ * Web Controller for serving static pages and SPA routing
  */
 @Controller
 public class WebController {
@@ -18,10 +18,19 @@ public class WebController {
     }
 
     /**
-     * Serve home page
+     * Serve React SPA for all other routes
+     * This enables client-side routing for the React application
+     */
+    @GetMapping("/{path:[^\\.]*}")
+    public String serveSpa() {
+        return "forward:/static/swift-dashboard/index.html";
+    }
+
+    /**
+     * Serve home page - redirect to React SPA
      */
     @GetMapping("/")
     public String home() {
-        return "redirect:/yolo-detect";
+        return "forward:/static/swift-dashboard/index.html";
     }
 }

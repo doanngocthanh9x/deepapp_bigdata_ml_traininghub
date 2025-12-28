@@ -23,9 +23,9 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --fix-mi
     wget \
     && rm -rf /var/lib/apt/lists/*\
     && ldconfig
-
+RUN apt update && apt install -y tesseract-ocr libtesseract-dev
 # Install ONNX Runtime
-ARG ONNX_VERSION=1.12.1
+ARG ONNX_VERSION=1.18.0
 RUN wget -q "https://github.com/microsoft/onnxruntime/releases/download/v${ONNX_VERSION}/onnxruntime-linux-x64-${ONNX_VERSION}.tgz" \
     && tar -xzf "onnxruntime-linux-x64-${ONNX_VERSION}.tgz" \
     && mkdir -p /usr/local/onnxruntime \

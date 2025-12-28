@@ -12,8 +12,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/AA/A0/AAA0_0100")
 public class AAA0_0100_trx {
-    
-    @Autowired
+@Autowired
     private CppWorkerClient cppWorkerClient;
     
     /**

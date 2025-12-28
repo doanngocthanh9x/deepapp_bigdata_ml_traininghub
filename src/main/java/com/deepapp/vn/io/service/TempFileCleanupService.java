@@ -8,11 +8,24 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
+
+import jakarta.annotation.PostConstruct;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 /**
  * Service for managing temporary file cleanup across the application
@@ -37,6 +50,12 @@ public class TempFileCleanupService {
     @Value("${temp.file.max.age.hours:48}")
     private int maxFileAgeHours;
 
+    @Value("${models.path:src/main/resources/models}")
+    private String modelsPath;
+
+    @Value("${google.drive.api.key:}")
+    private String apiKey;
+
     @Autowired
     private DocumentUploadService documentUploadService;
 
@@ -51,6 +70,9 @@ public class TempFileCleanupService {
 
         // Create directories on startup
         createDirectories();
+
+        // Download models once if not present
+        downloadModelsIfNeeded();
     }
 
     /**
@@ -173,6 +195,100 @@ public class TempFileCleanupService {
     }
 
     /**
+     * Download models from Google Drive if not already present
+     */
+    private void downloadModelsIfNeeded() {
+        logger.info("Checking and downloading models from Google Drive...");
+        try {
+            downloadModels();
+            logger.info("Models download check completed");
+        } catch (Exception e) {
+            logger.error("Error downloading models", e);
+        }
+    }
+
+    /**
+     * Check if directory is empty
+     */
+    private boolean isDirectoryEmpty(Path dir) throws IOException {
+        if (!Files.isDirectory(dir)) {
+            return true;
+        }
+        try (var stream = Files.list(dir)) {
+            return stream.findFirst().isEmpty();
+        }
+    }
+
+    /**
+     * Download models using Google Drive API
+     */
+    private void downloadModels() throws IOException {
+        if (apiKey == null || apiKey.isEmpty()) {
+            logger.warn("Google Drive API key not configured, skipping model download");
+            return;
+        }
+
+        String folderId = "1yX43t0JeR0Tie3ToWngDa7MkN5E9Rl_i";
+        Drive drive = new Drive.Builder(new NetHttpTransport(), new JacksonFactory(), null)
+            .setApplicationName("TempFileCleanupService")
+            .build();
+
+        try {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            Path modelsDir = Paths.get(modelsPath);
+            Files.createDirectories(modelsDir);
+
+            downloadFromFolder(drive, httpClient, folderId, modelsDir);
+        } catch (Exception e) {
+            logger.error("Error downloading models", e);
+            throw new IOException("Failed to download models", e);
+        }
+    }
+
+    /**
+     * Recursively download files from a Google Drive folder
+     */
+    private void downloadFromFolder(Drive drive, HttpClient httpClient, String folderId, Path currentDir) throws IOException {
+        try {
+            FileList result = drive.files().list()
+                .setQ("'" + folderId + "' in parents")
+                .setKey(apiKey)
+                .execute();
+
+            for (File file : result.getFiles()) {
+                if ("application/vnd.google-apps.folder".equals(file.getMimeType())) {
+                    // Create subdirectory and recurse
+                    Path subDir = currentDir.resolve(file.getName());
+                    Files.createDirectories(subDir);
+                    logger.info("Processing folder: " + file.getName());
+                    downloadFromFolder(drive, httpClient, file.getId(), subDir);
+                } else {
+                    // Download file only if it doesn't exist
+                    Path localFile = currentDir.resolve(file.getName());
+                    if (Files.exists(localFile)) {
+                        logger.info("File already exists, skipping: " + file.getName());
+                    } else {
+                        String downloadUrl = "https://www.googleapis.com/drive/v3/files/" + file.getId() + "?alt=media&key=" + apiKey;
+                        HttpRequest request = HttpRequest.newBuilder()
+                            .uri(URI.create(downloadUrl))
+                            .build();
+                        HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
+                        if (response.statusCode() == 200) {
+                            Files.copy(response.body(), localFile, StandardCopyOption.REPLACE_EXISTING);
+                            logger.info("Downloaded model: " + file.getName());
+                        } else {
+                            logger.error("Failed to download file: " + file.getName() + ", status: " + response.statusCode());
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error downloading from folder: " + folderId, e);
+            throw new IOException("Failed to download from folder", e);
+        }
+    }
+
+    /**
      * Directory statistics
      */
     public static class DirectoryStats {
@@ -226,4 +342,5 @@ public class TempFileCleanupService {
                    (pagesTemp != null ? pagesTemp.getTotalSize() : 0);
         }
     }
+    
 }

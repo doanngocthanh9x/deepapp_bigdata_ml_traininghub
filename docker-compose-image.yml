@@ -1,0 +1,34 @@
+services:
+  deepapp-main:
+    image: your-dockerhub-username/deepapp-bigdata-ml-traininghub:latest
+    container_name: deepapp-main
+    ports:
+      - "8080:8080"
+      - "50051:50051"
+    environment:
+      - JAVA_OPTS=-Xms512m -Xmx2g
+      - SPRING_PROFILES_ACTIVE=docker
+      # gRPC server address (local in container)
+      - WORKERS_CPP_HOST=localhost
+      - WORKERS_CPP_PORT=50051
+      - CPP_CLIENT_ID=cpp-worker
+      - DEEPAPP_PROJECT_ROOT=/app/config
+    # Volumes removed for Portainer compatibility - configs embedded in image
+    restart: unless-stopped
+    networks:
+      - deepapp-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  deepapp-network:
+    driver: bridge
