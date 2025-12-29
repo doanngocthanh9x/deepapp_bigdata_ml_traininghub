@@ -2,6 +2,7 @@
 #include "com/deepapp/infrastructure/WorkerRegistry.h"
 #include "com/deepapp/infrastructure/GrpcWorkerClient.h"
 #include "com/deepapp/infrastructure/FileHasher.h"
+#include "com/deepapp/utils/PathUtils.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
@@ -272,21 +273,8 @@ private:
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
             std::cout << "[ZZA0_0102_Worker] Session options configured" << std::endl;
 
-            // Model path - use environment variable for project root
-            const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
-            std::string model_path;
-
-            std::cout << "[ZZA0_0102_Worker] Environment variable check:" << std::endl;
-            if (project_root_env) {
-                std::cout << "[ZZA0_0102_Worker] DEEPAPP_PROJECT_ROOT = " << project_root_env << std::endl;
-                model_path = std::string(project_root_env) + "/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
-                std::cout << "[ZZA0_0102_Worker] Using project root from environment: " << project_root_env << std::endl;
-            } else {
-                // Fallback to absolute path if environment variable not set
-                model_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/yolo/giay_ra_vien/best.onnx";
-                std::cout << "[ZZA0_0102_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
-            }
-
+            // Model path using PathUtils
+            std::string model_path = deepapp::utils::PathUtils::getYoloModelPath() + "giay_ra_vien/best.onnx";
             std::cout << "[ZZA0_0102_Worker] Final model path: " << model_path << std::endl;
 
             // Check if model file exists

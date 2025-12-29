@@ -91,28 +91,32 @@ document:
 workers:
   # C++ Workers (Local)
   cpp:
-    host: localhost
+    #host: localhost
+    host: 72.60.111.138
     port: 50051
     targetId: cpp-worker
     enabled: true
   #72.60.111.138
   # Python Workers (Local)
   python:
-    host: localhost
+    #host: localhost
+    host: 72.60.111.138
     port: 50051
     targetId: python-worker
     enabled: true
 
   # OCR Worker Configuration
   ocr:
-    host: localhost
+    #host: localhost
+    host: 72.60.111.138
     port: 50051
     targetId: cpp-ocr-worker
     enabled: true
 
   # NER Worker Configuration
   ner:
-    host: localhost
+    #host: localhost
+    host: 72.60.111.138
     port: 50051
     targetId: cpp-ner-worker
     enabled: true
@@ -128,10 +132,12 @@ python:
 # gRPC Worker Configuration
 grpc:
   cpp:
-    host: localhost
+    #host: localhost
+    host: 72.60.111.138
     port: 50051
   python:
-    host: localhost
+    #host: localhost
+    host: 72.60.111.138
     port: 50051
 
 # Logging configuration
@@ -147,6 +153,7 @@ logging:
 # workers:
 #   yolo:
 #     host: localhost
+#     host: 72.60.111.138
 #     port: 50054
 #     targetId: cpp-yolo-worker
 #     enabled: true

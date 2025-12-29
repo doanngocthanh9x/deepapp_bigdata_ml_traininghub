@@ -23,7 +23,7 @@ public class WebController {
      */
     @GetMapping("/{path:[^\\.]*}")
     public String serveSpa() {
-        return "forward:/static/swift-dashboard/index.html";
+        return "forward:/static/index.html";
     }
 
     /**
@@ -31,6 +31,6 @@ public class WebController {
      */
     @GetMapping("/")
     public String home() {
-        return "forward:/static/swift-dashboard/index.html";
+        return "forward:/static/index.html";
     }
 }

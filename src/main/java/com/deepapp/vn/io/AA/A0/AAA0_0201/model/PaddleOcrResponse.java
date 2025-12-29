@@ -9,11 +9,7 @@ public class PaddleOcrResponse {
     private String text;
     private String error;
     private Long timeMs;
-    private String model;
-    private String language;
     private Double confidence;
-    private int originalWidth;
-    private int originalHeight;
 
     public PaddleOcrResponse() {
     }
@@ -28,6 +24,15 @@ public class PaddleOcrResponse {
         response.setSuccess(true);
         response.setText(text);
         response.setTimeMs(timeMs);
+        return response;
+    }
+
+    public static PaddleOcrResponse success(String text, Long timeMs, Double confidence) {
+        PaddleOcrResponse response = new PaddleOcrResponse();
+        response.setSuccess(true);
+        response.setText(text);
+        response.setTimeMs(timeMs);
+        response.setConfidence(confidence);
         return response;
     }
 
@@ -71,43 +76,11 @@ public class PaddleOcrResponse {
         this.timeMs = timeMs;
     }
 
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
     public Double getConfidence() {
         return confidence;
     }
 
     public void setConfidence(Double confidence) {
         this.confidence = confidence;
-    }
-
-    public int getOriginalWidth() {
-        return originalWidth;
-    }
-
-    public void setOriginalWidth(int originalWidth) {
-        this.originalWidth = originalWidth;
-    }
-
-    public int getOriginalHeight() {
-        return originalHeight;
-    }
-
-    public void setOriginalHeight(int originalHeight) {
-        this.originalHeight = originalHeight;
     }
 }

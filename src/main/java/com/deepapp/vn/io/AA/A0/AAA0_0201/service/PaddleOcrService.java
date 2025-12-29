@@ -121,12 +121,12 @@ public class PaddleOcrService {
                 }
             }
 
-            PaddleOcrResponse response = PaddleOcrResponse.success(text, duration);
-            response.setModel(request.getModel());
-            response.setLanguage(request.getLanguage());
-            response.setConfidence(confidence);
-            response.setOriginalWidth(originalWidth);
-            response.setOriginalHeight(originalHeight);
+            PaddleOcrResponse response;
+            if (confidence != null) {
+                response = PaddleOcrResponse.success(text, duration, confidence);
+            } else {
+                response = PaddleOcrResponse.success(text, duration);
+            }
 
             return response;
 

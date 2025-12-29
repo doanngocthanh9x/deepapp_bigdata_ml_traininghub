@@ -108,6 +108,7 @@ set(INFRASTRUCTURE_SOURCES
     ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/infrastructure/GrpcWorkerClient.cpp
     ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/document/DocumentProcessor.cpp
     ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/storage/DocumentStorage.cpp
+    ${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/utils/PathUtils.cpp
 )
 
 # Main application

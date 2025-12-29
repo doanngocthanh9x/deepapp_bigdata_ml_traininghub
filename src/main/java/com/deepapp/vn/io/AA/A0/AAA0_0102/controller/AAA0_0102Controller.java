@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.*;
  * Combines PaddleOCR detection/classification with VietOCR recognition
  */
 @RestController
-@RequestMapping("/api/v1/ocr-pipeline")
+// trước đây dùng @RequestMapping("/api/v1/ocr-pipeline")
+@RequestMapping("/AA/A0/AAA0_0102")
 @Tag(name = "OCR Pipeline", description = "OCR Pipeline API with PaddleOCR + VietOCR")
-public class OcrPipelineController {
+public class AAA0_0102Controller {
 
-    private static final Logger logger = LoggerFactory.getLogger(OcrPipelineController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AAA0_0102Controller.class);
 
     @Autowired
     private OcrPipelineService ocrPipelineService;

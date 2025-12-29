@@ -6,10 +6,11 @@ from vietocr.tool.predictor import Predictor
 from vietocr.tool.config import Cfg
 from nets import nn
 from utils import util
+from com.deepapp.utils.path_utils import get_paddle_model_path, get_test_image_path
 
 # Load models
-detection = nn.Detection('/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/paddlet/detection.onnx')
-classification = nn.Classification('/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/paddlet/classification.onnx')
+detection = nn.Detection(get_paddle_model_path('detection'))
+classification = nn.Classification(get_paddle_model_path('classification'))
 
 config = Cfg.load_config_from_name('vgg_transformer')
 config['device'] = 'cpu'
@@ -88,7 +89,7 @@ def process_image(image_path):
     return results, frame
 
 # Usage
-results, annotated_image = process_image('/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/python/test/01HM00012524_300003_image_92.png')
+results, annotated_image = process_image(get_test_image_path('01HM00012524_300003_image_92.png'))
 
 print("Recognized text with angles:")
 for idx, result in enumerate(results):

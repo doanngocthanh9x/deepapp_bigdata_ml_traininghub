@@ -7,9 +7,14 @@ import json
 import base64
 import io
 import os
+import sys
 from typing import Dict, Any, List
 from com.deepapp.infrastructure.BaseWorker import BaseWorker
 from com.deepapp.infrastructure.WorkerRegistry import register_worker
+
+# Add path to utils
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', '..', '..'))
+from com.deepapp.utils.path_utils import get_vietocr_model_path
 
 try:
     from vietocr.tool.predictor import Predictor
@@ -66,27 +71,8 @@ class AAA0_0101_Worker(BaseWorker):
             # Configure VietOCR with local model
             config = Cfg.load_config_from_name('vgg_transformer')
             
-            # Use local model file - get path from environment variable or calculate from script location
-            project_root = os.environ.get('DEEPAPP_PROJECT_ROOT')
-            if project_root:
-                self.log(f"Using DEEPAPP_PROJECT_ROOT from environment: {project_root}")
-                model_path = os.path.join(project_root, "src", "main", "resources", "models", "vietocr_oonx", "vgg_transformer.pth")
-            else:
-                # Fallback to calculating path from script location
-                self.log("DEEPAPP_PROJECT_ROOT not set, calculating path from script location")
-                # From: src/main/python/com/deepapp/vn/io/AA/A0/AAA0_0101/worker/AAA0_0101_W.py
-                # To: deepapp_bigdata_ml_traininghub/
-                script_dir = os.path.dirname(__file__)  # worker/
-                a0_dir = os.path.dirname(script_dir)  # A0/
-                aa_dir = os.path.dirname(a0_dir)  # AA/
-                vn_dir = os.path.dirname(aa_dir)  # vn/
-                deepapp_dir = os.path.dirname(vn_dir)  # deepapp/
-                com_dir = os.path.dirname(deepapp_dir)  # com/
-                python_dir = os.path.dirname(com_dir)  # python/
-                main_dir = os.path.dirname(python_dir)  # main/
-                src_dir = os.path.dirname(main_dir)  # src/
-                project_root = os.path.dirname(src_dir)  # deepapp_bigdata_ml_traininghub/
-                model_path = os.path.join(project_root, "src", "main", "resources", "models", "vietocr_oonx", "vgg_transformer.pth")
+            # Use local model file with path_utils
+            model_path = get_vietocr_model_path()
             if os.path.exists(model_path):
                 config['weights'] = model_path
                 self.log(f"Using local VietOCR model: {model_path}")

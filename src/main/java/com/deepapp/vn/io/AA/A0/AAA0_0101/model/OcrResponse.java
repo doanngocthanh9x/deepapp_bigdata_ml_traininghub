@@ -9,8 +9,7 @@ public class OcrResponse {
     private String text;
     private String error;
     private Long timeMs;
-    private String engine;
-    private String language;
+    private Double confidence;
 
     public OcrResponse() {
     }
@@ -25,6 +24,15 @@ public class OcrResponse {
         response.setSuccess(true);
         response.setText(text);
         response.setTimeMs(timeMs);
+        return response;
+    }
+
+    public static OcrResponse success(String text, Long timeMs, Double confidence) {
+        OcrResponse response = new OcrResponse();
+        response.setSuccess(true);
+        response.setText(text);
+        response.setTimeMs(timeMs);
+        response.setConfidence(confidence);
         return response;
     }
 
@@ -68,19 +76,11 @@ public class OcrResponse {
         this.timeMs = timeMs;
     }
 
-    public String getEngine() {
-        return engine;
+    public Double getConfidence() {
+        return confidence;
     }
 
-    public void setEngine(String engine) {
-        this.engine = engine;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
+    public void setConfidence(Double confidence) {
+        this.confidence = confidence;
     }
 }

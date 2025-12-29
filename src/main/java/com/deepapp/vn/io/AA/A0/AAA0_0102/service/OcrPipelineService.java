@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -101,15 +102,48 @@ public class OcrPipelineService {
             String message = root.path("message").asText();
 
             if ("success".equals(status)) {
-                // Parse successful response
+                // Parse successful response - convert to new flat format
                 JsonNode dataNode = root.path("data");
-                OcrPipelineResponse.OcrPipelineData data = objectMapper.treeToValue(
-                    dataNode, OcrPipelineResponse.OcrPipelineData.class);
 
-                // Set processing time
-                data.setProcessingTimeMs(processingTimeMs);
+                // Extract results from nested structure
+                JsonNode resultsNode = dataNode.path("results");
+                List<OcrPipelineResponse.BoundingBox> boundingBoxes = new java.util.ArrayList<>();
+                StringBuilder combinedText = new StringBuilder();
+                double totalConfidence = 0.0;
+                int resultCount = 0;
 
-                return OcrPipelineResponse.success(data);
+                if (resultsNode.isArray()) {
+                    for (JsonNode resultNode : resultsNode) {
+                        String text = resultNode.path("text").asText();
+                        double confidence = resultNode.path("confidence").asDouble(0.0);
+                        JsonNode bboxNode = resultNode.path("bbox");
+
+                        // Convert bbox from polygon format to bounding box format
+                        OcrPipelineResponse.BoundingBox bbox = OcrPipelineResponse.BoundingBox.fromPolygon(
+                            objectMapper.convertValue(bboxNode, java.util.List.class), text);
+                        boundingBoxes.add(bbox);
+
+                        // Combine text
+                        if (combinedText.length() > 0) {
+                            combinedText.append(" ");
+                        }
+                        combinedText.append(text);
+
+                        // Accumulate confidence
+                        totalConfidence += confidence;
+                        resultCount++;
+                    }
+                }
+
+                // Calculate average confidence
+                double avgConfidence = resultCount > 0 ? totalConfidence / resultCount : 0.0;
+
+                return OcrPipelineResponse.success(
+                    combinedText.toString(),
+                    avgConfidence,
+                    boundingBoxes,
+                    processingTimeMs
+                );
 
             } else {
                 // Handle error response
@@ -137,7 +171,11 @@ public class OcrPipelineService {
             if ("success".equals(status)) {
                 JsonNode dataNode = root.path("data");
                 String healthStatus = dataNode.path("status").asText();
-                return new OcrPipelineResponse("healthy".equals(healthStatus), "Health check completed", null);
+                if ("healthy".equals(healthStatus)) {
+                    return OcrPipelineResponse.success("Service is healthy", null, null, 0L);
+                } else {
+                    return OcrPipelineResponse.error("Service is not healthy");
+                }
             } else {
                 return OcrPipelineResponse.error("Worker health check failed");
             }

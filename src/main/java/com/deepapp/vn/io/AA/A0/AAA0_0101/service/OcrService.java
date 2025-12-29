@@ -112,9 +112,20 @@ public class OcrService {
                 timeMs = (long) (jsonNode.get("data").get("processing_time").asDouble() * 1000);
             }
             
-            OcrResponse response = OcrResponse.success(text, timeMs);
-            response.setEngine(request.getEngine());
-            response.setLanguage(request.getLanguage());
+            // Try to extract confidence
+            Double confidence = null;
+            if (jsonNode.has("confidence")) {
+                confidence = jsonNode.get("confidence").asDouble();
+            } else if (jsonNode.has("data") && jsonNode.get("data").has("confidence")) {
+                confidence = jsonNode.get("data").get("confidence").asDouble();
+            }
+            
+            OcrResponse response;
+            if (confidence != null) {
+                response = OcrResponse.success(text, timeMs, confidence);
+            } else {
+                response = OcrResponse.success(text, timeMs);
+            }
             
             return response;
             

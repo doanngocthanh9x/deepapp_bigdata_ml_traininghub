@@ -12,6 +12,7 @@ import onnxruntime as ort
 from typing import Dict, Any, List, Tuple
 from com.deepapp.infrastructure.BaseWorker import BaseWorker
 from com.deepapp.infrastructure.WorkerRegistry import register_worker
+from com.deepapp.utils.path_utils import get_yolo_model_path
 
 
 @register_worker("AAA0_0200_W")
@@ -56,7 +57,7 @@ class AAA0_0200_Worker(BaseWorker):
         models = {}
 
         # Check for giấy ra viện model
-        giay_ra_vien_path = "/root/deepapp/deepapp_main/src/main/resources/models/yolo/giay_ra_vien/best.onnx"
+        giay_ra_vien_path = get_yolo_model_path()
         if os.path.exists(giay_ra_vien_path):
             try:
                 # Load ONNX model

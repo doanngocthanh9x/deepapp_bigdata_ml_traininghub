@@ -7,12 +7,25 @@ from vietocr.tool.predictor import Predictor
 from vietocr.tool.config import Cfg
 from nets import nn
 from utils import util
+import sys
+import os
 
-# Load models
-detection = nn.Detection('/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/paddlet/detection.onnx')
-classification = nn.Classification('/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/paddlet/classification.onnx')
+# Add the parent directory to sys.path to import our modules
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..'))
+from com.deepapp.utils.path_utils import get_models_path, get_vietocr_model_path, get_paddle_model_path
 
+# Get dynamic paths
+MODELS_PATH = get_models_path()
+
+print(f"Using models path: {MODELS_PATH}")
+
+# Load models with dynamic paths
+detection = nn.Detection(get_paddle_model_path('detection'))
+classification = nn.Classification(get_paddle_model_path('classification'))
+
+# Configure VietOCR with local model
 config = Cfg.load_config_from_name('vgg_transformer')
+config['weights'] = get_vietocr_model_path()
 config['device'] = 'cpu'
 viet_predictor = Predictor(config)
 

@@ -2,6 +2,7 @@
 #include "com/deepapp/infrastructure/WorkerRegistry.h"
 #include "com/deepapp/infrastructure/GrpcWorkerClient.h"
 #include "com/deepapp/infrastructure/FileHasher.h"
+#include "com/deepapp/utils/PathUtils.h"
 #include <nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
@@ -103,18 +104,8 @@ private:
      * Load vocabulary from file
      */
     void loadVocabulary() {
-        // Use environment variable for project root
-        const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
-        std::string vocab_path;
-
-        if (project_root_env) {
-            vocab_path = std::string(project_root_env) + "/src/main/resources/models/vietocr_onnx/vocab.txt";
-            std::cout << "[ZZA0_0101_Worker] Using project root from environment: " << project_root_env << std::endl;
-        } else {
-            // Fallback to absolute path if environment variable not set
-            vocab_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/vietocr_onnx/vocab.txt";
-            std::cout << "[ZZA0_0101_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
-        }
+        std::string vocab_path = deepapp::utils::PathUtils::getVocabPath();
+        std::cout << "[ZZA0_0101_Worker] Using vocab path: " << vocab_path << std::endl;
         
         std::ifstream vocab_file(vocab_path);
         if (!vocab_file.good()) {
@@ -191,21 +182,8 @@ private:
             session_options.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_EXTENDED);
             std::cout << "[ZZA0_0101_Worker] Session options configured" << std::endl;
            
-            // Calculate model paths from environment variable
-            const char* project_root_env = std::getenv("DEEPAPP_PROJECT_ROOT");
-            std::string base_path;
-
-            std::cout << "[ZZA0_0101_Worker] Environment variable check:" << std::endl;
-            if (project_root_env) {
-                std::cout << "[ZZA0_0101_Worker] DEEPAPP_PROJECT_ROOT = " << project_root_env << std::endl;
-                base_path = std::string(project_root_env) + "/src/main/resources/models/vietocr_onnx/";
-                std::cout << "[ZZA0_0101_Worker] Using project root from environment: " << project_root_env << std::endl;
-            } else {
-                // Fallback to absolute path if environment variable not set
-                base_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/vietocr_onnx/";
-                std::cout << "[ZZA0_0101_Worker] Environment variable DEEPAPP_PROJECT_ROOT not set, using fallback path" << std::endl;
-            }
-
+            // Calculate model paths using PathUtils
+            std::string base_path = deepapp::utils::PathUtils::getVietOcrModelPath();
             std::cout << "[ZZA0_0101_Worker] Base model path: " << base_path << std::endl;
 
             std::string cnn_path = base_path + "cnn.onnx";

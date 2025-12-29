@@ -11,6 +11,7 @@ import cv2
 from typing import Dict, Any, List, Tuple
 from com.deepapp.infrastructure.BaseWorker import BaseWorker
 from com.deepapp.infrastructure.WorkerRegistry import register_worker
+from com.deepapp.utils.path_utils import get_paddle_model_path
 
 try:
     from vietocr.tool.predictor import Predictor
@@ -91,11 +92,7 @@ class AAA0_0102_Worker(BaseWorker):
 
     def _load_detection_model(self) -> Detection:
         """Load PaddleOCR detection model"""
-        project_root = os.environ.get('DEEPAPP_PROJECT_ROOT')
-        if project_root:
-            detection_path = os.path.join(project_root, "src", "main", "resources", "models", "paddlet", "detection.onnx")
-        else:
-            detection_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/paddlet/detection.onnx"
+        detection_path = get_paddle_model_path('detection')
 
         if os.path.exists(detection_path):
             try:
@@ -111,11 +108,7 @@ class AAA0_0102_Worker(BaseWorker):
 
     def _load_classification_model(self) -> Classification:
         """Load PaddleOCR classification model"""
-        project_root = os.environ.get('DEEPAPP_PROJECT_ROOT')
-        if project_root:
-            classification_path = os.path.join(project_root, "src", "main", "resources", "models", "paddlet", "classification.onnx")
-        else:
-            classification_path = "/home/vpslocal/new_workspace/deepapp_bigdata_ml_traininghub/src/main/resources/models/paddlet/classification.onnx"
+        classification_path = get_paddle_model_path('classification')
 
         if os.path.exists(classification_path):
             try:

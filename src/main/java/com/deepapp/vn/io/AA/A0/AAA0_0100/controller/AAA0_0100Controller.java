@@ -1,4 +1,4 @@
-package com.deepapp.vn.io.AA.A0.AAA0_0100.trx;
+package com.deepapp.vn.io.AA.A0.AAA0_0100.controller;
 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/AA/A0/AAA0_0100")
-public class AAA0_0100_trx {
+public class AAA0_0100Controller {
 @Autowired
     private CppWorkerClient cppWorkerClient;
     
