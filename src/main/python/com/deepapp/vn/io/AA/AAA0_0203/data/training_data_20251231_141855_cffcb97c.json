@@ -1,0 +1,62 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "SỞ Y TẾ TP. CẦN THƠ",
+        "TRONG CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01 NGƯỜI",
+        "BỆNH VIỆN HUYÉT HỌC TRUYỀN MÁU",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số lưu trữ: 24.2002",
+        "Và Mã y tế: 815/3/01/005298",
+        "KHOA ĐIỀU TRỊ",
+        "GIẤY RA VIỆN",
+        "- Họ tên người bệnh: NGUYỄN MINH THUẬN",
+        "- Ngày/tháng/năm sinh: 24/08/2005",
+        "Tuổi: 19",
+        "Nam/nữ: Nam",
+        "- Dân tộc: Kinh",
+        "Nghề nghiệp: Loại khác",
+        "- Mã số BHXN/Thẻ BHYT số: BT2939320955754 93102",
+        "- Địa chi: Phú Thạnh, Xã Tân Phú Thạnh, Huyện Châu Thành A, Tỉnh Hậu Giang",
+        "- Vào viện lúc: 8 giờ 19 phút, ngày 05 tháng 11 năm 2024 tháng 19",
+        "- Ra viện lúc: 16 giờ 0 phút, ngày 18 tháng 11 năm 2024 năm 1991",
+        "- Chần đoán: (C91.0;A49; 8,K21,B36) Bệnh bạch cầu dạng nguyên bảo lympho cấp (ALL);Nhiềm khuẩn khác, không xác",
+        "định được vị trí:Bệnh trào ngược dạ dày - thực quản;Nhiễm nấm nông khác",
+        "- Phương pháp điều trị: Nội khoa / (Truyền máu, truyền tiều cầu, kháng sinh, kháng nấm, hỗ trợ)",
+        "- Ghi chú: Tái khám khi hết thuốc",
+        "Ngày 18 tháng 11 năm 2024 19",
+        "Ngày 18 tháng 11 năm 2024",
+        "THÚ TRƯỜNG ĐƠN VỊ",
+        "TRƯỜNG KHOA ĐIỀU TRỊ TRỊ",
+        "PHÓ GIÁM ĐỐC",
+        "BỆNH VIỆN",
+        "HUYẾT HỌC",
+        "TRUYỀN MÁU",
+        "TP. CẦN THƠ",
+        "Họ tên",
+        "Họ tên: BSCKI. Trần Ngọc Cha",
+        "Phạm Văn Nghĩa Trị"
+      ],
+      "extracted_fields": {
+        "họ_tên": "NGUYỄN MINH THUẬN",
+        "chẩn_đoán": "(C91.0;A49; 8,K21,B36) Bệnh bạch cầu dạng nguyên bảo lympho cấp (ALL);Nhiềm khuẩn khác, không xác",
+        "tuổi": "19",
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": "Nam",
+        "ngày_sinh": "2005",
+        "phương_pháp_điều_trị": "Nội khoa / (Truyền máu, truyền tiều cầu, kháng sinh, kháng nấm, hỗ trợ) ",
+        "ghi_chú": "Tái khám khi hết thuốc "
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 34,
+        "fields_extracted": 7,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T14:18:55.863726"
+}

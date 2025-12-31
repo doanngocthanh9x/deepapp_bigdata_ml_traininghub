@@ -1,0 +1,215 @@
+{
+  "template_id": "discharge_summary",
+  "template_name": "Giấy ra viện",
+  "description": "Template cho giấy tóm tắt ra viện",
+  "version": "1.0",
+  "classifier_keywords": [
+    "ra viện",
+    "tóm tắt bệnh án",
+    "giấy ra viện",
+    "giáy ra viện",
+    "xuất viện",
+    "ung bướu",
+    "bệnh viện ung bướu"
+  ],
+  "rules": [
+    {
+      "field_name": "họ_tên",
+      "display_name": "Họ và tên",
+      "keywords": [
+        "họ tên bệnh nhân",
+        "họ tên người bệnh",
+        "- họ tên người bệnh",
+        "họ tên",
+        "họ và tên",
+        "tên bệnh nhân",
+        "tên người bệnh",
+        "ên người bệnh"
+      ],
+      "strategy": "keyword_value",
+      "priority": 10,
+      "query_aliases": [
+        "tên",
+        "người bệnh",
+        "bệnh nhân"
+      ]
+    },
+    {
+      "field_name": "tuổi",
+      "display_name": "Tuổi",
+      "keywords": [
+        "tuổi:",
+        "- tuổi"
+      ],
+      "strategy": "regex",
+      "patterns": [
+        "tuổi:\\s*(\\d+)",
+        "- tuổi\\s*(\\d+)",
+        "tuổi:\\s*([0-9SOIlBsGZ])\\s*tuổi",
+        "(\\d+)\\s*tuổi",
+        "([0-9SOIlBsGZ])\\s*tuổi",
+        "(\\d+)\\s*Nam/nữ",
+        "(\\d+)\\s*nam/nữ",
+        "(\\d+)\\s*Nam Nữ",
+        "(\\d+)\\s*nam nữ"
+      ],
+      "priority": 9,
+      "validator": "validate_age",
+      "transformer": "normalize_age_transformer",
+      "query_aliases": [
+        "bao nhiêu tuổi",
+        "mấy tuổi"
+      ]
+    },
+    {
+      "field_name": "giới_tính",
+      "display_name": "Giới tính",
+      "keywords": [
+        "nam/nữ",
+        "nam nữ",
+        "giới tính",
+        "- giới tính"
+      ],
+      "strategy": "regex",
+      "patterns": [
+        "\\b(nam|nữ|nu)\\b",
+        "(?i)\\b(nam|nữ|nu)\\b"
+      ],
+      "priority": 8,
+      "query_aliases": [
+        "giới tính",
+        "nam hay nữ"
+      ]
+    },
+    {
+      "field_name": "ngày_sinh",
+      "display_name": "Ngày sinh",
+      "keywords": [
+        "ngày tháng năm sinh",
+        "ngày/tháng/năm sinh",
+        "ngày sinh",
+        "năm sinh"
+      ],
+      "strategy": "regex",
+      "patterns": [
+        "năm sinh:\\s*(\\d{4})",
+        "(\\d{4})"
+      ],
+      "priority": 8,
+      "validator": "validate_birth_year",
+      "transformer": "format_birth_year_transformer",
+      "query_aliases": [
+        "sinh ngày",
+        "ngày sinh",
+        "năm sinh"
+      ]
+    },
+    {
+      "field_name": "ngày_vào_viện",
+      "display_name": "Ngày vào viện",
+      "keywords": [
+        "vào viện lúc",
+        "- vào viện lúc",
+        "vào viên lúc",
+        "ào viên lúc",
+        "ao viên lúc"
+      ],
+      "strategy": "keyword_value",
+      "priority": 9,
+      "validator": "validate_date",
+      "transformer": "format_date_transformer",
+      "query_aliases": [
+        "khi nào vào viện",
+        "ngày nhập viện"
+      ]
+    },
+    {
+      "field_name": "ngày_ra_viện",
+      "display_name": "Ngày ra viện",
+      "keywords": [
+        "ra viện lúc",
+        "- ra viện lúc",
+        "ka viên lúc",
+        "a viên lúc"
+      ],
+      "strategy": "keyword_value",
+      "priority": 9,
+      "validator": "validate_date",
+      "transformer": "format_date_transformer",
+      "query_aliases": [
+        "khi nào ra viện",
+        "ngày xuất viện"
+      ]
+    },
+    {
+      "field_name": "chẩn_đoán",
+      "display_name": "Chẩn đoán",
+      "keywords": [
+        "chẩn đoán",
+        "chần đoán",
+        "chân đoán",
+        "- chấn đoán",
+        "% bệnh chính"
+      ],
+      "strategy": "multi_line",
+      "stop_keywords": [
+        "phương pháp",
+        "ghi chú",
+        "nội khoa",
+        "bệnh kèm",
+        "% bệnh kèm theo",
+        "thuật",
+        "giải phẫu bệnh",
+        "mô tả",
+        "chân đoán:",
+        "- giải phẫu bệnh"
+      ],
+      "priority": 10,
+      "transformer": "normalize_spaces",
+      "query_aliases": [
+        "bệnh",
+        "mắc bệnh",
+        "bệnh gì"
+      ]
+    },
+    {
+      "field_name": "phương_pháp_điều_trị",
+      "display_name": "Phương pháp điều trị",
+      "keywords": [
+        "phương pháp điều trị",
+        "- phương pháp điều trị"
+      ],
+      "strategy": "multi_line",
+      "stop_keywords": [
+        "ghi chú",
+        "lưu ý",
+        "hẹn khám"
+      ],
+      "priority": 7,
+      "query_aliases": [
+        "điều trị",
+        "phương pháp"
+      ]
+    },
+    {
+      "field_name": "ghi_chú",
+      "display_name": "Ghi chú",
+      "keywords": [
+        "ghi chú",
+        "- ghi chú"
+      ],
+      "strategy": "multi_line",
+      "stop_keywords": [
+        "ngày",
+        "n trưởng khoa",
+        "thủ trưởng",
+        "trưởng khoa"
+      ],
+      "priority": 6,
+      "query_aliases": [
+        "lưu ý",
+        "ghi chú"
+      ]
+    }
+  ]
+}

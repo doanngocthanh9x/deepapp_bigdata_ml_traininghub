@@ -1,0 +1,69 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "14:19:459/12/2024 J0100673354,Phạm Thị Thơm",
+        "Theo Chi Nhánh Hà Nội 2-Hanoi 2 Branch Office",
+        "SỞ Y TẾ TUYÊN QUẢNG",
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+        "Bệnh Viện Đa Khoa Tỉnh Tuyên Quang",
+        "MS:01/BV-01",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số lưu trữ:",
+        "Khoa Tâm Thần Kinh",
+        "Mã BN:",
+        "20019896",
+        "GIẤY RA VIỆN",
+        "HỌ TÊN NGƯỜI BỆNH: NGUYỄN THỊ VY",
+        "Ngày/tháng/năm sinh: 10/08/1971",
+        "Tuổi: 53",
+        "Giới tính: Nữ",
+        "Dân tộc: - Kinh",
+        "- Nghề nghiệp: Không có nghề nghiệp cụ thể thuận",
+        "MÃ SỐ BHXH/ thẻ BHYT số: AK208082009175708112",
+        "Địa chi:",
+        "Tổ 07, Phường Nông Tiến, TP Tuyên Quang, Tuyên Quang",
+        "Vào viện lúc:",
+        "18/11/2024 10:08",
+        "Ra viện lúc:",
+        "25/11/2024 10:30",
+        "Chần đoán:",
+        "Trong H81 - Rối loạn chức năng tiền đình;",
+        "Phương pháp điều trì 1, 14 NAM Đốc",
+        "Ghi chú:",
+        "THUY TRƯỞNG PHÒNG KÊ HOẠCH TỔNG HỢP",
+        "Ngày 25 tháng 11 năm 2024",
+        "Ngày 25 tháng 11 năm 2024",
+        "Thứ Trưởng đơn vị",
+        "p",
+        "Trưởng khoa",
+        "BỆNH VIỆN",
+        "DAKHOA",
+        "TÌNH",
+        "NGUYỄN QUANG",
+        "BS.Vũ Xuân Nam",
+        "Thsbs. Phạm Thị Ánh Tuyết"
+      ],
+      "extracted_fields": {
+        "họ_tên": "NGUYỄN THỊ VY",
+        "chẩn_đoán": "Trong H81 - Rối loạn chức năng tiền đình;",
+        "tuổi": "53",
+        "ngày_vào_viện": "18/11/2024",
+        "ngày_ra_viện": "25/11/2024",
+        "giới_tính": "Nữ",
+        "ngày_sinh": "1971",
+        "phương_pháp_điều_trị": null,
+        "ghi_chú": "THUY TRƯỞNG PHÒNG KÊ HOẠCH TỔNG HỢP"
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 41,
+        "fields_extracted": 8,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T14:38:55.717702"
+}

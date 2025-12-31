@@ -1,0 +1,27 @@
+{
+  "template_id": "prescription",
+  "template_name": "Đơn thuốc",
+  "description": "Template cho đơn thuốc",
+  "version": "1.0",
+  "classifier_keywords": [
+    "đơn thuốc",
+    "toà thuốc",
+    "thuốc"
+  ],
+  "rules": [
+    {
+      "field_name": "tên_thuốc",
+      "display_name": "Tên thuốc",
+      "keywords": [
+        "thuốc",
+        "dược phẩm"
+      ],
+      "strategy": "keyword_value",
+      "priority": 10,
+      "query_aliases": [
+        "thuốc gì",
+        "dùng thuốc"
+      ]
+    }
+  ]
+}

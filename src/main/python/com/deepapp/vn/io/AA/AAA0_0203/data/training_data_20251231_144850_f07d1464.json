@@ -1,0 +1,47 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "oa",
+        "G",
+        "so",
+        "HIEN",
+        "oc",
+        "0",
+        "060093",
+        "F",
+        "CẢN",
+        "its",
+        "3",
+        "ks",
+        "Tuye",
+        "1",
+        "33",
+        "5",
+        "6",
+        "5",
+        "Imgedit.Al"
+      ],
+      "extracted_fields": {
+        "họ_tên": null,
+        "chẩn_đoán": null,
+        "tuổi": null,
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": null,
+        "ngày_sinh": null,
+        "phương_pháp_điều_trị": null,
+        "ghi_chú": null
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 19,
+        "fields_extracted": 0,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T14:48:50.732749"
+}

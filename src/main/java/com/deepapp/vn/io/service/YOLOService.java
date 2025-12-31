@@ -61,7 +61,7 @@ public class YOLOService {
                        processingTime, worker, result.getDetections().size());
 
             // Convert to response format
-            return createResponse(result, worker, processingTime);
+            return createResponse(result, worker, processingTime, imgSize);
 
         } catch (Exception e) {
             logger.error("Detection failed for worker: " + worker, e);
@@ -116,12 +116,13 @@ public class YOLOService {
     /**
      * Create standardized response
      */
-    private Map<String, Object> createResponse(DetectionResult result, String worker, long processingTime) {
+    private Map<String, Object> createResponse(DetectionResult result, String worker, long processingTime, Integer imgSize) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
         response.put("worker", worker);
         response.put("processingTime", processingTime + "ms");
         response.put("timestamp", System.currentTimeMillis());
+        response.put("detectionImageSize", imgSize); // Size of image used for detection (e.g., 640)
 
         // Convert detections
         List<Map<String, Object>> detections = new ArrayList<>();

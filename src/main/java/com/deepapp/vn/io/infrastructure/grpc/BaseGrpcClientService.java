@@ -3,7 +3,7 @@ package com.deepapp.vn.io.infrastructure.grpc;
 import com.deepapp.hub.DataStreamGrpc;
 import com.deepapp.hub.EventChunk;
 import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,13 +55,17 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
         try {
             logger.info("Initializing gRPC client '{}' to {}:{}", clientId, serverHost, serverPort);
             
-            channel = ManagedChannelBuilder.forAddress(serverHost, serverPort)
+            // Set max message sizes to prevent BufferOverflowException
+            int maxMessageSize = 200 * 1024 * 1024;  // 200MB
+
+            channel = NettyChannelBuilder.forAddress(serverHost, serverPort)
                     .usePlaintext()
                     .keepAliveTime(10, TimeUnit.MINUTES)  // Increased from 2 to 10 minutes
                     .keepAliveTimeout(30, TimeUnit.SECONDS)  // Increased timeout
                     .keepAliveWithoutCalls(false)  // Only keepalive during active calls
                     .idleTimeout(Long.MAX_VALUE, TimeUnit.DAYS)  // Disable idle timeout
-                    .maxInboundMessageSize(200 * 1024 * 1024)   // 200MB for receiving messages
+                    .maxInboundMessageSize(maxMessageSize)   // 200MB for receiving messages
+                    .maxInboundMetadataSize(maxMessageSize)  // 200MB for metadata
                     .build();
             
             asyncStub = DataStreamGrpc.newStub(channel);
@@ -241,9 +245,36 @@ public abstract class BaseGrpcClientService implements InitializingBean, Disposa
         }
 
         EventChunk event = builder.build();
-        requestObserver.onNext(event);
-        logger.info("Sent event '{}' from '{}' to '{}' with requestId={}", 
-                    eventType, clientId, targetId, event.getMetadataMap().get("requestId"));
+
+        // Debug: Log event size
+        int eventSize = event.getSerializedSize();
+        logger.info("Sending event '{}' from '{}' to '{}' - Event size: {} bytes ({} KB)",
+                    eventType, clientId, targetId, eventSize, eventSize / 1024.0);
+
+        try {
+            requestObserver.onNext(event);
+            logger.info("Sent event '{}' from '{}' to '{}' with requestId={}",
+                        eventType, clientId, targetId, event.getMetadataMap().get("requestId"));
+        } catch (Exception e) {
+            logger.error("Failed to send event '{}': {} - Attempting to recreate stream", eventType, e.getMessage());
+
+            // Mark as disconnected and trigger reconnection
+            isConnected = false;
+
+            // Try to recreate stream immediately
+            try {
+                setupBidirectionalStream();
+                logger.info("Stream recreated, retrying send");
+
+                // Retry send once
+                requestObserver.onNext(event);
+                logger.info("Retry successful: Sent event '{}' from '{}' to '{}'",
+                            eventType, clientId, targetId);
+            } catch (Exception retryError) {
+                logger.error("Retry failed for event '{}': {}", eventType, retryError.getMessage());
+                throw new RuntimeException("Failed to send event after stream recreation: " + retryError.getMessage(), retryError);
+            }
+        }
     }
 
     /**

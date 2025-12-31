@@ -109,12 +109,29 @@ public class DischargePaperOCRController {
             List<Map<String, Object>> ocrResults = new ArrayList<>();
             StringBuilder fullText = new StringBuilder();
 
-            // Convert image to BufferedImage for cropping
+            // Get original image dimensions for coordinate scaling
             byte[] imageBytes = image.getBytes();
             ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes);
             BufferedImage originalImage = ImageIO.read(bis);
             int imageWidth = originalImage.getWidth();
             int imageHeight = originalImage.getHeight();
+
+            // Scale factor from model coordinates (640x640) to original image coordinates
+            double scaleX = (double) imageWidth / 640.0;
+            double scaleY = (double) imageHeight / 640.0;
+
+            // Scale bbox coordinates from model space to original image space
+            for (Map<String, Object> detection : detections) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> bbox = (Map<String, Object>) detection.get("bbox");
+                if (bbox != null) {
+                    // Scale coordinates back to original image dimensions
+                    bbox.put("x1", ((Number) bbox.get("x1")).doubleValue() * scaleX);
+                    bbox.put("y1", ((Number) bbox.get("y1")).doubleValue() * scaleY);
+                    bbox.put("x2", ((Number) bbox.get("x2")).doubleValue() * scaleX);
+                    bbox.put("y2", ((Number) bbox.get("y2")).doubleValue() * scaleY);
+                }
+            }
 
             // Create temp directory for cropped images
             String tempDir = "/tmp/deepapp/bbox_crops";
@@ -265,7 +282,12 @@ public class DischargePaperOCRController {
                 "worker", workerDisplayName,
                 "detections", detections.size(),
                 "extracted_text", fullText.toString(),
-                "regions", ocrResults
+                "regions", ocrResults,
+                "imageDimensions", Map.of(
+                    "width", imageWidth,
+                    "height", imageHeight
+                ),
+                "detectionImageSize", yoloResult.get("detectionImageSize")
             ));
 
         } catch (Exception e) {

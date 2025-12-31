@@ -29,6 +29,10 @@ import java.io.ByteArrayInputStream;
  * AAA0_0103 - Discharge Paper OCR Controller
  * Combines YOLO detection for text regions with VietOCR for text extraction
  * Specifically designed for Vietnamese discharge papers (giấy ra viện)
+ * 
+ * COORDINATE SYSTEM:
+ * - Backend returns bbox in ORIGINAL IMAGE COORDINATES
+ * - Frontend should NOT scale again from detection size
  */
 @RestController
 @RequestMapping("/AA/A0/AAA0_0103")
@@ -89,7 +93,8 @@ public class AAA0_0103Controller {
                     "message", "No text regions detected",
                     "detections", 0,
                     "extracted_text", "",
-                    "regions", new ArrayList<>()
+                    "regions", new ArrayList<>(),
+                    "coordinateSystem", "original_image"
                 ));
             }
 
@@ -106,6 +111,8 @@ public class AAA0_0103Controller {
             int imageWidth = originalImage.getWidth();
             int imageHeight = originalImage.getHeight();
 
+            logger.info("Original image dimensions: {}x{}", imageWidth, imageHeight);
+
             // Create temp directory for cropped images
             String tempDir = "/tmp/deepapp/bbox_crops";
             Files.createDirectories(Paths.get(tempDir));
@@ -120,7 +127,7 @@ public class AAA0_0103Controller {
                     @SuppressWarnings("unchecked")
                     Map<String, Object> bbox = (Map<String, Object>) detection.get("bbox");
                     if (bbox != null) {
-                        // Ensure coordinates are numbers, not null
+                        // Backend bbox is in ORIGINAL IMAGE COORDINATES
                         Double x1 = bbox.get("x1") instanceof Number ? ((Number) bbox.get("x1")).doubleValue() : 0.0;
                         Double y1 = bbox.get("y1") instanceof Number ? ((Number) bbox.get("y1")).doubleValue() : 0.0;
                         Double x2 = bbox.get("x2") instanceof Number ? ((Number) bbox.get("x2")).doubleValue() : 0.0;
@@ -148,7 +155,7 @@ public class AAA0_0103Controller {
                         String croppedImagePath = croppedPath.toString();
                         croppedImagePaths.add(croppedImagePath);
 
-                        // Add bbox info with path
+                        // Add bbox info with path - COORDINATES IN ORIGINAL IMAGE SPACE
                         Map<String, Object> bboxInfo = new HashMap<>();
                         bboxInfo.put("x1", x1);
                         bboxInfo.put("y1", y1);
@@ -159,43 +166,36 @@ public class AAA0_0103Controller {
                         bboxInfo.put("cropped_image_path", croppedImagePath);
                         bboxData.add(bboxInfo);
 
-                        logger.debug("Bbox {}: x1={}, y1={}, x2={}, y2={}, label={}, path={}",
-                                   i, x1, y1, x2, y2, detection.get("label"), croppedImagePath);
+                        logger.debug("Bbox {} (original coords): x1={}, y1={}, x2={}, y2={}, label={}", 
+                                   i, x1, y1, x2, y2, detection.get("label"));
                     }
                 }
 
                 // Call Python worker with cropped image paths
                 Map<String, Object> payloadData = new HashMap<>();
-                payloadData.put("cropped_images", bboxData); // Each item has cropped_image_path
+                payloadData.put("cropped_images", bboxData);
                 payloadData.put("image_width", imageWidth);
                 payloadData.put("image_height", imageHeight);
                 
                 String bboxPayload = new ObjectMapper().writeValueAsString(payloadData);
 
                 logger.info("Calling {} worker for bbox-based OCR with {} regions", workerType.toUpperCase(), bboxData.size());
-                logger.debug("Bbox payload (first bbox): {}", bboxData.size() > 0 ? bboxData.get(0) : "No bboxes");
-                logger.debug("Bbox JSON: {}", new ObjectMapper().writeValueAsString(bboxData).substring(0, Math.min(200, new ObjectMapper().writeValueAsString(bboxData).length())));
                 
                 String bboxResult;
                 if ("cpp".equalsIgnoreCase(workerType)) {
-                    // Call C++ worker directly - now using real ONNX models
-                    logger.info("Calling C++ worker directly with real ONNX models");
+                    logger.info("Calling C++ worker with real ONNX models");
                     bboxResult = cppWorkerClient.callWorker("ZZA0_0101_W", "extract_text_from_bboxes", bboxPayload).get();
                 } else {
-                    // Default to Python worker
                     bboxResult = pythonWorkerClient.callWorker("AAA0_0101_W", "extract_text_from_bboxes", bboxPayload).get();
                 }
                 
-                // Parse bbox results - handle both formats: direct "results" (C++) and "data.results" (Python)
+                // Parse bbox results - handle both formats
                 JsonNode bboxJson = new ObjectMapper().readTree(bboxResult);
                 JsonNode resultsNode = null;
 
-                // Check for C++ worker format first (direct "results")
                 if (bboxJson.has("results")) {
                     resultsNode = bboxJson.get("results");
-                }
-                // Check for Python worker format ("data.results")
-                else if (bboxJson.has("data") && bboxJson.get("data").has("results")) {
+                } else if (bboxJson.has("data") && bboxJson.get("data").has("results")) {
                     resultsNode = bboxJson.get("data").get("results");
                 }
 
@@ -208,7 +208,7 @@ public class AAA0_0103Controller {
                         Map<String, Object> bbox = (Map<String, Object>) detection.get("bbox");
 
                         Map<String, Object> regionResult = new HashMap<>();
-                        regionResult.put("bbox", bbox);
+                        regionResult.put("bbox", bbox); // Already in original image coordinates
                         regionResult.put("confidence", detection.get("confidence"));
                         regionResult.put("label", detection.get("label"));
                         regionResult.put("text", resultNode.has("text") ? resultNode.get("text").asText() : "");
@@ -216,7 +216,6 @@ public class AAA0_0103Controller {
 
                         ocrResults.add(regionResult);
 
-                        // Add to full text
                         String text = resultNode.has("text") ? resultNode.get("text").asText() : "";
                         if (!text.isEmpty()) {
                             if (fullText.length() > 0) fullText.append(" ");
@@ -244,19 +243,23 @@ public class AAA0_0103Controller {
                 }
             }
 
-            // Return successful response
+            // Return successful response with coordinate system info
             String workerDisplayName = workerType.toUpperCase() + " Worker";
             if ("cpp".equalsIgnoreCase(workerType)) {
                 workerDisplayName += " (Delegated to Python)";
             }
-            return ResponseEntity.ok(Map.of(
-                "success", true,
-                "message", "OCR processing completed",
-                "worker", workerDisplayName,
-                "detections", detections.size(),
-                "extracted_text", fullText.toString(),
-                "regions", ocrResults
-            ));
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "OCR processing completed");
+            response.put("worker", workerDisplayName);
+            response.put("detections", detections.size());
+            response.put("extracted_text", fullText.toString());
+            response.put("regions", ocrResults);
+            response.put("imageDimensions", Map.of("width", imageWidth, "height", imageHeight));
+            response.put("coordinateSystem", "original_image"); // IMPORTANT: bbox in original image coords
+            
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
             logger.error("Error processing OCR", e);

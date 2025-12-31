@@ -1,0 +1,71 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "MẪU GAYRA VIỆN",
+        "(Kèm theo Thông tư số 56/2017T-BYT ngày 29 tháng 12 năm 2017 của Bộ trường Bộ Yiế)",
+        "collow",
+        "Cosses",
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01",
+        "xio",
+        "5",
+        "SỜ Y TẾ TP. ĐÀ NẮNG",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số lưu trữ: 24.013142",
+        "BỆNH VIỆN ĐK TÂM TRÍ ĐÀ NẦNG",
+        "mondines",
+        "Mã y tế...22034954.J",
+        "GIẤY RA VIỆN",
+        "Khoanmaness",
+        "KHOA NHI",
+        "0310000000030",
+        "Họ tên người bệnh:",
+        "NGUYỄN NGỌC BẢO NGÂN",
+        "Ngày/tháng/năm sinh: 06/01/2016",
+        "Tuổi: S Tuổi",
+        "Nam Nữ: Nữ",
+        "Dân tộc: Kinh",
+        "Nghề nghiệp: Không xác định",
+        "MÃ SỐ BHXH/THẻ BHYT Số: HS 4 48 48 207 20815 48193",
+        "Địa chỉ: 610 văn tiến dũng, Phường Hòa Xuân, Quận Cầm Lệ, Thành phố Đà Nắng",
+        "Vào viện lúc: 18 giờ 54 ngày 27 tháng li năm 2024",
+        "Ra viện lúc: 17 giờ 00 ngày 02 tháng 12 năm 2024",
+        "Chân đoán:",
+        "Viêm họng cấp/ rối loạn tiêu hóa[J02];",
+        "Phương pháp điều trị: Nội KHOA",
+        "Ghi chú: uống thuốc theo đơn",
+        "Ba: Nguyễn Thế Phước",
+        "Lê Thị Thu Thảo",
+        "Táng 12 Năm 2024",
+        "Ngày 2 Tháng 12 Năm 2024",
+        "lxa",
+        "bệnh viện",
+        "Trưởng khoa",
+        "đóng dấu)",
+        "TBS. Hoàng Nguyễn Thanh Thuỷ",
+        "Junking",
+        "1903"
+      ],
+      "extracted_fields": {
+        "họ_tên": "NGUYỄN NGỌC BẢO NGÂN",
+        "chẩn_đoán": "Viêm họng cấp/ rối loạn tiêu hóa[J02];",
+        "tuổi": "8",
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": "Nam",
+        "ngày_sinh": "2016",
+        "phương_pháp_điều_trị": "Nội KHOA ",
+        "ghi_chú": "uống thuốc theo đơn "
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 43,
+        "fields_extracted": 7,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T13:55:47.972217"
+}

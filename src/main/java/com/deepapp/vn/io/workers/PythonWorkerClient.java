@@ -1,6 +1,7 @@
 package com.deepapp.vn.io.workers;
 
 import com.deepapp.hub.EventChunk;
+import com.deepapp.vn.io.infrastructure.cache.RequestResponseCache;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,13 +57,54 @@ public class PythonWorkerClient extends BaseWorkerClient {
         // Send to python-worker with taskId in metadata
         byte[] payload = taskData.getBytes(java.nio.charset.StandardCharsets.UTF_8);
 
-        // Create metadata with taskId for internal Python routing
-        Map<String, String> metadata = new HashMap<>();
+        // Debug: Log payload size
+        logger.info("Request payload size: {} bytes ({} KB)", payload.length, payload.length / 1024.0);
+
+        // If payload is too large (> 50KB), use SQLite cache to avoid gRPC buffer overflow
+        String actualPayloadStr = taskData;  // Default: send original payload
+        final Map<String, String> metadata = new HashMap<>();
         metadata.put("taskId", taskId);
 
+        if (payload.length > 50 * 1024) {
+            // Payload too large - store in SQLite cache
+            logger.info("Payload too large ({} KB) - storing in SQLite cache", payload.length / 1024.0);
+
+            try {
+                // Store original payload in cache
+                Map<String, Object> cacheData = new HashMap<>();
+                cacheData.put("payload", taskData);
+                cacheData.put("taskId", taskId);
+                cacheData.put("eventType", eventType);
+
+                String cacheId = RequestResponseCache.storeData(cacheData, 300); // 5 min TTL
+
+                if (cacheId != null) {
+                    // Send only cache ID through gRPC
+                    Map<String, Object> cacheRef = new HashMap<>();
+                    cacheRef.put("cached_request", true);
+                    cacheRef.put("cache_id", cacheId);
+
+                    actualPayloadStr = objectMapper.writeValueAsString(cacheRef);
+                    metadata.put("cached_request", "true");
+                    logger.info("Stored request in cache with ID: {}", cacheId);
+                } else {
+                    logger.error("Failed to store payload in cache - sending directly (may fail)");
+                }
+            } catch (Exception e) {
+                logger.error("Error caching request - sending directly", e);
+            }
+        }
+
+        byte[] finalPayload = actualPayloadStr.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        logger.info("Final gRPC payload size: {} bytes ({} KB)", finalPayload.length, finalPayload.length / 1024.0);
+
         // Send to python-worker, not taskId directly
-        return sendEventAndWaitForResponse(pythonTargetId, eventType, payload, metadata, 30000)
-                .thenApply(event -> event.getPayload().toStringUtf8());
+        return sendEventAndWaitForResponse(pythonTargetId, eventType, finalPayload, metadata, 120000)
+                .thenApply(event -> {
+                    byte[] responsePayload = event.getPayload().toByteArray();
+                    logger.info("Response payload size: {} bytes ({} KB)", responsePayload.length, responsePayload.length / 1024.0);
+                    return event.getPayload().toStringUtf8();
+                });
     }
 
     /**

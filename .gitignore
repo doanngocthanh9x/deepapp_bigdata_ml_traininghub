@@ -24,7 +24,7 @@ go_grpc_hub/
 
 # IDE files
 .idea/
-.vscode/
+.vscode/           
 *.iml
 *.iws
 *.ipr
@@ -90,3 +90,5 @@ build/
 .vscode/
 /src/main/resources/models
 /src/main/static
+/src/main/resources/static/remix-of-swift-insight-dashboard 
+/src/main/python/test/*.png

@@ -73,7 +73,8 @@ class GrpcWorkerClient:
                     ('grpc.keepalive_timeout_ms', 30 * 1000),    # 30 seconds
                     ('grpc.keepalive_permit_without_calls', 0),  # Only keepalive during active calls
                     ('grpc.http2.max_pings_without_data', 0),    # Disable pings without data
-                    ('grpc.max_receive_message_length', 200 * 1024 * 1024),  # 200MB
+                    ('grpc.max_receive_message_length', 200 * 1024 * 1024),  # 200MB receive
+                    ('grpc.max_send_message_length', 200 * 1024 * 1024),     # 200MB send
                 ]
                 self.channel = grpc.insecure_channel(f"{self.host}:{self.port}", options=options)
                 self.stub = hub_pb2_grpc.DataStreamStub(self.channel)
@@ -241,9 +242,10 @@ class GrpcWorkerClient:
                 worker = registry.workers[task_id]
                 if worker.can_handle(event_type):
                     print(f"[GrpcWorkerClient] Routing {event_type} to worker {task_id}")
-                    
+
                     try:
-                        result = worker.process_task(event_type, payload)
+                        # Use process_task_wrapper to handle cached requests
+                        result = worker.process_task_wrapper(event_type, payload)
                         
                         # Send response back with the same requestId
                         response_metadata = {}

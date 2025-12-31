@@ -1,0 +1,39 @@
+# AAA0_0104 SQLite Database Configuration
+spring:
+  datasource:
+    url: jdbc:sqlite:/tmp/deepapp/aaa0_0104.db
+    driver-class-name: org.sqlite.JDBC
+    username: ""
+    password: ""
+
+  jpa:
+    database-platform: org.hibernate.dialect.SQLiteDialect
+    hibernate:
+      ddl-auto: none  # We handle schema manually
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+# AAA0_0104 Module Configuration
+aaa0_0104:
+  db:
+    schema:
+      path: /root/aaa0_0104_schema.sql
+    init:
+      enabled: true
+
+  storage:
+    base-path: /tmp/deepapp/uploads
+    pages-path: /tmp/deepapp/pages
+    crops-path: /tmp/deepapp/crops
+
+  processing:
+    max-file-size: 100MB
+    allowed-types: pdf,tiff,tif,jpg,jpeg,png
+    ocr-enabled: true
+    yolo-enabled: true
+
+logging:
+  level:
+    com.deepapp.vn.io.AA.A0.AAA0_0104: DEBUG

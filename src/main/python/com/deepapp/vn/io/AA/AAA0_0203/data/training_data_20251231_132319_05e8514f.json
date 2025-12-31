@@ -1,0 +1,65 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "NGÀY PHẢI PHÒNG THỊ",
+        "cộng hòa xã hội chù nghĩa việt nam",
+        "Nin",
+        "PENAYMORA",
+        "KHOA QUỐC",
+        "Khon Tim mạch Đột qux",
+        "Độc lập - Tự doa Hạnh phúc",
+        "giấy ra viện",
+        "- Họ tên người bệnh: phan văn tuyên thuận",
+        "Ngày/tháng/năm sinh: 17/07/1972",
+        "Dân tộc: Kinh",
+        "Nghề nghiệp: Khác",
+        "(Tuổi: 52);",
+        "Nam/Na: Nam",
+        "- Mã số bhyt/hó bhyt số:",
+        "GDOWNPROOFING",
+        "- Địa chỉ: Số 1/22 Nguyễn Hữu Tuệ, Phường Gia Viên, Quận Ngô Quyền, Hai Phòng",
+        "Vào viện lúc: 15 giờ 44 phút, ngày 25 tháng 11 năm 2024",
+        "Ra viện lúc: 8 giờ 00 phút, ngày 28 tháng 11 năm 2024",
+        "- Chần đoán: Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+        "Phương pháp điều trị: truyền dịch, kháng sinh, điều trị triệu chứng",
+        "In tim Brugada typo 2",
+        "- Ghi chú: Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau",
+        "Ngoin",
+        "tháng 10 năm 2024.9",
+        "Ngày 2.8. tháng M. năm 202%",
+        "BỆNH HUỆ NRIÊN",
+        "ĐỘNG ĐƠN VỊ A",
+        "TRƯỜNG KHOA",
+        "?DA KHOA",
+        "QUỐC TẾ",
+        "HẢI PHÒNG",
+        "Tbs.8SNETIN",
+        "Hạm Văn Thuận",
+        "Phạm Văn Thuận",
+        "EYE",
+        "Nux"
+      ],
+      "extracted_fields": {
+        "họ_tên": "phan văn tuyên thuận",
+        "chẩn_đoán": "Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+        "tuổi": "52",
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": null,
+        "ngày_sinh": "1972",
+        "phương_pháp_điều_trị": "truyền dịch, kháng sinh, điều trị triệu chứng In tim Brugada typo 2",
+        "ghi_chú": "Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau Ngoin tháng 10 năm 2024.9"
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 37,
+        "fields_extracted": 6,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T13:23:19.829440"
+}

@@ -11,3 +11,9 @@ torch>=1.9.0
 torchvision
 gdown
 pyclipper
+pyvi
+transformers
+sentence-transformers
+faiss-cpu
+spacy 
+spacy-transformers

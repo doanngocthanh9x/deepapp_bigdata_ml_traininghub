@@ -8,6 +8,14 @@ from nets import nn
 from utils import util
 from com.deepapp.utils.path_utils import get_paddle_model_path, get_test_image_path
 
+# PhoBERT for NER testing
+from transformers import AutoTokenizer, AutoModel
+import torch
+
+# Load PhoBERT
+phobert_tokenizer = AutoTokenizer.from_pretrained('vinai/phobert-base')
+phobert_model = AutoModel.from_pretrained('vinai/phobert-base')
+
 # Load models
 detection = nn.Detection(get_paddle_model_path('detection'))
 classification = nn.Classification(get_paddle_model_path('classification'))
@@ -29,6 +37,24 @@ def rotate_image(image, angle):
     elif angle == 270:
         return cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
     return image
+
+def process_text_with_phobert(text):
+    """
+    Process text with PhoBERT for NER testing
+    Note: This is a basic test without trained NER head
+    """
+    inputs = phobert_tokenizer(text, return_tensors='pt', truncation=True, max_length=512)
+    with torch.no_grad():
+        outputs = phobert_model(**inputs)
+    # Get last hidden states
+    embeddings = outputs.last_hidden_state
+    tokens = phobert_tokenizer.tokenize(text)
+    print(f"PhoBERT processed text: '{text}'")
+    print(f"Tokens: {tokens}")
+    print(f"Embeddings shape: {embeddings.shape}")
+    # Placeholder for NER: in a real implementation, you'd have a classification head
+    # For now, just return tokens
+    return tokens
 
 def process_image(image_path):
     # Load image
@@ -88,13 +114,15 @@ def process_image(image_path):
     
     return results, frame
 
-# Usage
-results, annotated_image = process_image(get_test_image_path('01HM00012524_300003_image_92.png'))
+# Usage /root/deepapp/deepapp_main/src/main/python/test/images/01HM00012243_300005_image_74.png
+results, annotated_image = process_image(get_test_image_path('images/01HM00012243_300005_image_74.png'))
 
 print("Recognized text with angles:")
 for idx, result in enumerate(results):
     print(f"{idx}: '{result['text']}' - Angle: {result['angle']}°")
+    # Test PhoBERT NER on recognized text
+    process_text_with_phobert(result['text'])
 
-cv2.imshow('Result', annotated_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+# cv2.imshow('Result', annotated_image)
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()

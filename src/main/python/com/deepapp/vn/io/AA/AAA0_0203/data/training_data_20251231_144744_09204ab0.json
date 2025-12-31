@@ -1,0 +1,47 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM THỊ",
+        "Độc lập Tự do - Hạnh phúc",
+        "AND SOCIALIST REPUBLIC OF VIET NAM 1995",
+        "1994 Undopondence - Freedom - Hapoiness Star",
+        "CĂN CƯỚC CÔNG DÂN",
+        "Citizen Identity Card O",
+        "066095010515",
+        "Họ và tên I Full name:",
+        "ĐỖ HỒNG SƠN",
+        "Ngày sinh/Date of birth",
+        "12/01/1995",
+        "Giới tính/Sex Nam Quốc tịch/Nationality: Việt Nam",
+        "Quê quán I Place of origin:",
+        "Thị trấn An Lão, An Lão, Hải Phòng",
+        "- Noi thường trú I Place of residence Cụm 8, Thôn 3",
+        "Có giá m còng",
+        "12/01/2035",
+        "paceup",
+        "Hòa Thắng, Buôn Ma Thuột, Đắk Lắk"
+      ],
+      "extracted_fields": {
+        "họ_tên": "ĐỖ HỒNG SƠN",
+        "chẩn_đoán": null,
+        "tuổi": null,
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": "Nam",
+        "ngày_sinh": "1995",
+        "phương_pháp_điều_trị": null,
+        "ghi_chú": null
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 19,
+        "fields_extracted": 3,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T14:47:44.996785"
+}

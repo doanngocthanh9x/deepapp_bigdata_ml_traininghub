@@ -18,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Service for processing documents (TIFF, TIF, PDF) via C++ worker
  */
-@Service
+@Service("zza0DocumentProcessingService")
 public class DocumentProcessingService {
 
     private static final Logger logger = LoggerFactory.getLogger(DocumentProcessingService.class);

@@ -1,0 +1,384 @@
+{
+  "batch_index": 0,
+  "samples": [
+    {
+      "text": "MẪU GAYRA VIỆN\n(Kèm theo Thông tư số 56/2017T-BYT ngày 29 tháng 12 năm 2017 của Bộ trường Bộ Yiế)\ncollow\nCosses\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01\nxio\n5\nSỜ Y TẾ TP. ĐÀ NẮNG\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ: 24.013142\nBỆNH VIỆN ĐK TÂM TRÍ ĐÀ NẦNG\nmondines\nMã y tế...22034954.J\nGIẤY RA VIỆN\nKhoanmaness\nKHOA NHI\n0310000000030\nHọ tên người bệnh:\nNGUYỄN NGỌC BẢO NGÂN\nNgày/tháng/năm sinh: 06/01/2016\nTuổi: S Tuổi\nNam Nữ: Nữ\nDân tộc: Kinh\nNghề nghiệp: Không xác định\nMÃ SỐ BHXH/THẻ BHYT Số: HS 4 48 48 207 20815 48193\nĐịa chỉ: 610 văn tiến dũng, Phường Hòa Xuân, Quận Cầm Lệ, Thành phố Đà Nắng\nVào viện lúc: 18 giờ 54 ngày 27 tháng li năm 2024\nRa viện lúc: 17 giờ 00 ngày 02 tháng 12 năm 2024\nChân đoán:\nViêm họng cấp/ rối loạn tiêu hóa[J02];\nPhương pháp điều trị: Nội KHOA\nGhi chú: uống thuốc theo đơn\nBa: Nguyễn Thế Phước\nLê Thị Thu Thảo\nTáng 12 Năm 2024\nNgày 2 Tháng 12 Năm 2024\nlxa\nbệnh viện\nTrưởng khoa\nđóng dấu)\nTBS. Hoàng Nguyễn Thanh Thuỷ\nJunking\n1903",
+      "annotations": [
+        {
+          "start": 362,
+          "end": 382,
+          "text": "NGUYỄN NGỌC BẢO NGÂN",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 718,
+          "end": 756,
+          "text": "Viêm họng cấp/ rối loạn tiêu hóa[J02];",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 143,
+          "end": 146,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 428,
+          "end": 431,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 410,
+          "end": 414,
+          "text": "2016",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_0",
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "text": "NGÀY PHẢI PHÒNG THỊ\ncộng hòa xã hội chù nghĩa việt nam\nNin\nPENAYMORA\nKHOA QUỐC\nKhon Tim mạch Đột qux\nĐộc lập - Tự doa Hạnh phúc\ngiấy ra viện\n- Họ tên người bệnh: phan văn tuyên thuận\nNgày/tháng/năm sinh: 17/07/1972\nDân tộc: Kinh\nNghề nghiệp: Khác\n(Tuổi: 52);\nNam/Na: Nam\n- Mã số bhyt/hó bhyt số:\nGDOWNPROOFING\n- Địa chỉ: Số 1/22 Nguyễn Hữu Tuệ, Phường Gia Viên, Quận Ngô Quyền, Hai Phòng\nVào viện lúc: 15 giờ 44 phút, ngày 25 tháng 11 năm 2024\nRa viện lúc: 8 giờ 00 phút, ngày 28 tháng 11 năm 2024\n- Chần đoán: Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện\nPhương pháp điều trị: truyền dịch, kháng sinh, điều trị triệu chứng\nIn tim Brugada typo 2\n- Ghi chú: Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau\nNgoin\ntháng 10 năm 2024.9\nNgày 2.8. tháng M. năm 202%\nBỆNH HUỆ NRIÊN\nĐỘNG ĐƠN VỊ A\nTRƯỜNG KHOA\n?DA KHOA\nQUỐC TẾ\nHẢI PHÒNG\nTbs.8SNETIN\nHạm Văn Thuận\nPhạm Văn Thuận\nEYE\nNux",
+      "annotations": [
+        {
+          "start": 162,
+          "end": 182,
+          "text": "phan văn tuyên thuận",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 511,
+          "end": 597,
+          "text": "Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 254,
+          "end": 256,
+          "text": "52",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 210,
+          "end": 214,
+          "text": "1972",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_1",
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "text": "SỞ Y TẾ TP. CẦN THƠ\nTRONG CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01 NGƯỜI\nBỆNH VIỆN HUYÉT HỌC TRUYỀN MÁU\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ: 24.2002\nVà Mã y tế: 815/3/01/005298\nKHOA ĐIỀU TRỊ\nGIẤY RA VIỆN\n- Họ tên người bệnh: NGUYỄN MINH THUẬN\n- Ngày/tháng/năm sinh: 24/08/2005\nTuổi: 19\nNam/nữ: Nam\n- Dân tộc: Kinh\nNghề nghiệp: Loại khác\n- Mã số BHXN/Thẻ BHYT số: BT2939320955754 93102\n- Địa chi: Phú Thạnh, Xã Tân Phú Thạnh, Huyện Châu Thành A, Tỉnh Hậu Giang\n- Vào viện lúc: 8 giờ 19 phút, ngày 05 tháng 11 năm 2024 tháng 19\n- Ra viện lúc: 16 giờ 0 phút, ngày 18 tháng 11 năm 2024 năm 1991\n- Chần đoán: (C91.0;A49; 8,K21,B36) Bệnh bạch cầu dạng nguyên bảo lympho cấp (ALL);Nhiềm khuẩn khác, không xác\nđịnh được vị trí:Bệnh trào ngược dạ dày - thực quản;Nhiễm nấm nông khác\n- Phương pháp điều trị: Nội khoa / (Truyền máu, truyền tiều cầu, kháng sinh, kháng nấm, hỗ trợ)\n- Ghi chú: Tái khám khi hết thuốc\nNgày 18 tháng 11 năm 2024 19\nNgày 18 tháng 11 năm 2024\nTHÚ TRƯỜNG ĐƠN VỊ\nTRƯỜNG KHOA ĐIỀU TRỊ TRỊ\nPHÓ GIÁM ĐỐC\nBỆNH VIỆN\nHUYẾT HỌC\nTRUYỀN MÁU\nTP. CẦN THƠ\nHọ tên\nHọ tên: BSCKI. Trần Ngọc Cha\nPhạm Văn Nghĩa Trị",
+      "annotations": [
+        {
+          "start": 235,
+          "end": 252,
+          "text": "NGUYỄN MINH THUẬN",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 614,
+          "end": 711,
+          "text": "(C91.0;A49; 8,K21,B36) Bệnh bạch cầu dạng nguyên bảo lympho cấp (ALL);Nhiềm khuẩn khác, không xác",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 293,
+          "end": 295,
+          "text": "19",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 492,
+          "end": 494,
+          "text": "19",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 533,
+          "end": 535,
+          "text": "19",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 940,
+          "end": 942,
+          "text": "19",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 57,
+          "end": 60,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 296,
+          "end": 299,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 304,
+          "end": 307,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 282,
+          "end": 286,
+          "text": "2005",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        },
+        {
+          "start": 808,
+          "end": 880,
+          "text": "Nội khoa / (Truyền máu, truyền tiều cầu, kháng sinh, kháng nấm, hỗ trợ) ",
+          "label": "TREATMENT",
+          "field_name": "phương_pháp_điều_trị"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_2",
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "text": "11.23:079/12/2024 J0100519453 [Lê Nguyễn Bảo Trâm] HQ\nCTCT4\nSỞ Y TẾ TP. CẦN THƠNG\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nBệnh Viện Da Khoa Hoàn Mỹ Cửu Long\nMS: 01/BV-01\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ;\nMã y tế: 092088.160103011\nGIẤY RA VIỆN\nHọ tên người bệnh: Cao Thị Hồng Hanh\nTuổi:.07/11/1981 (43 tuổi)\nDân tộc: Kinh\nNghề nghiệp:\nGiáo viên\nMã Số BHXH/Thẻ BHYT Số:\nGDD 10739 92088 Từ ngày: 08/05/2024 Đến ngày: 07/05/2025\nĐịa chỉ: Khóm 1, Phường 2, Thị xã Ngã Năm, Tỉnh Sóc Trăng\nVào viện 11 giờ 46 phút\nNgày 03 tháng 12 năm 2024\nRa viện 11 giờ 00 phút\nNgày 07 tháng 12 năm 2024\nChần đoán: Sốt phát ban - Viêm phế quản phổi - Viêm mùi họng cấp - Rối loạn tiêu hóa - Hạ kali máu - Thiếu máu\nnhẹ\nPhương pháp điều trị:\nKháng sinh, hạ sốt, ức chế tiết acid dạ dày, kháng viêm, kháng histamin, cân bằng điện\nxã giải, điều trị triệu chứng.\nTrong Ghi chú: Uống thuốc theo toa, Tái khám chuyên khoa Nội Nhiễm Nhau\n07 tháng 12 năm 2024\nNgày 07 tháng 12 năm 2024\nGIÁM ĐỐC BỆNH VIỆN\nĐ. TRƯỜNG KHOA\nCÔNG TY\nCỔ PHẦN\nBỆNH VIỆN ĐA KHOA\nPHO\nBỔ GIÁM ĐỐCYKHOA\nHOÀN MỸ\nCỨU LONG\nHọ Và UN\nBS CỦNG\nHọ và tên: ThS.BS. Ngô Văn Úi",
+      "annotations": [
+        {
+          "start": 263,
+          "end": 280,
+          "text": "Cao Thị Hồng Hanh",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 299,
+          "end": 301,
+          "text": "43",
+          "label": "AGE",
+          "field_name": "tuổi"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_3",
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "text": "14:19:459/12/2024 J0100673354,Phạm Thị Thơm\nTheo Chi Nhánh Hà Nội 2-Hanoi 2 Branch Office\nSỞ Y TẾ TUYÊN QUẢNG\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nBệnh Viện Đa Khoa Tỉnh Tuyên Quang\nMS:01/BV-01\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ:\nKhoa Tâm Thần Kinh\nMã BN:\n20019896\nGIẤY RA VIỆN\nHỌ TÊN NGƯỜI BỆNH: NGUYỄN THỊ VY\nNgày/tháng/năm sinh: 10/08/1971\nTuổi: 53\nGiới tính: Nữ\nDân tộc: - Kinh\n- Nghề nghiệp: Không có nghề nghiệp cụ thể thuận\nMÃ SỐ BHXH/ thẻ BHYT số: AK208082009175708112\nĐịa chi:\nTổ 07, Phường Nông Tiến, TP Tuyên Quang, Tuyên Quang\nVào viện lúc:\n18/11/2024 10:08\nRa viện lúc:\n25/11/2024 10:30\nChần đoán:\nTrong H81 - Rối loạn chức năng tiền đình;\nPhương pháp điều trì 1, 14 NAM Đốc\nGhi chú:\nTHUY TRƯỞNG PHÒNG KÊ HOẠCH TỔNG HỢP\nNgày 25 tháng 11 năm 2024\nNgày 25 tháng 11 năm 2024\nThứ Trưởng đơn vị\np\nTrưởng khoa\nBỆNH VIỆN\nDAKHOA\nTÌNH\nNGUYỄN QUANG\nBS.Vũ Xuân Nam\nThsbs. Phạm Thị Ánh Tuyết",
+      "annotations": [
+        {
+          "start": 299,
+          "end": 312,
+          "text": "NGUYỄN THỊ VY",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 613,
+          "end": 654,
+          "text": "Trong H81 - Rối loạn chức năng tiền đình;",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 351,
+          "end": 353,
+          "text": "53",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 555,
+          "end": 565,
+          "text": "18/11/2024",
+          "label": "DATE",
+          "field_name": "ngày_vào_viện"
+        },
+        {
+          "start": 585,
+          "end": 595,
+          "text": "25/11/2024",
+          "label": "DATE",
+          "field_name": "ngày_ra_viện"
+        },
+        {
+          "start": 365,
+          "end": 367,
+          "text": "Nữ",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 340,
+          "end": 344,
+          "text": "1971",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        },
+        {
+          "start": 699,
+          "end": 734,
+          "text": "THUY TRƯỞNG PHÒNG KÊ HOẠCH TỔNG HỢP",
+          "label": "NOTE",
+          "field_name": "ghi_chú"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_4",
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "text": "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM THỊ\nĐộc lập Tự do - Hạnh phúc\nAND SOCIALIST REPUBLIC OF VIET NAM 1995\n1994 Undopondence - Freedom - Hapoiness Star\nCĂN CƯỚC CÔNG DÂN\nCitizen Identity Card O\n066095010515\nHọ và tên I Full name:\nĐỖ HỒNG SƠN\nNgày sinh/Date of birth\n12/01/1995\nGiới tính/Sex Nam Quốc tịch/Nationality: Việt Nam\nQuê quán I Place of origin:\nThị trấn An Lão, An Lão, Hải Phòng\n- Noi thường trú I Place of residence Cụm 8, Thôn 3\nCó giá m còng\n12/01/2035\npaceup\nHòa Thắng, Buôn Ma Thuột, Đắk Lắk",
+      "annotations": [
+        {
+          "start": 228,
+          "end": 239,
+          "text": "ĐỖ HỒNG SƠN",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 31,
+          "end": 34,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 96,
+          "end": 99,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 289,
+          "end": 292,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 321,
+          "end": 324,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 100,
+          "end": 104,
+          "text": "1995",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        },
+        {
+          "start": 270,
+          "end": 274,
+          "text": "1995",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_5",
+      "approved": true,
+      "status": "approved"
+    },
+    {
+      "text": "CÔNG AN TỈNH TUYÊN QUANG\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01\nBỆNH VIỆN CÔNG AN TUYÊN QUANG\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ: 7139\nKhoa: Khoa Nội tổng hợp\nMã y tế:\nGIẤY RA VIỆN\nHọ tên người bệnh: lê THị THẮNG\nNgày/tháng/năm sinh: 03/07/1964\n(Tuổi: 60)\nNam/Nữ: Nữ\nDân tộc: Kinh\nNghề nghiệp: Khác\nMã Số BHXH/Thẻ BHYT Số\n1982 0820564685 I GD40808205646850\nĐịa chi:\nXã Thu 2, Xã Hoàng Khai, Huyện Yên Sơn, Tỉnh Tuyên Quang Nam\nVào viện lúc:\nContraction\n2017 giờ 58 phút, ngày 2 tháng 12 năm 2024\nRa viện lúc:\n16 giờ 20 phút, ngày 6 tháng 12 năm 2024\nChẩn đoán: tràn dịch khớp gồi M25.4\nPhương pháp điều trị: Nội khoa, VLTL\nGhi chú: Ra viện\nNgày 06 tháng 12 năm 2024\nNgày, 06 tháng 12 năm 2024\nThủ trưởng đơn vị\nTrưởng khoa\nPHÓ GIÁM ĐỐC\nVũ Yăn\nTuấn\nHoàng Anh Tuấn",
+      "annotations": [
+        {
+          "start": 213,
+          "end": 225,
+          "text": "lê THị THẮNG",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 574,
+          "end": 598,
+          "text": "tràn dịch khớp gồi M25.4",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 265,
+          "end": 267,
+          "text": "60",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 56,
+          "end": 59,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 269,
+          "end": 272,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 436,
+          "end": 439,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 253,
+          "end": 257,
+          "text": "1964",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_6",
+      "approved": true,
+      "status": "approved"
+    }
+  ],
+  "count": 7
+}

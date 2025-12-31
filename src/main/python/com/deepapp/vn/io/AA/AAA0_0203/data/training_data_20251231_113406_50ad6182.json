@@ -1,0 +1,64 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "1974:43 10/12/2024 ,0100129171 Diệp Thị Phượng Thuận",
+        "SỞ Y TẾ CẦN THƠ",
+        "BV Phụ sản TP Cần Thơ",
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+        "MS:01/BV-01",
+        "KHOA PHỤ",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số lưu trừ: 021851",
+        "Mãy iế: 512/021329",
+        "GIẤY RA VIỆN",
+        "2024099272",
+        "- HỌ TÊN NGƯỜI BỆNH: NGUYỄN ANH THƯƠNG",
+        "Ngày/tháng/năm sinh: 19/08/1995 (Tuổi 29",
+        "Giới tính: nữ",
+        "- Dân tộc: Kinh",
+        "Nghề nghiệp: Buôn bán",
+        "MÃ SỐ BHXH/THÉ BHYT SỐ",
+        "- Địa chỉ: 29N/2,KV3, Phường Hưng Thạnh, Quận Cái Răng, Thành phố Cần Thơ Nhiên",
+        "Vào viện lúc: 17 giờ 55 phút, ngày 01 tháng 12 năm 2024",
+        "- Ra viện lúc: 10 giờ 40 phút, ngày 06 tháng 12 năm 2024",
+        "\"? - Chần đoán: [000.1] Chứa ở vỏi từ cung Hậu phầu mồ nội soi cắt tai vòi (P)/Thai ngoài từ cung tai với (P) có phôi 5 tuần 5 ng",
+        "sống/TC mồ mở thoát vị bẹn (T). hiện tại ổn",
+        "- Phương pháp điều trị: ngoại khoa",
+        "Thế (chấm dứt thai kỷ 11h17 ngày 02/12/2024)",
+        "- Ghi chú: hẹn tái khám ngày 20/12/2024 (buổi sáng )tại phỏng khám số 24",
+        "Ngày 06 tháng 12 năm 2024",
+        "Ngày 06 tháng 12 năm 2024",
+        "GIÁM ĐỐC BRNH VIỆN",
+        "TRƯỞNG KHOA ĐIỀU TRỊ",
+        "PHOSIAMEON",
+        "1",
+        "CANTER",
+        "BSCKII. Trịnh Hoài Ngọc",
+        "Vũ Đăng Khóa",
+        "MINIVION",
+        "%-Bệnh viện Phụ sản TP Cần Thơ có khám, điều trị ngoại trú và nội trủ nhi"
+      ],
+      "extracted_fields": {
+        "họ_tên": "NGUYỄN ANH THƯƠNG",
+        "chẩn_đoán": "[000.1] Chứa ở vỏi từ cung Hậu phầu mồ nội soi cắt tai vòi (P)/Thai ngoài từ cung tai với (P) có phôi 5 tuần 5 ng sống/TC mồ mở thoát vị bẹn (T). hiện tại ổn",
+        "tuổi": null,
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": "nữ",
+        "ngày_sinh": "1995",
+        "phương_pháp_điều_trị": "ngoại khoa Thế (chấm dứt thai kỷ 11h17 ngày 02/12/2024)",
+        "ghi_chú": "hẹn tái khám ngày 20/12/2024 (buổi sáng )tại phỏng khám số 24 "
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 36,
+        "fields_extracted": 6,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T11:34:06.872571"
+}

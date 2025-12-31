@@ -1,0 +1,274 @@
+{
+  "template_id": "discharge_summary",
+  "samples": [
+    {
+      "text": "NGÀY PHẢI PHÒNG THỊ\ncộng hòa xã hội chù nghĩa việt nam\nNin\nPENAYMORA\nKHOA QUỐC\nKhon Tim mạch Đột qux\nĐộc lập - Tự doa Hạnh phúc\ngiấy ra viện\n- Họ tên người bệnh: phan văn tuyên thuận\nNgày/tháng/năm sinh: 17/07/1972\nDân tộc: Kinh\nNghề nghiệp: Khác\n(Tuổi: 52);\nNam/Na: Nam\n- Mã số bhyt/hó bhyt số:\nGDOWNPROOFING\n- Địa chỉ: Số 1/22 Nguyễn Hữu Tuệ, Phường Gia Viên, Quận Ngô Quyền, Hai Phòng\nVào viện lúc: 15 giờ 44 phút, ngày 25 tháng 11 năm 2024\nRa viện lúc: 8 giờ 00 phút, ngày 28 tháng 11 năm 2024\n- Chần đoán: Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện\nPhương pháp điều trị: truyền dịch, kháng sinh, điều trị triệu chứng\nIn tim Brugada typo 2\n- Ghi chú: Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau\nNgoin\ntháng 10 năm 2024.9\nNgày 2.8. tháng M. năm 202%\nBỆNH HUỆ NRIÊN\nĐỘNG ĐƠN VỊ A\nTRƯỜNG KHOA\n?DA KHOA\nQUỐC TẾ\nHẢI PHÒNG\nTbs.8SNETIN\nHạm Văn Thuận\nPhạm Văn Thuận\nEYE\nNux",
+      "annotations": [
+        {
+          "start": 162,
+          "end": 182,
+          "text": "phan văn tuyên thuận",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 511,
+          "end": 597,
+          "text": "Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 254,
+          "end": 256,
+          "text": "52",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 210,
+          "end": 214,
+          "text": "1972",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_3"
+    },
+    {
+      "text": "1974:43 10/12/2024 ,0100129171 Diệp Thị Phượng Thuận\nSỞ Y TẾ CẦN THƠ\nBV Phụ sản TP Cần Thơ\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nMS:01/BV-01\nKHOA PHỤ\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trừ: 021851\nMãy iế: 512/021329\nGIẤY RA VIỆN\n2024099272\n- HỌ TÊN NGƯỜI BỆNH: NGUYỄN ANH THƯƠNG\nNgày/tháng/năm sinh: 19/08/1995 (Tuổi 29\nGiới tính: nữ\n- Dân tộc: Kinh\nNghề nghiệp: Buôn bán\nMÃ SỐ BHXH/THÉ BHYT SỐ\n- Địa chỉ: 29N/2,KV3, Phường Hưng Thạnh, Quận Cái Răng, Thành phố Cần Thơ Nhiên\nVào viện lúc: 17 giờ 55 phút, ngày 01 tháng 12 năm 2024\n- Ra viện lúc: 10 giờ 40 phút, ngày 06 tháng 12 năm 2024\n\"? - Chần đoán: [000.1] Chứa ở vỏi từ cung Hậu phầu mồ nội soi cắt tai vòi (P)/Thai ngoài từ cung tai với (P) có phôi 5 tuần 5 ng\nsống/TC mồ mở thoát vị bẹn (T). hiện tại ổn\n- Phương pháp điều trị: ngoại khoa\nThế (chấm dứt thai kỷ 11h17 ngày 02/12/2024)\n- Ghi chú: hẹn tái khám ngày 20/12/2024 (buổi sáng )tại phỏng khám số 24\nNgày 06 tháng 12 năm 2024\nNgày 06 tháng 12 năm 2024\nGIÁM ĐỐC BRNH VIỆN\nTRƯỞNG KHOA ĐIỀU TRỊ\nPHOSIAMEON\n1\nCANTER\nBSCKII. Trịnh Hoài Ngọc\nVũ Đăng Khóa\nMINIVION\n%-Bệnh viện Phụ sản TP Cần Thơ có khám, điều trị ngoại trú và nội trủ nhi",
+      "annotations": [
+        {
+          "start": 258,
+          "end": 275,
+          "text": "NGUYỄN ANH THƯƠNG",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 328,
+          "end": 330,
+          "text": "nữ",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 303,
+          "end": 307,
+          "text": "1995",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_4"
+    },
+    {
+      "text": "NGÀY PHẢI PHÒNG THỊ\ncộng hòa xã hội chù nghĩa việt nam\nNin\nPENAYMORA\nKHOA QUỐC\nKhon Tim mạch Đột qux\nĐộc lập - Tự doa Hạnh phúc\ngiấy ra viện\n- Họ tên người bệnh: phan văn tuyên thuận\nNgày/tháng/năm sinh: 17/07/1972\nDân tộc: Kinh\nNghề nghiệp: Khác\n(Tuổi: 52);\nNam/Na: Nam\n- Mã số bhyt/hó bhyt số:\nGDOWNPROOFING\n- Địa chỉ: Số 1/22 Nguyễn Hữu Tuệ, Phường Gia Viên, Quận Ngô Quyền, Hai Phòng\nVào viện lúc: 15 giờ 44 phút, ngày 25 tháng 11 năm 2024\nRa viện lúc: 8 giờ 00 phút, ngày 28 tháng 11 năm 2024\n- Chần đoán: Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện\nPhương pháp điều trị: truyền dịch, kháng sinh, điều trị triệu chứng\nIn tim Brugada typo 2\n- Ghi chú: Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau\nNgoin\ntháng 10 năm 2024.9\nNgày 2.8. tháng M. năm 202%\nBỆNH HUỆ NRIÊN\nĐỘNG ĐƠN VỊ A\nTRƯỜNG KHOA\n?DA KHOA\nQUỐC TẾ\nHẢI PHÒNG\nTbs.8SNETIN\nHạm Văn Thuận\nPhạm Văn Thuận\nEYE\nNux",
+      "annotations": [
+        {
+          "start": 162,
+          "end": 182,
+          "text": "phan văn tuyên thuận",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 511,
+          "end": 597,
+          "text": "Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 254,
+          "end": 256,
+          "text": "52",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 210,
+          "end": 214,
+          "text": "1972",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_5"
+    },
+    {
+      "text": "NGÀY PHẢI PHÒNG THỊ\ncộng hòa xã hội chù nghĩa việt nam\nNin\nPENAYMORA\nKHOA QUỐC\nKhon Tim mạch Đột qux\nĐộc lập - Tự doa Hạnh phúc\ngiấy ra viện\n- Họ tên người bệnh: phan văn tuyên thuận\nNgày/tháng/năm sinh: 17/07/1972\nDân tộc: Kinh\nNghề nghiệp: Khác\n(Tuổi: 52);\nNam/Na: Nam\n- Mã số bhyt/hó bhyt số:\nGDOWNPROOFING\n- Địa chỉ: Số 1/22 Nguyễn Hữu Tuệ, Phường Gia Viên, Quận Ngô Quyền, Hai Phòng\nVào viện lúc: 15 giờ 44 phút, ngày 25 tháng 11 năm 2024\nRa viện lúc: 8 giờ 00 phút, ngày 28 tháng 11 năm 2024\n- Chần đoán: Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện\nPhương pháp điều trị: truyền dịch, kháng sinh, điều trị triệu chứng\nIn tim Brugada typo 2\n- Ghi chú: Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau\nNgoin\ntháng 10 năm 2024.9\nNgày 2.8. tháng M. năm 202%\nBỆNH HUỆ NRIÊN\nĐỘNG ĐƠN VỊ A\nTRƯỜNG KHOA\n?DA KHOA\nQUỐC TẾ\nHẢI PHÒNG\nTbs.8SNETIN\nHạm Văn Thuận\nPhạm Văn Thuận\nEYE\nNux",
+      "annotations": [
+        {
+          "start": 162,
+          "end": 182,
+          "text": "phan văn tuyên thuận",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 511,
+          "end": 597,
+          "text": "Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 254,
+          "end": 256,
+          "text": "52",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 210,
+          "end": 214,
+          "text": "1972",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_3"
+    },
+    {
+      "text": "1974:43 10/12/2024 ,0100129171 Diệp Thị Phượng Thuận\nSỞ Y TẾ CẦN THƠ\nBV Phụ sản TP Cần Thơ\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nMS:01/BV-01\nKHOA PHỤ\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trừ: 021851\nMãy iế: 512/021329\nGIẤY RA VIỆN\n2024099272\n- HỌ TÊN NGƯỜI BỆNH: NGUYỄN ANH THƯƠNG\nNgày/tháng/năm sinh: 19/08/1995 (Tuổi 29\nGiới tính: nữ\n- Dân tộc: Kinh\nNghề nghiệp: Buôn bán\nMÃ SỐ BHXH/THÉ BHYT SỐ\n- Địa chỉ: 29N/2,KV3, Phường Hưng Thạnh, Quận Cái Răng, Thành phố Cần Thơ Nhiên\nVào viện lúc: 17 giờ 55 phút, ngày 01 tháng 12 năm 2024\n- Ra viện lúc: 10 giờ 40 phút, ngày 06 tháng 12 năm 2024\n\"? - Chần đoán: [000.1] Chứa ở vỏi từ cung Hậu phầu mồ nội soi cắt tai vòi (P)/Thai ngoài từ cung tai với (P) có phôi 5 tuần 5 ng\nsống/TC mồ mở thoát vị bẹn (T). hiện tại ổn\n- Phương pháp điều trị: ngoại khoa\nThế (chấm dứt thai kỷ 11h17 ngày 02/12/2024)\n- Ghi chú: hẹn tái khám ngày 20/12/2024 (buổi sáng )tại phỏng khám số 24\nNgày 06 tháng 12 năm 2024\nNgày 06 tháng 12 năm 2024\nGIÁM ĐỐC BRNH VIỆN\nTRƯỞNG KHOA ĐIỀU TRỊ\nPHOSIAMEON\n1\nCANTER\nBSCKII. Trịnh Hoài Ngọc\nVũ Đăng Khóa\nMINIVION\n%-Bệnh viện Phụ sản TP Cần Thơ có khám, điều trị ngoại trú và nội trủ nhi",
+      "annotations": [
+        {
+          "start": 258,
+          "end": 275,
+          "text": "NGUYỄN ANH THƯƠNG",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 328,
+          "end": 330,
+          "text": "nữ",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 303,
+          "end": 307,
+          "text": "1995",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_4"
+    },
+    {
+      "text": "NGÀY PHẢI PHÒNG THỊ\ncộng hòa xã hội chù nghĩa việt nam\nNin\nPENAYMORA\nKHOA QUỐC\nKhon Tim mạch Đột qux\nĐộc lập - Tự doa Hạnh phúc\ngiấy ra viện\n- Họ tên người bệnh: phan văn tuyên thuận\nNgày/tháng/năm sinh: 17/07/1972\nDân tộc: Kinh\nNghề nghiệp: Khác\n(Tuổi: 52);\nNam/Na: Nam\n- Mã số bhyt/hó bhyt số:\nGDOWNPROOFING\n- Địa chỉ: Số 1/22 Nguyễn Hữu Tuệ, Phường Gia Viên, Quận Ngô Quyền, Hai Phòng\nVào viện lúc: 15 giờ 44 phút, ngày 25 tháng 11 năm 2024\nRa viện lúc: 8 giờ 00 phút, ngày 28 tháng 11 năm 2024\n- Chần đoán: Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện\nPhương pháp điều trị: truyền dịch, kháng sinh, điều trị triệu chứng\nIn tim Brugada typo 2\n- Ghi chú: Điều trị theo đơn - Hết thuốc, bất thường khám lại nhau\nNgoin\ntháng 10 năm 2024.9\nNgày 2.8. tháng M. năm 202%\nBỆNH HUỆ NRIÊN\nĐỘNG ĐƠN VỊ A\nTRƯỜNG KHOA\n?DA KHOA\nQUỐC TẾ\nHẢI PHÒNG\nTbs.8SNETIN\nHạm Văn Thuận\nPhạm Văn Thuận\nEYE\nNux",
+      "annotations": [
+        {
+          "start": 162,
+          "end": 182,
+          "text": "phan văn tuyên thuận",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 511,
+          "end": 597,
+          "text": "Tăng huyết áp đội - sốt Cần tìm nguyên nhân - tỉnh trạng nhiễm trùng - Hạ K máu - Điện",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 254,
+          "end": 256,
+          "text": "52",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 210,
+          "end": 214,
+          "text": "1972",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_5"
+    },
+    {
+      "text": "14:19:459/12/2024 J0100673354,Phạm Thị Thơm\nTheo Chi Nhánh Hà Nội 2-Hanoi 2 Branch Office\nSỞ Y TẾ TUYÊN QUẢNG\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\nBệnh Viện Đa Khoa Tỉnh Tuyên Quang\nMS:01/BV-01\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ:\nKhoa Tâm Thần Kinh\nMã BN:\n20019896\nGIẤY RA VIỆN\nHỌ TÊN NGƯỜI BỆNH: NGUYỄN THỊ VY\nNgày/tháng/năm sinh: 10/08/1971\nTuổi: 53\nGiới tính: Nữ\nDân tộc: - Kinh\n- Nghề nghiệp: Không có nghề nghiệp cụ thể thuận\nMÃ SỐ BHXH/ thẻ BHYT số: AK208082009175708112\nĐịa chi:\nTổ 07, Phường Nông Tiến, TP Tuyên Quang, Tuyên Quang\nVào viện lúc:\n18/11/2024 10:08\nRa viện lúc:\n25/11/2024 10:30\nChần đoán:\nTrong H81 - Rối loạn chức năng tiền đình;\nPhương pháp điều trì 1, 14 NAM Đốc\nGhi chú:\nTHUY TRƯỞNG PHÒNG KÊ HOẠCH TỔNG HỢP\nNgày 25 tháng 11 năm 2024\nNgày 25 tháng 11 năm 2024\nThứ Trưởng đơn vị\np\nTrưởng khoa\nBỆNH VIỆN\nDAKHOA\nTÌNH\nNGUYỄN QUANG\nBS.Vũ Xuân Nam\nThsbs. Phạm Thị Ánh Tuyết",
+      "annotations": [
+        {
+          "start": 299,
+          "end": 312,
+          "text": "NGUYỄN THỊ VY",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 613,
+          "end": 654,
+          "text": "Trong H81 - Rối loạn chức năng tiền đình;",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 351,
+          "end": 353,
+          "text": "53",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 555,
+          "end": 565,
+          "text": "18/11/2024",
+          "label": "DATE",
+          "field_name": "ngày_vào_viện"
+        },
+        {
+          "start": 585,
+          "end": 595,
+          "text": "25/11/2024",
+          "label": "DATE",
+          "field_name": "ngày_ra_viện"
+        },
+        {
+          "start": 365,
+          "end": 367,
+          "text": "Nữ",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 340,
+          "end": 344,
+          "text": "1971",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        },
+        {
+          "start": 699,
+          "end": 734,
+          "text": "THUY TRƯỞNG PHÒNG KÊ HOẠCH TỔNG HỢP",
+          "label": "NOTE",
+          "field_name": "ghi_chú"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_6"
+    }
+  ],
+  "created_at": "2025-12-31T13:41:41.739320",
+  "total_samples": 7,
+  "last_updated": "2025-12-31T13:43:27.662175"
+}

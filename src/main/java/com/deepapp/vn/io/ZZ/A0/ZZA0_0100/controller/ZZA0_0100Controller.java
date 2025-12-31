@@ -6,6 +6,7 @@ import com.deepapp.vn.io.ZZ.A0.ZZA0_0100.service.DocumentStreamRegistry;
 import com.deepapp.vn.io.storage.service.DocumentUploadService;
 import com.deepapp.vn.io.service.TempFileCleanupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import java.util.concurrent.Executors;
 public class ZZA0_0100Controller {
 
     @Autowired
+    @Qualifier("zza0DocumentProcessingService")
     private DocumentProcessingService documentProcessingService;
     
     @Autowired

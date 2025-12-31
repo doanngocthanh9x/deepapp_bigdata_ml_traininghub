@@ -1,0 +1,70 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "11.23:079/12/2024 J0100519453 [Lê Nguyễn Bảo Trâm] HQ",
+        "CTCT4",
+        "SỞ Y TẾ TP. CẦN THƠNG",
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+        "Bệnh Viện Da Khoa Hoàn Mỹ Cửu Long",
+        "MS: 01/BV-01",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số lưu trữ;",
+        "Mã y tế: 092088.160103011",
+        "GIẤY RA VIỆN",
+        "Họ tên người bệnh: Cao Thị Hồng Hanh",
+        "Tuổi:.07/11/1981 (43 tuổi)",
+        "Dân tộc: Kinh",
+        "Nghề nghiệp:",
+        "Giáo viên",
+        "Mã Số BHXH/Thẻ BHYT Số:",
+        "GDD 10739 92088 Từ ngày: 08/05/2024 Đến ngày: 07/05/2025",
+        "Địa chỉ: Khóm 1, Phường 2, Thị xã Ngã Năm, Tỉnh Sóc Trăng",
+        "Vào viện 11 giờ 46 phút",
+        "Ngày 03 tháng 12 năm 2024",
+        "Ra viện 11 giờ 00 phút",
+        "Ngày 07 tháng 12 năm 2024",
+        "Chần đoán: Sốt phát ban - Viêm phế quản phổi - Viêm mùi họng cấp - Rối loạn tiêu hóa - Hạ kali máu - Thiếu máu",
+        "nhẹ",
+        "Phương pháp điều trị:",
+        "Kháng sinh, hạ sốt, ức chế tiết acid dạ dày, kháng viêm, kháng histamin, cân bằng điện",
+        "xã giải, điều trị triệu chứng.",
+        "Trong Ghi chú: Uống thuốc theo toa, Tái khám chuyên khoa Nội Nhiễm Nhau",
+        "07 tháng 12 năm 2024",
+        "Ngày 07 tháng 12 năm 2024",
+        "GIÁM ĐỐC BỆNH VIỆN",
+        "Đ. TRƯỜNG KHOA",
+        "CÔNG TY",
+        "CỔ PHẦN",
+        "BỆNH VIỆN ĐA KHOA",
+        "PHO",
+        "BỔ GIÁM ĐỐCYKHOA",
+        "HOÀN MỸ",
+        "CỨU LONG",
+        "Họ Và UN",
+        "BS CỦNG",
+        "Họ và tên: ThS.BS. Ngô Văn Úi"
+      ],
+      "extracted_fields": {
+        "họ_tên": "Cao Thị Hồng Hanh",
+        "chẩn_đoán": "Sốt phát ban - Viêm phế quản phổi - Viêm mùi họng cấp - Rối loạn tiêu hóa - Hạ kali máu - Thiếu máu nhẹ",
+        "tuổi": "43",
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": null,
+        "ngày_sinh": null,
+        "phương_pháp_điều_trị": "Kháng sinh, hạ sốt, ức chế tiết acid dạ dày, kháng viêm, kháng histamin, cân bằng điện xã giải, điều trị triệu chứng.",
+        "ghi_chú": "Uống thuốc theo toa, Tái khám chuyên khoa Nội Nhiễm Nhau 07 tháng 12 năm 2024"
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 42,
+        "fields_extracted": 5,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T14:26:18.048326"
+}
