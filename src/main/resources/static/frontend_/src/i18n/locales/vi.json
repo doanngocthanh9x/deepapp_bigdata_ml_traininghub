@@ -1,0 +1,138 @@
+{
+  "common": {
+    "welcome": "Chào mừng",
+    "language": "Ngôn ngữ",
+    "settings": "Cài đặt",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Chỉnh sửa",
+    "add": "Thêm",
+    "search": "Tìm kiếm",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "success": "Thành công",
+    "confirm": "Xác nhận",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "submit": "Gửi",
+    "close": "Đóng"
+  },
+  "navigation": {
+    "dashboard": "Bảng điều khiển",
+    "kanban": "Kanban",
+    "roadmap": "Lộ trình",
+    "settings": "Cài đặt",
+    "notifications": "Thông báo",
+    "users": "Quản lý người dùng",
+    "profile": "Hồ sơ",
+    "logout": "Đăng xuất",
+    "modules": "Modules"
+  },
+  "auth": {
+    "login": "Đăng nhập",
+    "register": "Đăng ký",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "fullName": "Họ và tên",
+    "forgotPassword": "Quên mật khẩu?",
+    "backToHome": "Quay lại trang chủ",
+    "loginSuccess": "Đăng nhập thành công",
+    "registerSuccess": "Đăng ký thành công",
+    "welcomeBack": "Chào mừng trở lại!"
+  },
+  "landing": {
+    "hero": {
+      "badge": "Phiên bản mới 2.0",
+      "title": "Nền tảng quản lý",
+      "titleHighlight": "thông minh cho doanh nghiệp",
+      "description": "Tích hợp OCR, AI và quản lý người dùng trong một nền tảng duy nhất. Tối ưu hóa quy trình làm việc của bạn ngay hôm nay.",
+      "ctaStart": "Bắt đầu miễn phí",
+      "ctaDemo": "Xem Demo"
+    },
+    "stats": {
+      "users": "Người dùng",
+      "companies": "Doanh nghiệp",
+      "uptime": "Uptime",
+      "support": "Hỗ trợ"
+    },
+    "features": {
+      "title": "Tính năng nổi bật",
+      "description": "Khám phá những công cụ mạnh mẽ giúp bạn quản lý công việc hiệu quả hơn",
+      "exploreAll": "Khám phá tất cả tính năng",
+      "ocr": {
+        "title": "OCR Module",
+        "description": "Nhận dạng và trích xuất văn bản từ hình ảnh với độ chính xác cao sử dụng AI tiên tiến."
+      },
+      "ai": {
+        "title": "AI Modules",
+        "description": "Tích hợp các mô-đun AI mạnh mẽ cho phân tích dữ liệu, xử lý ngôn ngữ tự nhiên và hơn thế nữa."
+      },
+      "users": {
+        "title": "Quản lý người dùng",
+        "description": "Hệ thống quản lý người dùng toàn diện với phân quyền và kiểm soát truy cập chi tiết."
+      },
+      "security": {
+        "title": "Bảo mật cao",
+        "description": "Xác thực đa lớp, mã hóa dữ liệu và tuân thủ các tiêu chuẩn bảo mật quốc tế."
+      },
+      "analytics": {
+        "title": "Phân tích & Báo cáo",
+        "description": "Dashboard trực quan với biểu đồ và báo cáo chi tiết theo thời gian thực."
+      },
+      "performance": {
+        "title": "Hiệu suất tối ưu",
+        "description": "Kiến trúc microservices đảm bảo tốc độ xử lý nhanh và khả năng mở rộng linh hoạt."
+      }
+    },
+    "testimonials": {
+      "title": "Khách hàng nói gì về chúng tôi",
+      "description": "Hàng nghìn doanh nghiệp đã tin tưởng sử dụng Swift Dashboard"
+    },
+    "cta": {
+      "title": "Sẵn sàng bắt đầu?",
+      "description": "Đăng ký miễn phí và trải nghiệm ngay hôm nay. Không cần thẻ tín dụng.",
+      "register": "Đăng ký miễn phí",
+      "contactSales": "Liên hệ sales",
+      "freeTrial": "Miễn phí 14 ngày",
+      "noCard": "Không cần thẻ tín dụng",
+      "support247": "Hỗ trợ 24/7"
+    },
+    "footer": {
+      "tagline": "Nền tảng quản lý thông minh cho doanh nghiệp hiện đại.",
+      "product": "Sản phẩm",
+      "resources": "Tài nguyên",
+      "contact": "Liên hệ",
+      "docs": "Tài liệu",
+      "blog": "Blog",
+      "community": "Cộng đồng",
+      "terms": "Điều khoản sử dụng",
+      "privacy": "Chính sách bảo mật",
+      "copyright": "© 2024 Swift Dashboard. All rights reserved."
+    }
+  },
+  "i18nDemo": {
+    "title": "Demo Đa Ngôn Ngữ",
+    "description": "Trang demo chức năng chuyển đổi ngôn ngữ sử dụng react-i18next",
+    "currentLanguage": "Ngôn ngữ hiện tại",
+    "selectLanguage": "Chọn ngôn ngữ",
+    "howToUse": "Hướng dẫn sử dụng",
+    "step1": "Import hook useTranslation từ react-i18next",
+    "step2": "Gọi hook và lấy hàm t()",
+    "step3": "Sử dụng t('key') để hiển thị text đa ngôn ngữ",
+    "example": "Ví dụ",
+    "liveDemo": "Demo trực tiếp",
+    "greeting": "Xin chào! Đây là text đa ngôn ngữ.",
+    "paragraph": "Bạn có thể thay đổi ngôn ngữ bằng cách click vào dropdown phía trên. Tất cả text trong trang này sẽ tự động cập nhật.",
+    "features": {
+      "title": "Các tính năng hỗ trợ",
+      "autoDetect": "Tự động phát hiện ngôn ngữ trình duyệt",
+      "persist": "Lưu lựa chọn ngôn ngữ vào localStorage",
+      "nested": "Hỗ trợ nested keys cho tổ chức file dễ dàng",
+      "interpolation": "Hỗ trợ interpolation với biến động"
+    },
+    "interpolationExample": "Xin chào, {{name}}! Bạn có {{count}} thông báo mới.",
+    "backToDashboard": "Quay lại Dashboard"
+  }
+}

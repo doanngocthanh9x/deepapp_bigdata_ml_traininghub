@@ -1,0 +1,62 @@
+{
+  "processed_documents": [
+    {
+      "ocr_text": [
+        "CÔNG AN TỈNH TUYÊN QUANG",
+        "CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01",
+        "BỆNH VIỆN CÔNG AN TUYÊN QUANG",
+        "Độc lập - Tự do - Hạnh phúc",
+        "Số lưu trữ: 7139",
+        "Khoa: Khoa Nội tổng hợp",
+        "Mã y tế:",
+        "GIẤY RA VIỆN",
+        "Họ tên người bệnh: lê THị THẮNG",
+        "Ngày/tháng/năm sinh: 03/07/1964",
+        "(Tuổi: 60)",
+        "Nam/Nữ: Nữ",
+        "Dân tộc: Kinh",
+        "Nghề nghiệp: Khác",
+        "Mã Số BHXH/Thẻ BHYT Số",
+        "1982 0820564685 I GD40808205646850",
+        "Địa chi:",
+        "Xã Thu 2, Xã Hoàng Khai, Huyện Yên Sơn, Tỉnh Tuyên Quang Nam",
+        "Vào viện lúc:",
+        "Contraction",
+        "2017 giờ 58 phút, ngày 2 tháng 12 năm 2024",
+        "Ra viện lúc:",
+        "16 giờ 20 phút, ngày 6 tháng 12 năm 2024",
+        "Chẩn đoán: tràn dịch khớp gồi M25.4",
+        "Phương pháp điều trị: Nội khoa, VLTL",
+        "Ghi chú: Ra viện",
+        "Ngày 06 tháng 12 năm 2024",
+        "Ngày, 06 tháng 12 năm 2024",
+        "Thủ trưởng đơn vị",
+        "Trưởng khoa",
+        "PHÓ GIÁM ĐỐC",
+        "Vũ Yăn",
+        "Tuấn",
+        "Hoàng Anh Tuấn"
+      ],
+      "extracted_fields": {
+        "họ_tên": "lê THị THẮNG",
+        "chẩn_đoán": "tràn dịch khớp gồi M25.4",
+        "tuổi": "60",
+        "ngày_vào_viện": null,
+        "ngày_ra_viện": null,
+        "giới_tính": "Nam",
+        "ngày_sinh": "1964",
+        "phương_pháp_điều_trị": "Nội khoa, VLTL ",
+        "ghi_chú": "Ra viện "
+      },
+      "template_id": "discharge_summary",
+      "document_type": "Giấy ra viện",
+      "stats": {
+        "total_text_regions": 34,
+        "fields_extracted": 7,
+        "total_fields": 9
+      }
+    }
+  ],
+  "template_id": "discharge_summary",
+  "timestamp": "2025-12-31T22:39:31.879224"
+}

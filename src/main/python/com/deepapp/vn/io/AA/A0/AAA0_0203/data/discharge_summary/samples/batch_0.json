@@ -378,7 +378,66 @@
       "id": "discharge_summary_sample_6",
       "approved": true,
       "status": "approved"
+    },
+    {
+      "text": "CÔNG AN TỈNH TUYÊN QUANG\nCỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM MS: 01/BV-01\nBỆNH VIỆN CÔNG AN TUYÊN QUANG\nĐộc lập - Tự do - Hạnh phúc\nSố lưu trữ: 7139\nKhoa: Khoa Nội tổng hợp\nMã y tế:\nGIẤY RA VIỆN\nHọ tên người bệnh: lê THị THẮNG\nNgày/tháng/năm sinh: 03/07/1964\n(Tuổi: 60)\nNam/Nữ: Nữ\nDân tộc: Kinh\nNghề nghiệp: Khác\nMã Số BHXH/Thẻ BHYT Số\n1982 0820564685 I GD40808205646850\nĐịa chi:\nXã Thu 2, Xã Hoàng Khai, Huyện Yên Sơn, Tỉnh Tuyên Quang Nam\nVào viện lúc:\nContraction\n2017 giờ 58 phút, ngày 2 tháng 12 năm 2024\nRa viện lúc:\n16 giờ 20 phút, ngày 6 tháng 12 năm 2024\nChẩn đoán: tràn dịch khớp gồi M25.4\nPhương pháp điều trị: Nội khoa, VLTL\nGhi chú: Ra viện\nNgày 06 tháng 12 năm 2024\nNgày, 06 tháng 12 năm 2024\nThủ trưởng đơn vị\nTrưởng khoa\nPHÓ GIÁM ĐỐC\nVũ Yăn\nTuấn\nHoàng Anh Tuấn",
+      "annotations": [
+        {
+          "start": 213,
+          "end": 225,
+          "text": "lê THị THẮNG",
+          "label": "PERSON",
+          "field_name": "họ_tên"
+        },
+        {
+          "start": 574,
+          "end": 598,
+          "text": "tràn dịch khớp gồi M25.4",
+          "label": "DIAGNOSIS",
+          "field_name": "chẩn_đoán"
+        },
+        {
+          "start": 265,
+          "end": 267,
+          "text": "60",
+          "label": "AGE",
+          "field_name": "tuổi"
+        },
+        {
+          "start": 56,
+          "end": 59,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 269,
+          "end": 272,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 436,
+          "end": 439,
+          "text": "Nam",
+          "label": "GENDER",
+          "field_name": "giới_tính"
+        },
+        {
+          "start": 253,
+          "end": 257,
+          "text": "1964",
+          "label": "DATE",
+          "field_name": "ngày_sinh"
+        }
+      ],
+      "template_id": "discharge_summary",
+      "source": "AAA0_0202_processed",
+      "id": "discharge_summary_sample_7",
+      "approved": true,
+      "status": "approved"
     }
   ],
-  "count": 7
+  "count": 8
 }

@@ -1,0 +1,138 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "language": "Language",
+    "settings": "Settings",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "kanban": "Kanban",
+    "roadmap": "Roadmap",
+    "settings": "Settings",
+    "notifications": "Notifications",
+    "users": "User Management",
+    "profile": "Profile",
+    "logout": "Logout",
+    "modules": "Modules"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "fullName": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "backToHome": "Back to home",
+    "loginSuccess": "Login successful",
+    "registerSuccess": "Registration successful",
+    "welcomeBack": "Welcome back!"
+  },
+  "landing": {
+    "hero": {
+      "badge": "New Version 2.0",
+      "title": "Smart Management",
+      "titleHighlight": "Platform for Enterprises",
+      "description": "Integrate OCR, AI and user management in one single platform. Optimize your workflow today.",
+      "ctaStart": "Get Started Free",
+      "ctaDemo": "View Demo"
+    },
+    "stats": {
+      "users": "Users",
+      "companies": "Companies",
+      "uptime": "Uptime",
+      "support": "Support"
+    },
+    "features": {
+      "title": "Key Features",
+      "description": "Discover powerful tools to help you manage your work more effectively",
+      "exploreAll": "Explore all features",
+      "ocr": {
+        "title": "OCR Module",
+        "description": "Recognize and extract text from images with high accuracy using advanced AI."
+      },
+      "ai": {
+        "title": "AI Modules",
+        "description": "Integrate powerful AI modules for data analysis, natural language processing and more."
+      },
+      "users": {
+        "title": "User Management",
+        "description": "Comprehensive user management system with detailed permissions and access control."
+      },
+      "security": {
+        "title": "High Security",
+        "description": "Multi-layer authentication, data encryption and compliance with international security standards."
+      },
+      "analytics": {
+        "title": "Analytics & Reports",
+        "description": "Intuitive dashboard with real-time charts and detailed reports."
+      },
+      "performance": {
+        "title": "Optimized Performance",
+        "description": "Microservices architecture ensures fast processing speed and flexible scalability."
+      }
+    },
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "description": "Thousands of businesses trust Swift Dashboard"
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Sign up for free and experience it today. No credit card required.",
+      "register": "Register Free",
+      "contactSales": "Contact Sales",
+      "freeTrial": "14-day free trial",
+      "noCard": "No credit card required",
+      "support247": "24/7 Support"
+    },
+    "footer": {
+      "tagline": "Smart management platform for modern enterprises.",
+      "product": "Product",
+      "resources": "Resources",
+      "contact": "Contact",
+      "docs": "Documentation",
+      "blog": "Blog",
+      "community": "Community",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "copyright": "© 2024 Swift Dashboard. All rights reserved."
+    }
+  },
+  "i18nDemo": {
+    "title": "Multi-Language Demo",
+    "description": "Demo page for language switching functionality using react-i18next",
+    "currentLanguage": "Current Language",
+    "selectLanguage": "Select Language",
+    "howToUse": "How to Use",
+    "step1": "Import useTranslation hook from react-i18next",
+    "step2": "Call the hook and get the t() function",
+    "step3": "Use t('key') to display multi-language text",
+    "example": "Example",
+    "liveDemo": "Live Demo",
+    "greeting": "Hello! This is multi-language text.",
+    "paragraph": "You can change the language by clicking on the dropdown above. All text on this page will automatically update.",
+    "features": {
+      "title": "Supported Features",
+      "autoDetect": "Auto-detect browser language",
+      "persist": "Save language preference to localStorage",
+      "nested": "Support nested keys for easy file organization",
+      "interpolation": "Support interpolation with dynamic variables"
+    },
+    "interpolationExample": "Hello, {{name}}! You have {{count}} new notifications.",
+    "backToDashboard": "Back to Dashboard"
+  }
+}

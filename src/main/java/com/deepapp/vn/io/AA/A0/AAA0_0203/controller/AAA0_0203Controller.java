@@ -2,7 +2,7 @@ package com.deepapp.vn.io.AA.A0.AAA0_0203.controller;
 
 import com.deepapp.vn.io.AA.A0.AAA0_0203.model.NERTrainingRequest;
 import com.deepapp.vn.io.AA.A0.AAA0_0203.model.NERTrainingResponse;
-import com.deepapp.vn.io.AA.A0.AAA0_0203.service.NERTrainingService;
+import com.deepapp.vn.io.AA.A0.AAA0_0203.service.NERTrainingDataService;
 import com.deepapp.utils.PathUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
  * AAA0_0203 - NER Training Data Preparation Controller
  *
  * Manages NER training data collection, validation, and export
+ * Uses database-driven architecture with NERTrainingDataService
  */
 @RestController
 @RequestMapping("/AA/A0/AAA0_0203")
@@ -32,7 +33,7 @@ public class AAA0_0203Controller {
     private static final Logger logger = LoggerFactory.getLogger(AAA0_0203Controller.class);
 
     @Autowired
-    private NERTrainingService nerTrainingService;
+    private NERTrainingDataService nerTrainingDataService;
 
     /**
      * Health check endpoint
@@ -61,7 +62,7 @@ public class AAA0_0203Controller {
         logger.info("NER training request received: eventType={}", request.getEventType());
 
         try {
-            NERTrainingResponse response = nerTrainingService.processRequest(request);
+            NERTrainingResponse response = nerTrainingDataService.processRequest(request);
 
             if ("success".equals(response.getStatus())) {
                 logger.info("NER training operation successful: {}", request.getEventType());
@@ -131,7 +132,7 @@ public class AAA0_0203Controller {
 
             request.setPayload(payload);
 
-            NERTrainingResponse response = nerTrainingService.processRequest(request);
+            NERTrainingResponse response = nerTrainingDataService.processRequest(request);
 
             if ("success".equals(response.getStatus())) {
                 logger.info("NER training file processing successful: {}", eventType);
@@ -149,15 +150,15 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * List training data
+     * List training data from database
      */
     @GetMapping("/training-data")
-    @Operation(summary = "List Training Data", description = "Get list of available training datasets")
+    @Operation(summary = "List Training Data", description = "Get list of available training datasets from database")
     public ResponseEntity<NERTrainingResponse> listTrainingData() {
-        logger.info("Listing NER training data");
+        logger.info("Listing NER training data from database");
 
         try {
-            NERTrainingResponse response = nerTrainingService.listTrainingData();
+            NERTrainingResponse response = nerTrainingDataService.listTrainingData();
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -168,7 +169,7 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Validate NER data
+     * Validate NER data from database
      */
     @PostMapping("/validate/{templateId}")
     @Operation(summary = "Validate NER Data", description = "Validate quality of training data for a template")
@@ -176,7 +177,7 @@ public class AAA0_0203Controller {
         logger.info("Validating NER data for template: {}", templateId);
 
         try {
-            NERTrainingResponse response = nerTrainingService.validateData(templateId);
+            NERTrainingResponse response = nerTrainingDataService.validateData(templateId);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -187,17 +188,17 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Export NER format
+     * Export NER format from database
      */
     @PostMapping("/export/{templateId}")
-    @Operation(summary = "Export NER Format", description = "Export training data in NER format")
+    @Operation(summary = "Export NER Format", description = "Export training data in NER format from database")
     public ResponseEntity<NERTrainingResponse> exportNerFormat(
             @PathVariable String templateId,
             @RequestParam(defaultValue = "json") String format) {
         logger.info("Exporting NER format for template: {} with format: {}", templateId, format);
 
         try {
-            NERTrainingResponse response = nerTrainingService.exportNerFormat(templateId, format);
+            NERTrainingResponse response = nerTrainingDataService.exportNerFormat(templateId, format);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -208,10 +209,10 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Get samples for a specific dataset
+     * Get samples for a specific dataset from database
      */
     @GetMapping("/samples/{templateId}")
-    @Operation(summary = "Get Dataset Samples", description = "Get detailed samples for a specific training dataset with pagination")
+    @Operation(summary = "Get Dataset Samples", description = "Get detailed samples for a specific training dataset with pagination from database")
     public ResponseEntity<NERTrainingResponse> getDatasetSamples(
             @PathVariable String templateId,
             @RequestParam(defaultValue = "0") int page,
@@ -219,7 +220,7 @@ public class AAA0_0203Controller {
         logger.info("Getting samples for dataset: {} (page: {}, page_size: {})", templateId, page, page_size);
 
         try {
-            NERTrainingResponse response = nerTrainingService.getDatasetSamples(templateId, page, page_size);
+            NERTrainingResponse response = nerTrainingDataService.getDatasetSamples(templateId, page, page_size);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -230,16 +231,16 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Bulk delete datasets
+     * Bulk delete datasets from database
      */
     @PostMapping("/bulk-delete")
-    @Operation(summary = "Bulk Delete Datasets", description = "Delete multiple training datasets")
+    @Operation(summary = "Bulk Delete Datasets", description = "Delete multiple training datasets from database")
     public ResponseEntity<NERTrainingResponse> bulkDeleteDatasets(@RequestBody java.util.Map<String, java.util.List<String>> request) {
         java.util.List<String> templateIds = request.get("template_ids");
-        logger.info("Bulk deleting datasets: {}", templateIds);
+        logger.info("Bulk deleting datasets from database: {}", templateIds);
 
         try {
-            NERTrainingResponse response = nerTrainingService.bulkDeleteDatasets(templateIds);
+            NERTrainingResponse response = nerTrainingDataService.bulkDeleteDatasets(templateIds);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -250,18 +251,18 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Bulk delete samples within a dataset
+     * Bulk delete samples within a dataset from database
      */
     @PostMapping("/bulk-delete-samples")
-    @Operation(summary = "Bulk Delete Samples", description = "Delete multiple samples within a specific dataset")
+    @Operation(summary = "Bulk Delete Samples", description = "Delete multiple samples within a specific dataset from database")
     public ResponseEntity<NERTrainingResponse> bulkDeleteSamples(@RequestBody java.util.Map<String, Object> request) {
         String templateId = (String) request.get("template_id");
         @SuppressWarnings("unchecked")
         java.util.List<String> sampleIds = (java.util.List<String>) request.get("sample_ids");
-        logger.info("Bulk deleting samples for dataset {}: {}", templateId, sampleIds);
+        logger.info("Bulk deleting samples for dataset {} from database: {}", templateId, sampleIds);
 
         try {
-            NERTrainingResponse response = nerTrainingService.bulkDeleteSamples(templateId, sampleIds);
+            NERTrainingResponse response = nerTrainingDataService.bulkDeleteSamples(templateId, sampleIds);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -272,7 +273,31 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Start NER model training
+     * Bulk approve samples within a dataset
+     */
+    @PostMapping("/bulk-approve-samples")
+    @Operation(summary = "Bulk Approve Samples", description = "Approve multiple samples within a specific dataset in a single transaction")
+    public ResponseEntity<NERTrainingResponse> bulkApproveSamples(@RequestBody java.util.Map<String, Object> request) {
+        String templateId = (String) request.get("template_id");
+        @SuppressWarnings("unchecked")
+        java.util.List<String> sampleIds = (java.util.List<String>) request.get("sample_ids");
+        Boolean approved = (Boolean) request.getOrDefault("approved", true);
+        logger.info("Bulk {} samples for dataset {} from database: {}", 
+            approved ? "approving" : "rejecting", templateId, sampleIds);
+
+        try {
+            NERTrainingResponse response = nerTrainingDataService.bulkApproveSamples(sampleIds, approved);
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            logger.error("Error bulk approving samples", e);
+            return ResponseEntity.internalServerError()
+                .body(NERTrainingResponse.error("Failed to bulk approve samples: " + e.getMessage()));
+        }
+    }
+
+    /**
+     * Start NER model training (delegates to Python worker)
      */
     @PostMapping("/train")
     @Operation(summary = "Start NER Training", description = "Start training a NER model with specified configuration")
@@ -280,7 +305,7 @@ public class AAA0_0203Controller {
         logger.info("Starting NER model training");
 
         try {
-            NERTrainingResponse response = nerTrainingService.startTraining(request);
+            NERTrainingResponse response = nerTrainingDataService.startTraining(request);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -291,15 +316,15 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Get training status
+     * Get training status (from Python worker)
      */
     @GetMapping("/training/{trainingId}/status")
-    @Operation(summary = "Get Training Status", description = "Get the status of a training job")
+    @Operation(summary = "Get Training Status", description = "Get the status of a training job from Python worker")
     public ResponseEntity<NERTrainingResponse> getTrainingStatus(@PathVariable String trainingId) {
         logger.info("Getting training status for: {}", trainingId);
 
         try {
-            NERTrainingResponse response = nerTrainingService.getTrainingStatus(trainingId);
+            NERTrainingResponse response = nerTrainingDataService.getTrainingStatus(trainingId);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -310,15 +335,15 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * List trained models
+     * List trained models (from Python worker)
      */
     @GetMapping("/models")
-    @Operation(summary = "List Trained Models", description = "Get list of all trained NER models")
+    @Operation(summary = "List Trained Models", description = "Get list of all trained NER models from Python worker")
     public ResponseEntity<NERTrainingResponse> listTrainedModels() {
         logger.info("Listing trained NER models");
 
         try {
-            NERTrainingResponse response = nerTrainingService.listTrainedModels();
+            NERTrainingResponse response = nerTrainingDataService.listTrainedModels();
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -329,7 +354,7 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Predict NER entities
+     * Predict NER entities (delegates to Python worker)
      */
     @PostMapping("/predict")
     @Operation(summary = "Predict NER", description = "Use a trained model to predict NER entities in text")
@@ -337,7 +362,7 @@ public class AAA0_0203Controller {
         logger.info("Predicting NER entities");
 
         try {
-            NERTrainingResponse response = nerTrainingService.predictNER(request);
+            NERTrainingResponse response = nerTrainingDataService.predictNER(request);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -348,7 +373,7 @@ public class AAA0_0203Controller {
     }
 
     /**
-     * Evaluate model
+     * Evaluate model (delegates to Python worker)
      */
     @PostMapping("/evaluate")
     @Operation(summary = "Evaluate Model", description = "Evaluate a trained NER model with test data")
@@ -356,7 +381,7 @@ public class AAA0_0203Controller {
         logger.info("Evaluating NER model");
 
         try {
-            NERTrainingResponse response = nerTrainingService.evaluateModel(request);
+            NERTrainingResponse response = nerTrainingDataService.evaluateModel(request);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {

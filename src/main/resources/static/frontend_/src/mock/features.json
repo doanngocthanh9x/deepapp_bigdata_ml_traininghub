@@ -1,0 +1,136 @@
+{
+  "features": [
+    {
+      "id": "feat-001",
+      "title": "Core OCR Processing",
+      "description": "Basic image-to-text extraction with support for multiple languages",
+      "priority": "must-have",
+      "status": "completed",
+      "module": "AAA0_0101",
+      "progress": 100
+    },
+    {
+      "id": "feat-002",
+      "title": "Worker Queue Management",
+      "description": "Background job processing with priority queues and retry logic",
+      "priority": "must-have",
+      "status": "completed",
+      "module": "AAA0_0100",
+      "progress": 100
+    },
+    {
+      "id": "feat-003",
+      "title": "User Authentication",
+      "description": "JWT-based authentication with role-based access control",
+      "priority": "must-have",
+      "status": "in-progress",
+      "module": "AAA0_0100",
+      "progress": 75
+    },
+    {
+      "id": "feat-004",
+      "title": "PaddleOCR Integration",
+      "description": "Advanced OCR with PaddlePaddle for improved accuracy",
+      "priority": "should-have",
+      "status": "in-progress",
+      "module": "AAA0_0201",
+      "progress": 60
+    },
+    {
+      "id": "feat-005",
+      "title": "Batch Processing",
+      "description": "Process multiple images in a single request",
+      "priority": "should-have",
+      "status": "planned",
+      "module": "AAA0_0101",
+      "progress": 0
+    },
+    {
+      "id": "feat-006",
+      "title": "API Rate Limiting",
+      "description": "Configurable rate limits per user and endpoint",
+      "priority": "should-have",
+      "status": "in-progress",
+      "module": "AAA0_0100",
+      "progress": 40
+    },
+    {
+      "id": "feat-007",
+      "title": "Advanced Text Extraction",
+      "description": "Table detection and structured data extraction",
+      "priority": "could-have",
+      "status": "planned",
+      "module": "AAA0_0201",
+      "progress": 0
+    },
+    {
+      "id": "feat-008",
+      "title": "Webhook Notifications",
+      "description": "Real-time notifications for job completion",
+      "priority": "could-have",
+      "status": "planned",
+      "module": "AAA0_0100",
+      "progress": 0
+    },
+    {
+      "id": "feat-009",
+      "title": "Multi-language Support",
+      "description": "Support for 50+ languages including CJK characters",
+      "priority": "could-have",
+      "status": "in-progress",
+      "module": "AAA0_0101",
+      "progress": 30
+    },
+    {
+      "id": "feat-010",
+      "title": "Discharge Paper OCR",
+      "description": "Specialized OCR for Vietnamese discharge papers using YOLO + VietOCR",
+      "priority": "must-have",
+      "status": "completed",
+      "module": "AAA0_0103",
+      "progress": 100
+    },
+    {
+      "id": "feat-011",
+      "title": "Document Management",
+      "description": "Upload, store, and manage processed OCR documents",
+      "priority": "must-have",
+      "status": "completed",
+      "module": "AAA0_0104",
+      "progress": 100
+    },
+    {
+      "id": "feat-012",
+      "title": "YOLO Object Detection",
+      "description": "Real-time object detection with configurable YOLO models",
+      "priority": "must-have",
+      "status": "completed",
+      "module": "AAA0_0105",
+      "progress": 100
+    },
+    {
+      "id": "feat-013",
+      "title": "Document Statistics",
+      "description": "Analytics and reporting for document processing metrics",
+      "priority": "should-have",
+      "status": "in-progress",
+      "module": "AAA0_0104",
+      "progress": 70
+    },
+    {
+      "id": "feat-014",
+      "title": "Visual Detection Overlay",
+      "description": "Real-time bounding box visualization for detected objects",
+      "priority": "should-have",
+      "status": "completed",
+      "module": "AAA0_0105",
+      "progress": 100
+    }
+  ],
+  "stats": {
+    "total": 15,
+    "completed": 5,
+    "inProgress": 5,
+    "planned": 5
+  }
+}

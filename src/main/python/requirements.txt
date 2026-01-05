@@ -17,3 +17,4 @@ sentence-transformers
 faiss-cpu
 spacy 
 spacy-transformers
+llama-cpp-python

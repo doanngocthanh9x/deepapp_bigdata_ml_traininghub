@@ -65,6 +65,7 @@ class PythonWorkerApplication:
             from com.deepapp.vn.io.AA.A0.AAA0_0201.worker import AAA0_0201_W
             from com.deepapp.vn.io.AA.A0.AAA0_0202.worker import AAA0_0202_W
             from com.deepapp.vn.io.AA.A0.AAA0_0203.worker import AAA0_0203_W
+            from com.deepapp.vn.io.AA.A0.AAA0_0300.worker import AAA0_0300_W
 
             # Import ZZ workers
             from com.deepapp.vn.io.ZZ.A0.ZZA0_0100.worker import ZZA0_0100_W

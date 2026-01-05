@@ -38,8 +38,34 @@ find_package(OpenCV REQUIRED)
 # Find SQLite3 for document storage
 find_package(SQLite3 REQUIRED)
 
-# Find SQLite3 for document storage
-find_package(SQLite3 REQUIRED)
+# Find llama.cpp (optional - for LLM worker)
+find_path(LLAMA_INCLUDE_DIR llama.h
+    PATHS 
+        /usr/local/include
+        /usr/include
+        /root/llama.cpp/include
+        ${CMAKE_SOURCE_DIR}/../llama.cpp/include
+)
+
+find_library(LLAMA_LIBRARY NAMES llama
+    PATHS 
+        /usr/local/lib
+        /usr/lib
+        /root/llama.cpp/build
+        ${CMAKE_SOURCE_DIR}/../llama.cpp/build
+)
+
+if(LLAMA_INCLUDE_DIR AND LLAMA_LIBRARY)
+    set(LLAMA_FOUND TRUE)
+    message(STATUS "Found llama.cpp: ${LLAMA_INCLUDE_DIR}, ${LLAMA_LIBRARY}")
+else()
+    set(LLAMA_FOUND FALSE)
+    message(STATUS "llama.cpp not found - AAA0_0300 C++ worker will be skipped")
+    message(STATUS "To install llama.cpp:")
+    message(STATUS "  git clone https://github.com/ggerganov/llama.cpp /root/llama.cpp")
+    message(STATUS "  cd /root/llama.cpp && mkdir build && cd build")
+    message(STATUS "  cmake .. && make -j")
+endif()
 
 # Include directories
 include_directories(${GRPC_INCLUDE_DIRS})
@@ -51,6 +77,12 @@ include_directories(${SQLite3_INCLUDE_DIRS})
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${CMAKE_SOURCE_DIR}/src/main/cpp)
 include_directories(${ONNXRUNTIME_INCLUDE_DIR})
+
+if(LLAMA_FOUND)
+    include_directories(${LLAMA_INCLUDE_DIR})
+    include_directories(/root/llama.cpp/ggml/include)
+    include_directories(/root/llama.cpp/common)
+endif()
 
 # Generate protobuf files from proto
 find_program(PROTOC protoc)
@@ -89,10 +121,29 @@ file(GLOB_RECURSE WORKER_SOURCES
     "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/ZZ/A0/ZZA0_0102/worker/ZZA0_0102_W.cpp"
 )
 
-# Alternative: Auto-discover all *_W.cpp files
+# Conditionally add AAA0_0300 C++ worker if llama.cpp is available
+# TEMPORARILY DISABLED: llama.cpp API has changed, C++ worker needs update
+# Python worker (AAA0_0300_W.py) is fully functional and tested
+if(FALSE)  # Disabled - uncomment when llama.cpp C++ code is updated
+    if(LLAMA_FOUND)
+        list(APPEND WORKER_SOURCES 
+            "${CMAKE_SOURCE_DIR}/src/main/cpp/com/deepapp/vn/io/AA/A0/AAA0_0300/worker/AAA0_0300_CPP_W.cpp"
+        )
+        message(STATUS "✓ AAA0_0300 C++ LLM worker will be included")
+    else()
+        message(STATUS "⊗ AAA0_0300 C++ LLM worker will be skipped (llama.cpp not found)")
+    endif()
+endif()
+message(STATUS "⊗ AAA0_0300 C++ LLM worker skipped (Python worker available)")
+
+# Alternative: Auto-discover all *_W.cpp files (excluding AAA0_0300 if llama not found)
 file(GLOB_RECURSE WORKER_SOURCES_AUTO
     "${CMAKE_SOURCE_DIR}/src/main/cpp/*_W.cpp"
 )
+if(NOT LLAMA_FOUND)
+    # Remove AAA0_0300_CPP_W.cpp from auto-discovered list
+    list(FILTER WORKER_SOURCES_AUTO EXCLUDE REGEX "AAA0_0300_CPP_W.cpp")
+endif()
 if(WORKER_SOURCES_AUTO)
     set(WORKER_SOURCES ${WORKER_SOURCES_AUTO})
 endif()
@@ -132,6 +183,11 @@ target_link_libraries(deepapp_worker_main
     SQLite::SQLite3
     pthread
 )
+
+# Link llama.cpp if found
+if(LLAMA_FOUND)
+    target_link_libraries(deepapp_worker_main ${LLAMA_LIBRARY})
+endif()
 
 # Installation
 install(TARGETS deepapp_worker_main DESTINATION bin)

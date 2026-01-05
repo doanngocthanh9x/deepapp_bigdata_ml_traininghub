@@ -1,0 +1,519 @@
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { Brain, Database, FileText, Download, CheckCircle, AlertCircle, Eye, Settings, Plus, Search, BarChart3, Target } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Separator } from '@/components/ui/separator';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+
+const NERTrainingPage = () => {
+  const [activeTab, setActiveTab] = useState('collect');
+  const [trainingData, setTrainingData] = useState([]);
+  const [selectedTemplate, setSelectedTemplate] = useState('auto-detect');
+  const [loading, setLoading] = useState(false);
+  const [results, setResults] = useState(null);
+
+  // Collection state
+  const [processedDocuments, setProcessedDocuments] = useState([]);
+
+  // Dataset generation state
+  const [exportFormat, setExportFormat] = useState('json');
+  const [selectedTemplates, setSelectedTemplates] = useState([]);
+
+  // Validation state
+  const [validationResults, setValidationResults] = useState(null);
+
+  useEffect(() => {
+    loadTrainingData();
+  }, []);
+
+  const loadTrainingData = async () => {
+    try {
+      const response = await fetch('/AA/A0/AAA0_0203/training-data');
+      const result = await response.json();
+      if (result.status === 'success') {
+        setTrainingData(result.data.training_data || []);
+      }
+    } catch (error) {
+      console.error('Error loading training data:', error);
+    }
+  };
+
+  const collectTrainingData = async () => {
+    if (!processedDocuments.length) {
+      alert('Please provide processed documents from AAA0_0202');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/worker/AAA0_0203_W', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_type: 'collect_training_data',
+          payload: JSON.stringify({
+            processed_documents: processedDocuments,
+            template_id: selectedTemplate === 'auto-detect' ? null : selectedTemplate
+          })
+        })
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        setResults(result.data);
+        await loadTrainingData(); // Refresh the list
+      }
+    } catch (error) {
+      console.error('Error collecting training data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const generateNerDataset = async () => {
+    if (!selectedTemplates.length) {
+      alert('Please select at least one template');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch('/api/worker/AAA0_0203_W', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_type: 'generate_ner_dataset',
+          payload: JSON.stringify({
+            template_ids: selectedTemplates,
+            format: exportFormat
+          })
+        })
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        setResults(result.data);
+      }
+    } catch (error) {
+      console.error('Error generating NER dataset:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const exportNerFormat = async (templateId) => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/worker/AAA0_0203_W', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_type: 'export_ner_format',
+          payload: JSON.stringify({
+            template_id: templateId,
+            format: 'vietnamese_ner'
+          })
+        })
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        setResults(result.data);
+        // Trigger download
+        const downloadResponse = await fetch(`/api/download/${result.data.filepath.split('/').pop()}`);
+        const blob = await downloadResponse.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = result.data.filepath.split('/').pop();
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }
+    } catch (error) {
+      console.error('Error exporting NER format:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const validateNerData = async (templateId) => {
+    setLoading(true);
+    try {
+      const response = await fetch('/api/worker/AAA0_0203_W', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_type: 'validate_ner_data',
+          payload: JSON.stringify({
+            template_id: templateId
+          })
+        })
+      });
+
+      const result = await response.json();
+      if (result.status === 'success') {
+        setValidationResults(result.data);
+      }
+    } catch (error) {
+      console.error('Error validating NER data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addProcessedDocument = () => {
+    const newDoc = {
+      ocr_text: [],
+      extracted_fields: {},
+      template_id: selectedTemplate
+    };
+    setProcessedDocuments([...processedDocuments, newDoc]);
+  };
+
+  const updateProcessedDocument = (index, field, value) => {
+    const updated = [...processedDocuments];
+    updated[index][field] = value;
+    setProcessedDocuments(updated);
+  };
+
+  return (
+    <DashboardLayout>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
+              <Brain className="h-8 w-8 text-blue-600" />
+              NER Training Data Preparation
+            </h1>
+            <p className="text-muted-foreground">
+              Convert AAA0_0202 processed documents to NER training data
+            </p>
+          </div>
+        </div>
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="collect" className="flex items-center gap-2">
+              <Database className="h-4 w-4" />
+              Collect Data
+            </TabsTrigger>
+            <TabsTrigger value="generate" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Generate Dataset
+            </TabsTrigger>
+            <TabsTrigger value="validate" className="flex items-center gap-2">
+              <CheckCircle className="h-4 w-4" />
+              Validate
+            </TabsTrigger>
+            <TabsTrigger value="export" className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Export
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Collect Training Data Tab */}
+          <TabsContent value="collect" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Database className="h-5 w-5" />
+                  Collect Training Data from AAA0_0202
+                </CardTitle>
+                <CardDescription>
+                  Import processed documents from AAA0_0202 to create NER training samples
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="template-select">Template ID (optional)</Label>
+                    <Select value={selectedTemplate} onValueChange={setSelectedTemplate}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Auto-detect or specify template" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="auto-detect">Auto-detect</SelectItem>
+                        <SelectItem value="discharge_summary">Discharge Summary</SelectItem>
+                        <SelectItem value="prescription">Prescription</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">Processed Documents</h3>
+                    <Button onClick={addProcessedDocument} size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Document
+                    </Button>
+                  </div>
+
+                  {processedDocuments.map((doc, index) => (
+                    <Card key={index} className="p-4">
+                      <div className="space-y-4">
+                        <div>
+                          <Label>OCR Text (one line per text region)</Label>
+                          <Textarea
+                            placeholder="Paste OCR text lines here..."
+                            value={doc.ocr_text.join('\n')}
+                            onChange={(e) => updateProcessedDocument(index, 'ocr_text', e.target.value.split('\n'))}
+                            rows={4}
+                          />
+                        </div>
+
+                        <div>
+                          <Label>Extracted Fields (JSON)</Label>
+                          <Textarea
+                            placeholder='{"họ_tên": "Nguyễn Văn A", "tuổi": "30", ...}'
+                            value={JSON.stringify(doc.extracted_fields, null, 2)}
+                            onChange={(e) => {
+                              try {
+                                const parsed = JSON.parse(e.target.value);
+                                updateProcessedDocument(index, 'extracted_fields', parsed);
+                              } catch (err) {
+                                // Invalid JSON, keep as string for now
+                              }
+                            }}
+                            rows={6}
+                          />
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+
+                  {processedDocuments.length > 0 && (
+                    <Button onClick={collectTrainingData} disabled={loading} className="w-full">
+                      {loading ? 'Processing...' : 'Collect Training Data'}
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Generate Dataset Tab */}
+          <TabsContent value="generate" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Generate NER Dataset
+                </CardTitle>
+                <CardDescription>
+                  Create NER training datasets from collected data
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label>Export Format</Label>
+                    <Select value={exportFormat} onValueChange={setExportFormat}>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="json">JSON</SelectItem>
+                        <SelectItem value="conll">CoNLL</SelectItem>
+                        <SelectItem value="spacy">spaCy</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Select Templates</Label>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    {trainingData.map((data) => (
+                      <div key={data.template_id} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={data.template_id}
+                          checked={selectedTemplates.includes(data.template_id)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setSelectedTemplates([...selectedTemplates, data.template_id]);
+                            } else {
+                              setSelectedTemplates(selectedTemplates.filter(t => t !== data.template_id));
+                            }
+                          }}
+                        />
+                        <Label htmlFor={data.template_id}>
+                          {data.template_id} ({data.samples_count} samples)
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Button onClick={generateNerDataset} disabled={loading || !selectedTemplates.length}>
+                  {loading ? 'Generating...' : 'Generate NER Dataset'}
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Validate Tab */}
+          <TabsContent value="validate" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5" />
+                  Validate NER Data
+                </CardTitle>
+                <CardDescription>
+                  Check quality and consistency of training data
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {trainingData.map((data) => (
+                    <Card key={data.template_id} className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold">{data.template_id}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {data.samples_count} samples • Created: {new Date(data.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Button
+                          onClick={() => validateNerData(data.template_id)}
+                          disabled={loading}
+                          size="sm"
+                        >
+                          <CheckCircle className="h-4 w-4 mr-2" />
+                          Validate
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+
+                {validationResults && (
+                  <Card className="mt-4">
+                    <CardHeader>
+                      <CardTitle>Validation Results: {validationResults.template_id}</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-sm font-medium">Total Samples</p>
+                          <p className="text-2xl font-bold">{validationResults.validation.total_samples}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Samples with Annotations</p>
+                          <p className="text-2xl font-bold">{validationResults.validation.samples_with_annotations}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Total Annotations</p>
+                          <p className="text-2xl font-bold">{validationResults.validation.total_annotations}</p>
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium">Issues Found</p>
+                          <p className="text-2xl font-bold text-red-600">{validationResults.validation.issues.length}</p>
+                        </div>
+                      </div>
+
+                      {validationResults.validation.issues.length > 0 && (
+                        <div className="mt-4">
+                          <h4 className="font-semibold text-red-600">Issues:</h4>
+                          <ul className="list-disc list-inside text-sm mt-2">
+                            {validationResults.validation.issues.slice(0, 10).map((issue, idx) => (
+                              <li key={idx}>{issue}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Export Tab */}
+          <TabsContent value="export" className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Download className="h-5 w-5" />
+                  Export NER Training Data
+                </CardTitle>
+                <CardDescription>
+                  Download training data in Vietnamese NER format
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Template ID</TableHead>
+                      <TableHead>Samples</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {trainingData.map((data) => (
+                      <TableRow key={data.template_id}>
+                        <TableCell className="font-medium">{data.template_id}</TableCell>
+                        <TableCell>{data.samples_count}</TableCell>
+                        <TableCell>{new Date(data.created_at).toLocaleDateString()}</TableCell>
+                        <TableCell>
+                          <Button
+                            onClick={() => exportNerFormat(data.template_id)}
+                            disabled={loading}
+                            size="sm"
+                          >
+                            <Download className="h-4 w-4 mr-2" />
+                            Export NER
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        {/* Results Display */}
+        {results && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-600" />
+                Operation Completed
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p><strong>Message:</strong> {results.message}</p>
+                {results.samples_count && <p><strong>Samples:</strong> {results.samples_count}</p>}
+                {results.filepath && <p><strong>File:</strong> {results.filepath.split('/').pop()}</p>}
+                {results.format && <p><strong>Format:</strong> {results.format}</p>}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </DashboardLayout>
+  );
+};
+
+export default NERTrainingPage;

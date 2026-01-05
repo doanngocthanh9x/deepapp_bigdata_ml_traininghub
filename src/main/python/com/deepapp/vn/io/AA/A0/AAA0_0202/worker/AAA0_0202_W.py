@@ -822,19 +822,172 @@ class AAA0_0202_Worker(BaseWorker):
     # ==================== NER Training Data Forwarding ====================
     
     def _send_to_ner_training(self, training_data: Dict):
-        """Send processed document data to AAA0_0203 NER training worker"""
+        """
+        Send processed document data to AAA0_0203 NER training via REST API
+        Uses new database-first architecture instead of file-based approach
+        
+        Creates ONE sample with ENTIRE document text (all OCR lines) and all annotations
+        """
         try:
-            self.log(f"🔄 Starting to send training data to AAA0_0203: {training_data.get('template_id', 'unknown')}")
+            self.log(f"🔄 Sending training data to AAA0_0203 API: {training_data.get('template_id', 'unknown')}")
             
-            # Import here to avoid circular imports
-            from com.deepapp.vn.io.AA.A0.AAA0_0203.worker.AAA0_0203_W import AAA0_0203_Worker
+            import uuid
+            import requests
+            from datetime import datetime
             
-            # Get or create NER training worker instance
-            if not hasattr(self, '_ner_worker'):
-                self._ner_worker = AAA0_0203_Worker()
-                self.log("🔗 Created NER training worker instance (AAA0_0203)")
+            template_id = training_data.get('template_id', 'default')
             
-            # Save training data to file instead of embedding in payload
+            # Get OCR texts and extracted fields
+            ocr_texts = training_data.get('ocr_text', [])
+            extracted_fields = training_data.get('extracted_fields', {})
+            
+            if not ocr_texts:
+                self.log(f"⚠️ No OCR text available")
+                return
+            
+            # Merge all OCR lines into ONE multiline text document
+            # Keep line breaks to preserve document structure
+            full_document_text = '\n'.join([text.strip() for text in ocr_texts if text and isinstance(text, str)])
+            
+            if not full_document_text.strip():
+                self.log(f"⚠️ Document text is empty after merging")
+                return
+            
+            self.log(f"📄 Full document text: {len(full_document_text)} chars, {len(ocr_texts)} lines")
+            
+            # Build map: field_value -> field_name for quick lookup
+            field_values_map = {}
+            for field_name, field_value in extracted_fields.items():
+                if field_value and isinstance(field_value, str) and field_value.strip():
+                    field_values_map[field_value.strip()] = field_name
+            
+            if not field_values_map:
+                self.log(f"⚠️ No valid extracted fields to create annotations")
+                # Still create sample with no annotations for review
+            
+            # Find ALL field values in the entire document text
+            annotations = []
+            for field_value, field_name in field_values_map.items():
+                # Find all occurrences of this field value in the entire document
+                start_pos = 0
+                occurrences = 0
+                while True:
+                    pos = full_document_text.find(field_value, start_pos)
+                    if pos == -1:
+                        break
+                    
+                    annotations.append({
+                        'start': pos,
+                        'end': pos + len(field_value),
+                        'text': field_value,
+                        'label': self._map_field_to_entity_type(field_name)
+                    })
+                    
+                    occurrences += 1
+                    start_pos = pos + len(field_value)
+                
+                if occurrences > 0:
+                    self.log(f"   ✓ Found '{field_name}' = '{field_value}' ({occurrences} occurrence(s))")
+            
+            # Sort annotations by start position
+            annotations.sort(key=lambda x: x['start'])
+            
+            # Generate unique sample ID
+            sample_id = f"{template_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{str(uuid.uuid4())[:8]}"
+            
+            # Create ONE sample with entire document
+            sample = {
+                'id': sample_id,
+                'text': full_document_text,
+                'annotations': annotations,
+                'approved': False,  # Initially not approved, requires manual review
+                'metadata': {
+                    'total_lines': len(ocr_texts),
+                    'annotation_count': len(annotations),
+                    'extracted_fields_count': len(extracted_fields)
+                }
+            }
+            
+            samples = [sample]
+            
+            self.log(f"✨ Created 1 document sample: {len(annotations)} annotations, {len(full_document_text)} chars")
+            
+            # Send to AAA0_0203 REST API endpoint
+            api_url = "http://localhost:8080/AA/A0/AAA0_0203/process"
+            
+            payload = {
+                'event_type': 'add_training_samples',
+                'payload': {
+                    'template_id': template_id,
+                    'samples': samples,
+                    'source': 'AAA0_0202_OCR',
+                    'timestamp': datetime.now().isoformat(),
+                    'stats': training_data.get('stats', {})
+                }
+            }
+            
+            self.log(f"📤 Sending {len(samples)} samples to AAA0_0203 API")
+            
+            # Make HTTP POST request to Java service
+            try:
+                response = requests.post(
+                    api_url,
+                    json=payload,
+                    headers={'Content-Type': 'application/json'},
+                    timeout=30
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    self.log(f"✅ Successfully sent to AAA0_0203: {result.get('message', 'OK')}")
+                    self.log(f"📊 Stats: {result.get('data', {})}")
+                else:
+                    self.log(f"⚠️ AAA0_0203 API returned status {response.status_code}: {response.text[:200]}", "WARNING")
+                    
+            except requests.exceptions.RequestException as e:
+                self.log(f"⚠️ HTTP request to AAA0_0203 failed: {e}", "ERROR")
+                # Fall back to file-based approach for backwards compatibility
+                self._send_to_ner_training_legacy(training_data)
+                
+        except Exception as e:
+            self.log(f"⚠️ Failed to forward to NER training: {e}", "ERROR")
+            import traceback
+            self.log(f"⚠️ Traceback: {traceback.format_exc()}", "ERROR")
+    
+    def _map_field_to_entity_type(self, field_name: str) -> str:
+        """Map extracted field name to NER entity type"""
+        field_mapping = {
+            'họ_tên': 'PERSON',
+            'patient_name': 'PERSON',
+            'ngày_sinh': 'DATE',
+            'date_of_birth': 'DATE',
+            'tuổi': 'AGE',
+            'age': 'AGE',
+            'chẩn_đoán': 'DIAGNOSIS',
+            'diagnosis': 'DIAGNOSIS',
+            'ngày_vào_viện': 'DATE',
+            'admission_date': 'DATE',
+            'ngày_ra_viện': 'DATE',
+            'discharge_date': 'DATE',
+            'giới_tính': 'GENDER',
+            'gender': 'GENDER',
+            'địa_chỉ': 'LOCATION',
+            'address': 'LOCATION',
+            'phương_pháp_điều_trị': 'TREATMENT',
+            'treatment': 'TREATMENT',
+            'mã_số_bhxh': 'ID',
+            'insurance_id': 'ID'
+        }
+        return field_mapping.get(field_name.lower(), 'OTHER')
+    
+    def _send_to_ner_training_legacy(self, training_data: Dict):
+        """
+        Legacy file-based approach for backwards compatibility
+        Only used if REST API is not available
+        """
+        try:
+            self.log(f"💾 Using legacy file-based approach for AAA0_0203")
+            
             import uuid
             from datetime import datetime
             
@@ -858,23 +1011,8 @@ class AAA0_0202_Worker(BaseWorker):
             
             self.log(f"💾 Saved training data to file: {filepath}")
             
-            # Prepare payload with file path instead of embedded data
-            payload = {
-                'training_data_path': filepath,
-                'template_id': training_data.get('template_id')
-            }
-            payload_json = json.dumps(payload)
-            self.log(f"📤 Sending payload to NER worker: {len(payload_json)} chars")
-            
-            # Send training data via process_task
-            result = self._ner_worker.process_task("collect_training_data", payload_json)
-            self.log(f"📤 Forwarded training data to NER: {training_data.get('document_type', 'unknown')}")
-            self.log(f"📤 NER worker response: {result[:200]}...")
-            
         except Exception as e:
-            self.log(f"⚠️ Failed to forward to NER training: {e}", "ERROR")
-            import traceback
-            self.log(f"⚠️ Traceback: {traceback.format_exc()}", "ERROR")
+            self.log(f"⚠️ Legacy file save also failed: {e}", "ERROR")
 
     # ==================== RAG Management ====================
     
